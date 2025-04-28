@@ -885,31 +885,10 @@
         </div>
     </footer>
 
+    <!-- Auth JS file for login state management -->
+    <script src="auth.js"></script>
+    <script src="mobile.js"></script>
     <script>
-        // Mobile menu toggle
-        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-        const mainNav = document.querySelector('.main-nav');
-        
-        mobileMenuToggle.addEventListener('click', function() {
-            mainNav.classList.toggle('active');
-            this.classList.toggle('active');
-        });
-
-        // Search toggle
-        const searchToggle = document.querySelector('.search-toggle');
-        const searchForm = document.querySelector('.search-form');
-        
-        searchToggle.addEventListener('click', function() {
-            searchForm.classList.toggle('active');
-        });
-        
-        // Close search when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.search-container')) {
-                searchForm.classList.remove('active');
-            }
-        });
-
         // Join Club button functionality
         const joinButton = document.querySelector('.org-actions .btn-primary');
         if(joinButton) {

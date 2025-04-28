@@ -1245,6 +1245,12 @@ section {
     .footer-about {
         grid-column: span 2;
     }
+    
+    /* Improve dropdown positioning on tablet */
+    .dropdown-menu {
+        right: 0;
+        left: auto;
+    }
 }
 
 /* Mobile */
@@ -1269,10 +1275,19 @@ section {
         font-size: 1.8rem;
     }
 
+    /* Header adjustments for mobile */
     .main-header .container {
         height: 70px;
+        flex-wrap: wrap;
+        padding: 0 15px;
     }
-
+    
+    /* Adjust logo size for mobile */
+    .logo h1 {
+        font-size: 1.5rem;
+    }
+    
+    /* Improve mobile navigation */
     .main-nav {
         position: fixed;
         top: 70px;
@@ -1299,11 +1314,12 @@ section {
 
     .main-nav ul {
         flex-direction: column;
+        width: 100%;
     }
 
     .main-nav li:not(:last-child) {
         margin-right: 0;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
     }
     
     .main-nav a {
@@ -1312,10 +1328,46 @@ section {
         font-size: 1.1rem;
         background-color: rgba(255, 255, 255, 0.05);
         border-radius: 8px;
+        text-align: left;
+    }
+    
+    .main-nav a:after {
+        display: none;
     }
 
+    /* Mobile menu toggle button */
     .mobile-menu-toggle {
         display: block;
+        margin-right: 15px;
+        z-index: 1001;
+    }
+    
+    /* Optimize user controls for mobile */
+    .user-controls {
+        margin-left: auto;
+    }
+    
+    .user-controls > *:not(:last-child) {
+        margin-right: 10px;
+    }
+    
+    /* Hide sign up button on mobile and replace with icon */
+    .user-controls .btn:not(.dropdown-btn) {
+        padding: 8px 12px;
+        font-size: 0.875rem;
+    }
+    
+    /* Adjust dropdown menus for mobile */
+    .dropdown-menu {
+        right: 0;
+        left: auto;
+        min-width: 160px;
+        top: 130%;
+    }
+
+    .dropdown-menu a {
+        padding: 10px 15px;
+        font-size: 0.9rem;
     }
 
     .hero-buttons .btn:not(:last-child) {
@@ -1334,6 +1386,11 @@ section {
     .footer-about {
         grid-column: span 1;
     }
+    
+    /* Fix spacing in footer sections */
+    .footer-links, .footer-contact {
+        margin-top: 15px;
+    }
 }
 
 /* Small Mobile */
@@ -1342,14 +1399,34 @@ section {
         padding: 12px 20px;
         font-size: 1rem;
     }
-
+    
+    /* Adjust search form position and size for very small screens */
     .search-form {
-        width: 250px;
-        right: -70px;
+        width: 220px;
+        right: -50%;
+        transform: translateX(25%);
+    }
+    
+    .search-form input {
+        padding: 10px 12px;
+    }
+    
+    .search-form button {
+        padding: 10px 12px;
     }
 
     .user-controls > *:not(:last-child) {
-        margin-right: 10px;
+        margin-right: 8px;
+    }
+    
+    /* Further optimize buttons on very small screens */
+    .user-controls .btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+    
+    .dropdown-btn i {
+        margin-left: 2px;
     }
 
     .hero-content h1 {
@@ -1380,6 +1457,17 @@ section {
     
     .events-grid, .category-grid, .organizations-grid {
         gap: 20px;
+        grid-template-columns: 1fr;
+    }
+    
+    /* Adjust cards for better mobile display */
+    .event-card, .org-card, .category-card {
+        max-width: 100%;
+    }
+    
+    /* Make footer text smaller on very small screens */
+    .footer-bottom p {
+        font-size: 0.8rem;
     }
 }
 

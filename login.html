@@ -316,323 +316,51 @@
         </div>
     </footer>
 
+    <script src="auth.js"></script>
+    <script src="mobile.js"></script>
     <script>
-        // Mobile menu toggle
-        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-        const mainNav = document.querySelector('.main-nav');
-        
-        mobileMenuToggle.addEventListener('click', function() {
-            mainNav.classList.toggle('active');
-            this.classList.toggle('active');
-        });
-
-        // Search toggle
-        const searchToggle = document.querySelector('.search-toggle');
-        const searchForm = document.querySelector('.search-form');
-        
-        searchToggle.addEventListener('click', function() {
-            searchForm.classList.toggle('active');
-        });
-        
-        // Close search when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.search-container')) {
-                searchForm.classList.remove('active');
-            }
-        });
-        
-        // Password visibility toggle
-        document.querySelectorAll('.password-toggle').forEach(toggle => {
-            toggle.addEventListener('click', function() {
-                const passwordInput = this.previousElementSibling;
-                const icon = this.querySelector('i');
-                
-                if (passwordInput.type === 'password') {
-                    passwordInput.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                    this.setAttribute('aria-label', 'Hide password');
-                } else {
-                    passwordInput.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                    this.setAttribute('aria-label', 'Show password');
-                }
-            });
-        });
-        
-        // Tab switching functionality
-        const studentTab = document.getElementById('student-tab');
-        const organizerTab = document.getElementById('organizer-tab');
-        const studentForm = document.getElementById('student-form');
-        const organizerForm = document.getElementById('organizer-form');
-        
-        // Make tabs accessible with keyboard
-        studentTab.setAttribute('role', 'tab');
-        organizerTab.setAttribute('role', 'tab');
-        studentTab.setAttribute('tabindex', '0');
-        organizerTab.setAttribute('tabindex', '0');
-        
-        // Check URL parameters to see if we should pre-select a tab
-        const urlParams = new URLSearchParams(window.location.search);
-        const userType = urlParams.get('type');
-        
-        if (userType === 'organizer') {
-            // Switch to organizer tab
-            studentTab.classList.remove('active');
-            organizerTab.classList.add('active');
-            studentForm.classList.remove('active');
-            organizerForm.classList.add('active');
-        } else {
-            // Default to student tab
-            studentTab.classList.add('active');
-            organizerTab.classList.remove('active');
-            studentForm.classList.add('active');
-            organizerForm.classList.remove('active');
-        }
-        
-        // Handle tab clicks and keyboard events
-        studentTab.addEventListener('click', switchToStudentTab);
-        organizerTab.addEventListener('click', switchToOrganizerTab);
-        
-        studentTab.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                switchToStudentTab();
-            }
-        });
-        
-        organizerTab.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                switchToOrganizerTab();
-            }
-        });
-        
-        function switchToStudentTab() {
-            studentTab.classList.add('active');
-            organizerTab.classList.remove('active');
-            studentForm.classList.add('active');
-            organizerForm.classList.remove('active');
-            studentTab.setAttribute('aria-selected', 'true');
-            organizerTab.setAttribute('aria-selected', 'false');
-        }
-        
-        function switchToOrganizerTab() {
-            organizerTab.classList.add('active');
-            studentTab.classList.remove('active');
-            organizerForm.classList.add('active');
-            studentForm.classList.remove('active');
-            organizerTab.setAttribute('aria-selected', 'true');
-            studentTab.setAttribute('aria-selected', 'false');
-        }
-        
-        // Student Login form submission handler
-        document.getElementById('student-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('student-email').value;
-            const password = document.getElementById('student-password').value;
-            const errorElement = document.getElementById('student-error');
-            const rememberMe = document.getElementById('student-remember').checked;
-            
-            // Simple validation
-            if (!email || !password) {
-                errorElement.textContent = "Please fill in all fields";
-                errorElement.style.display = "block";
-                errorElement.setAttribute('role', 'alert');
-                return;
-            }
-            
-            // For demo purposes: simple login check
-            if (validateStudentLogin(email, password)) {
-                // Create a proper display name from the email
-                const displayName = formatDisplayName(email);
-                
-                // Format the email if it's a NEUB student ID
-                const userEmail = isNEUBStudentId(email) ? formatNEUBStudentEmail(email) : email;
-                
-                // Normal user login
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userRole', 'student');
-                localStorage.setItem('userName', displayName);
-                localStorage.setItem('userEmail', userEmail);
-                
-                // Create session with proper timeout
-                if (window.eventura && window.eventura.auth) {
-                    window.eventura.auth.createSession('student');
-                }
-                
-                // Check for return URL or redirect to homepage
-                const returnUrl = urlParams.get('returnUrl');
-                if (returnUrl) {
-                    window.location.href = returnUrl;
-                } else {
-                    window.location.href = 'index.html';
-                }
-            } else {
-                errorElement.textContent = "Invalid credentials. Please try again.";
-                errorElement.style.display = "block";
-                errorElement.setAttribute('role', 'alert');
-            }
-        });
-        
-        // Organizer Login form submission handler
-        document.getElementById('organizer-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const email = document.getElementById('organizer-email').value;
-            const password = document.getElementById('organizer-password').value;
-            const orgCode = document.getElementById('organization-code').value;
-            const errorElement = document.getElementById('organizer-error');
-            
-            // Simple validation
-            if (!email || !password || !orgCode) {
-                errorElement.textContent = "Please fill in all fields";
-                errorElement.style.display = "block";
-                errorElement.setAttribute('role', 'alert');
-                return;
-            }
-            
-            // For demo purposes: check organization code and password
-            if (validateOrganizerLogin(email, password, orgCode)) {
-                // Create a proper display name from the email
-                const displayName = formatDisplayName(email);
-                
-                // Store login state and role in localStorage
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userRole', 'organizer');
-                localStorage.setItem('userName', displayName);
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('orgCode', orgCode);
-                
-                // Redirect to dashboard after login
-                window.location.href = 'admin-dashboard.html';
-            } else {
-                errorElement.textContent = "Invalid credentials or organization code. Please try again.";
-                errorElement.style.display = "block";
-                errorElement.setAttribute('role', 'alert');
-            }
-        });
-        
-        // Function to format display name from email
-        function formatDisplayName(email) {
-            // Extract username part before @ symbol
-            const username = email.split('@')[0];
-            
-            // For NEUB student IDs, we'll format differently
-            if (email.includes('@neub.edu.bd')) {
-                // Extract name from student email if available, or just use ID
-                return "NEUB Student";
-            }
-            
-            // Convert to proper case (capitalize first letter of each word)
-            return username
-                .split(/[._-]/)
-                .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-                .join(' ');
-        }
-        
-        // Function to validate organizer email
-        function validateOrganizerEmail(email) {
-            // Check if email is from an official domain
-            const officialDomains = ['neub.edu.bd', 'eventura.edu', 'organization.edu', 'university.edu', 'admin.edu'];
-            const domain = email.split('@')[1];
-            
-            // For NEUB domains, always allow
-            if (domain === 'neub.edu.bd') {
-                return true;
-            }
-            
-            return officialDomains.some(officialDomain => domain && domain.includes(officialDomain));
-        }
-        
-        // Function to validate student login
-        function validateStudentLogin(email, password) {
-            // In a real app, this would make a server request
-            // Handle NEUB student IDs specifically
-            if (isNEUBStudentId(email)) {
-                // Convert to proper email format if only ID is provided
-                const formattedEmail = formatNEUBStudentEmail(email);
-                
-                // Store the formatted email for later use
-                localStorage.setItem('userEmail', formattedEmail);
-                
-                // For demo purposes, accept any student ID with password length >= 3
-                return password && password.length >= 3;
-            }
-            
-            // For regular emails, accept any non-empty values with password length >= 3
-            return email && password && password.length >= 3;
-        }
-        
-        /**
-         * Checks if the provided string appears to be a NEUB student ID
-         * @param {string} input - The input to check
-         * @returns {boolean} - True if it looks like a NEUB student ID
-         */
-        function isNEUBStudentId(input) {
-            // Remove any @neub.edu.bd suffix if present
-            const cleanInput = input.replace(/@neub\.edu\.bd$/, "");
-            
-            // Check if it's a numeric string starting with 05 or 056
-            // NEUB IDs are typically 16 digits starting with 056231...
-            return /^(05|056|0562|05623|056231)\d+$/.test(cleanInput);
-        }
-        
-        /**
-         * Formats a NEUB student ID as a proper email
-         * @param {string} input - The student ID input
-         * @returns {string} - Properly formatted email
-         */
-        function formatNEUBStudentEmail(input) {
-            // Remove any existing @neub.edu.bd suffix
-            const cleanInput = input.replace(/@neub\.edu\.bd$/, "");
-            
-            // Add the domain suffix
-            return `${cleanInput}@neub.edu.bd`;
-        }
-        
-        // Function to validate organizer login
-        function validateOrganizerLogin(email, password, orgCode) {
-            // In a real app, this would check against server data
-            // For demo, valid organization codes
-            const validOrgCodes = ['ORG123', 'ADMIN456', 'CSE789', 'ECE101', 'CLUB202', 'NEUB'];
-            
-            // Special case for NEUB emails - they're automatically considered valid with code "NEUB"
-            if (email.includes('@neub.edu.bd')) {
-                return password && password.length >= 3 && (orgCode === 'NEUB' || validOrgCodes.includes(orgCode));
-            }
-            
-            // For non-NEUB emails, use the regular validation
-            return validateOrganizerEmail(email) && 
-                   password && 
-                   password.length >= 3 && 
-                   validOrgCodes.includes(orgCode);
-        }
-        
-        // Pre-fill email field if provided in URL
         document.addEventListener('DOMContentLoaded', function() {
-            const email = urlParams.get('email');
-            if (email) {
-                if (email.includes('@neub.edu.bd')) {
-                    // All NEUB emails can be organizers now
-                    document.getElementById('organizer-email').value = email;
-                    document.getElementById('organization-code').value = 'NEUB';
-                    organizerTab.click();
-                } else {
-                    // Otherwise fill in student email
-                    document.getElementById('student-email').value = email;
-                }
+            const urlParams = new URLSearchParams(window.location.search);
+            const userType = urlParams.get('type');
+            
+            if (userType === 'organizer') {
+                document.getElementById('login-title').textContent = 'Organizer Login';
+                document.getElementById('login-subtitle').textContent = 'Access your organization dashboard';
+                document.querySelector('.auth-btn').textContent = 'Login as Organizer';
+            } else if (userType === 'student') {
+                document.getElementById('login-title').textContent = 'Student Login';
+                document.getElementById('login-subtitle').textContent = 'Access your personal account';
+                document.querySelector('.auth-btn').textContent = 'Login as Student';
             }
             
-            // Add ARIA roles to tabs for accessibility
-            const tablist = document.querySelector('.auth-tabs');
-            tablist.setAttribute('role', 'tablist');
-            
-            // Initialize aria-selected attributes
-            studentTab.setAttribute('aria-selected', studentTab.classList.contains('active'));
-            organizerTab.setAttribute('aria-selected', organizerTab.classList.contains('active'));
+            // Form submission
+            const loginForm = document.getElementById('login-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+                    const role = userType || 'student';
+                    
+                    // Simulate successful login
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userRole', role);
+                    localStorage.setItem('userEmail', email);
+                    localStorage.setItem('userName', email.split('@')[0]);
+                    
+                    // Create session
+                    if (window.eventura && window.eventura.auth) {
+                        window.eventura.auth.createSession(role);
+                    }
+                    
+                    // Redirect based on role
+                    if (role === 'organizer') {
+                        window.location.href = 'admin-dashboard.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                });
+            }
         });
     </script>
 </body>

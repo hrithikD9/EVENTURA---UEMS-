@@ -500,44 +500,6 @@
 
     <!-- Auth JS file for login state management -->
     <script src="auth.js"></script>
-    <script>
-        // Mobile menu toggle
-        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-        const mainNav = document.querySelector('.main-nav');
-        
-        mobileMenuToggle.addEventListener('click', function() {
-            mainNav.classList.toggle('active');
-            this.classList.toggle('active');
-        });
-
-        // Search toggle
-        const searchToggle = document.querySelector('.search-toggle');
-        const searchForm = document.querySelector('.search-form');
-        
-        searchToggle.addEventListener('click', function() {
-            searchForm.classList.toggle('active');
-        });
-        
-        // Close search when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.search-container')) {
-                searchForm.classList.remove('active');
-            }
-        });
-
-        // Filter functionality (simplified demo)
-        document.getElementById('event-filters').addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const category = document.getElementById('category').value;
-            const date = document.getElementById('date').value;
-            const venue = document.getElementById('venue').value;
-            const organization = document.getElementById('organization').value;
-            
-            alert(`Filters applied: Category: ${category || 'All'}, Date: ${date || 'Any'}, Venue: ${venue || 'All'}, Organization: ${organization || 'All'}`);
-            
-            // In a real implementation, this would trigger an AJAX request or redirect with query params
-        });
-    </script>
+    <script src="mobile.js"></script>
 </body>
 </html>
