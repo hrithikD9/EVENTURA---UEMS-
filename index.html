@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventura - University Event Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@300;400;500&family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .hero-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 120%;
+            left: 0;
+            background: var(--surface-dark-higher);
+            min-width: 180px;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+            z-index: 100;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 12px 20px;
+            color: var(--text-primary);
+            transition: all var(--transition-fast);
+            text-decoration: none;
+        }
+
+        .dropdown-menu a:hover {
+            background: rgba(33, 150, 243, 0.1);
+            color: var(--primary-blue);
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <h1>Eventura</h1>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="organizations.html">Organizations</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li class="dashboard-link"><a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="user-controls">
+                <div class="search-container">
+                    <button class="search-toggle"><i class="fas fa-search"></i></button>
+                    <div class="search-form">
+                        <input type="text" placeholder="Search events...">
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <a href="#" class="btn btn-outline dropdown-btn">Sign In <i class="fas fa-caret-down"></i></a>
+                    <div class="dropdown-menu">
+                        <a href="login.html?type=student">Student Login</a>
+                        <a href="login.html?type=organizer">Organizer Login</a>
+                    </div>
+                </div>
+                <a href="register.html" class="btn btn-primary">Sign Up</a>
+            </div>
+            <button class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Discover & Join University Events</h1>
+                <p>Your one-stop platform for all academic, social, and extracurricular activities on campus.</p>
+                <div class="hero-buttons">
+                    <a href="events.html" class="btn btn-primary btn-lg">Explore Events</a>
+                    <div class="dropdown">
+                        <button class="btn btn-outline btn-lg dropdown-btn">Create Account <i class="fas fa-caret-down"></i></button>
+                        <div class="dropdown-menu">
+                            <a href="register.html?type=student">Student Account</a>
+                            <a href="register.html?type=organizer">Organizer Account</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="Students at university event">
+            </div>
+        </div>
+    </section>
+
+    <section class="featured-events">
+        <div class="container">
+            <div class="section-header">
+                <h2>Featured Events</h2>
+                <a href="events.html" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="events-grid">
+                <!-- Event Card 1 -->
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Tech Symposium">
+                        <span class="event-category">Technology</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-meta">
+                            <span class="event-date"><i class="far fa-calendar"></i> Apr 25, 2025</span>
+                            <span class="event-time"><i class="far fa-clock"></i> 10:00 AM</span>
+                        </div>
+                        <h3 class="event-title">Annual Tech Symposium</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Main Auditorium</p>
+                        <div class="event-organizer">
+                            <span>By Computer Science Society</span>
+                        </div>
+                        <a href="event-details.html" class="btn btn-secondary">Register Now</a>
+                    </div>
+                </div>
+
+                <!-- Event Card 2 -->
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1459908676235-d5f02a50184b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Art Exhibition">
+                        <span class="event-category">Arts</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-meta">
+                            <span class="event-date"><i class="far fa-calendar"></i> May 2, 2025</span>
+                            <span class="event-time"><i class="far fa-clock"></i> 1:00 PM</span>
+                        </div>
+                        <h3 class="event-title">Spring Art Exhibition</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Arts Building Gallery</p>
+                        <div class="event-organizer">
+                            <span>By Fine Arts Department</span>
+                        </div>
+                        <a href="event-details.html" class="btn btn-secondary">Register Now</a>
+                    </div>
+                </div>
+
+                <!-- Event Card 3 -->
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1560523160-754a9e25c68f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Career Fair">
+                        <span class="event-category">Career</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-meta">
+                            <span class="event-date"><i class="far fa-calendar"></i> May 10, 2025</span>
+                            <span class="event-time"><i class="far fa-clock"></i> 9:00 AM</span>
+                        </div>
+                        <h3 class="event-title">Spring Career Fair</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> University Center</p>
+                        <div class="event-organizer">
+                            <span>By Career Services</span>
+                        </div>
+                        <a href="event-details.html" class="btn btn-secondary">Register Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="categories">
+        <div class="container">
+            <div class="section-header">
+                <h2>Browse by Category</h2>
+            </div>
+            <div class="category-grid">
+                <a href="#" class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3>Technology</h3>
+                </a>
+                <a href="#" class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <h3>Science</h3>
+                </a>
+                <a href="#" class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-paint-brush"></i>
+                    </div>
+                    <h3>Arts</h3>
+                </a>
+                <a href="#" class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <h3>Music</h3>
+                </a>
+                <a href="#" class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-futbol"></i>
+                    </div>
+                    <h3>Sports</h3>
+                </a>
+                <a href="#" class="category-card">
+                    <div class="category-icon">
+                        <i class="fas fa-briefcase"></i>
+                    </div>
+                    <h3>Career</h3>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="organizations-preview">
+        <div class="container">
+            <div class="section-header">
+                <h2>Top Organizations</h2>
+                <a href="organizations.html" class="view-all">View All <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="organizations-grid">
+                <a href="neub-cse-society.html" class="org-card">
+                    <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Computer Science Society">
+                    <h3>Computer Science Society</h3>
+                </a>
+                <a href="organization-details.html" class="org-card">
+                    <img src="https://images.unsplash.com/photo-1529070538774-1843cb3265df?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Student Union">
+                    <h3>Student Union</h3>
+                </a>
+                <a href="photography-club.html" class="org-card">
+                    <img src="https://images.unsplash.com/photo-1554941829-202a0b2403b8?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Photography Club">
+                    <h3>Photography Club</h3>
+                </a>
+                <a href="debate-society.html" class="org-card">
+                    <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Debate Society">
+                    <h3>Debate Society</h3>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Ready to organize your own event?</h2>
+                <p>Join Eventura to create, promote, and manage your university events.</p>
+                <a href="register.html?type=organizer" class="btn btn-primary btn-lg">Get Started</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>Eventura</h3>
+                    <p>The complete platform for university event management, helping students and organizations create memorable campus experiences.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="events.html">Browse Events</a></li>
+                        <li><a href="organizations.html">Organizations</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="login.html">Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="organization-details.html">Organization Details</a></li>
+                        <li><a href="event-details.html">Event Details</a></li>
+                        <li><a href="register.html">Register</a></li>
+                        <li><a href="admin-dashboard.html">Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Organizations</h4>
+                    <ul>
+                        <li><a href="neub-cse-society.html">CSE Society</a></li>
+                        <li><a href="debate-society.html">Debate Society</a></li>
+                        <li><a href="photography-club.html">Photography Club</a></li>
+                        <li><a href="robotics-club.html">Robotics Club</a></li>
+                        <li><a href="sports-club.html">Sports Club</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-envelope"></i>hrithikdevnath0924@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> +8801905078029</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; Developed by (Atqiya Anjum , Hrithik Dev Nath , Miftaul Hasan Mehedi) - Batch - 31</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth JS file for login state management -->
+    <script src="auth.js"></script>
+    <script>
+        // Mobile menu toggle
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const mainNav = document.querySelector('.main-nav');
+        
+        mobileMenuToggle.addEventListener('click', function() {
+            mainNav.classList.toggle('active');
+            this.classList.toggle('active');
+        });
+
+        // Search toggle with animation
+        const searchToggle = document.querySelector('.search-toggle');
+        const searchForm = document.querySelector('.search-form');
+        
+        searchToggle.addEventListener('click', function() {
+            searchForm.classList.toggle('active');
+        });
+        
+        // Close search when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.search-container')) {
+                searchForm.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

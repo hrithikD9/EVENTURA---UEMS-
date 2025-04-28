@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Eventura</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@300;400;500&family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px;
+            cursor: pointer;
+            position: relative;
+            font-weight: 600;
+            transition: all var(--transition-fast);
+        }
+        
+        .auth-tab.active {
+            background-color: rgba(33, 150, 243, 0.15);
+            color: var(--primary-blue);
+        }
+        
+        .auth-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-blue);
+        }
+
+        .auth-subtitle {
+            margin-top: -15px;
+            margin-bottom: 25px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        
+        .form-error {
+            color: var(--error-red);
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 8px;
+            border-radius: 4px;
+            background-color: rgba(244, 67, 54, 0.1);
+        }
+
+        .form-info {
+            background-color: rgba(33, 150, 243, 0.1);
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .form-info i {
+            color: var(--primary-blue);
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+        
+        .form-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .form-success {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        .success-icon {
+            font-size: 3rem;
+            color: var(--success-green);
+            margin-bottom: 15px;
+        }
+        
+        .success-message h3 {
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+        
+        .success-message p {
+            max-width: 400px;
+            margin: 0 auto 25px;
+            color: var(--text-secondary);
+        }
+
+        #student-form, #organizer-form {
+            display: none;
+        }
+
+        #student-form.active, #organizer-form.active {
+            display: block;
+        }
+        
+        .required-indicator {
+            color: var(--error-red);
+            margin-left: 3px;
+        }
+        
+        /* Added mobile responsiveness improvements */
+        @media screen and (max-width: 480px) {
+            .auth-card {
+                padding: 25px 15px;
+            }
+            
+            .auth-tabs {
+                flex-direction: column;
+            }
+            
+            .auth-tab {
+                padding: 12px;
+            }
+            
+            .btn {
+                padding: 12px 15px;
+            }
+            
+            .form-options {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .remember-me {
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html"><h1>Eventura</h1></a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="organizations.html">Organizations</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </nav>
+            <div class="user-controls">
+                <div class="search-container">
+                    <button class="search-toggle"><i class="fas fa-search"></i></button>
+                    <div class="search-form">
+                        <input type="text" placeholder="Search events...">
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <a href="login.html" class="btn btn-outline">Log In</a>
+                <a href="register.html" class="btn btn-primary active">Sign Up</a>
+            </div>
+            <button class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <h1>Eventura</h1>
+                <p>Join the Community</p>
+            </div>
+            
+            <div class="auth-tabs">
+                <div id="student-tab" class="auth-tab active">Student Registration</div>
+                <div id="organizer-tab" class="auth-tab">Organizer Registration</div>
+            </div>
+            
+            <!-- Student Registration Form -->
+            <form class="auth-form active" id="student-form">
+                <h2>Create Student Account</h2>
+                <p class="auth-subtitle">For university students to attend and participate in events</p>
+                
+                <div class="form-info">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Students can create an account to register for events, follow organizations, and get updates.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="student-fullname">Full Name <span class="required-indicator">*</span></label>
+                    <input type="text" id="student-fullname" name="fullname" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="student-email">Email Address <span class="required-indicator">*</span></label>
+                    <input type="email" id="student-email" name="email" placeholder="Enter your email address" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="student-id">Student ID <span class="required-indicator">*</span></label>
+                    <input type="text" id="student-id" name="student-id" placeholder="Enter your student ID (e.g: 056231..)" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="student-department">Department <span class="required-indicator">*</span></label>
+                    <select id="student-department" name="department" required>
+                        <option value="">Select your department</option>
+                        <option value="cse">Computer Science & Engineering</option>
+                        <option value="eee">Electrical & Electronic Engineering</option>
+                        <option value="civil">Civil Engineering</option>
+                        <option value="mechanical">Mechanical Engineering</option>
+                        <option value="business">Business Administration</option>
+                        <option value="arts">Arts & Humanities</option>
+                        <option value="science">Science</option>
+                        <option value="law">Law</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="student-password">Password <span class="required-indicator">*</span></label>
+                    <input type="password" id="student-password" name="password" placeholder="Create a password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="student-confirm-password">Confirm Password <span class="required-indicator">*</span></label>
+                    <input type="password" id="student-confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+                </div>
+
+                <div class="form-options">
+                    <div class="remember-me">
+                        <input type="checkbox" id="student-terms" name="terms" required>
+                        <label for="student-terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                    </div>
+                </div>
+                
+                <!-- Form Error (hidden by default) -->
+                <div class="form-error" id="student-error" style="display: none;"></div>
+
+                <button type="submit" class="btn btn-primary auth-btn">Create Student Account</button>
+
+                <div class="divider">
+                    <span class="divider-text">OR</span>
+                </div>
+
+                <button type="button" class="btn btn-outline auth-btn">
+                    <i class="fas fa-university mr-2"></i> Register with University SSO
+                </button>
+
+                <div class="auth-links">
+                    <p>Already have an account? <a href="login.html?type=student">Sign In</a></p>
+                </div>
+            </form>
+            
+            <!-- Organizer Registration Form -->
+            <form class="auth-form" id="organizer-form">
+                <h2>Apply for Organizer Account</h2>
+                <p class="auth-subtitle">For event organizers, club representatives, and staff</p>
+                
+                <div class="form-info">
+                    <i class="fas fa-info-circle"></i>
+                    <p>Organization representatives need approval to create an organizer account. Please provide your official credentials and organization details below.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="organizer-fullname">Full Name <span class="required-indicator">*</span></label>
+                    <input type="text" id="organizer-fullname" name="fullname" placeholder="Enter your full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="organizer-email">Official Email Address <span class="required-indicator">*</span></label>
+                    <input type="email" id="organizer-email" name="email" placeholder="Enter your official university email" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="organizer-position">Position <span class="required-indicator">*</span></label>
+                    <input type="text" id="organizer-position" name="position" placeholder="e.g. President, Faculty Advisor, etc." required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="organizer-organization">Organization <span class="required-indicator">*</span></label>
+                    <select id="organizer-organization" name="organization" required>
+                        <option value="">Select your organization</option>
+                        <option value="cse-society">Computer Science Society</option>
+                        <option value="debate-club">Debate Society</option>
+                        <option value="photo-club">Photography Club</option>
+                        <option value="sports-club">Sports Club</option>
+                        <option value="robotics-club">Robotics Club</option>
+                        <option value="business-club">Business Club</option>
+                        <option value="cultural-club">Cultural Club</option>
+                        <option value="new-org">Add New Organization</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="new-org-field" style="display: none;">
+                    <label for="new-organization">New Organization Name <span class="required-indicator">*</span></label>
+                    <input type="text" id="new-organization" name="new-organization" placeholder="Enter the name of your organization">
+                </div>
+                
+                <div class="form-group">
+                    <label for="organizer-phone">Contact Phone <span class="required-indicator">*</span></label>
+                    <input type="tel" id="organizer-phone" name="phone" placeholder="Enter your contact number" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="organizer-password">Password <span class="required-indicator">*</span></label>
+                    <input type="password" id="organizer-password" name="password" placeholder="Create a password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="organizer-confirm-password">Confirm Password <span class="required-indicator">*</span></label>
+                    <input type="password" id="organizer-confirm-password" name="confirm-password" placeholder="Confirm your password" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="organizer-verification">Verification Document <span class="required-indicator">*</span></label>
+                    <input type="file" id="organizer-verification" name="verification" accept=".pdf,.doc,.docx,.jpg,.png" required>
+                    <small style="color: var(--text-secondary); display: block; margin-top: 5px;">Upload a document verifying your position (appointment letter, ID card, etc.)</small>
+                </div>
+
+                <div class="form-options">
+                    <div class="remember-me">
+                        <input type="checkbox" id="organizer-terms" name="terms" required>
+                        <label for="organizer-terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                    </div>
+                </div>
+                
+                <!-- Form Error (hidden by default) -->
+                <div class="form-error" id="organizer-error" style="display: none;"></div>
+
+                <button type="submit" class="btn btn-primary auth-btn">Submit Application</button>
+
+                <div class="auth-links">
+                    <p>Already have an account? <a href="login.html?type=organizer">Sign In</a></p>
+                </div>
+            </form>
+            
+            <!-- Success Message (hidden by default) -->
+            <div class="form-success" id="success-message">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="success-message">
+                    <h3 id="success-title">Registration Successful!</h3>
+                    <p id="success-text">Your account has been created successfully.</p>
+                    <a href="login.html" class="btn btn-primary">Proceed to Login</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; Developed by (Atqiya Anjum , Hrithik Dev Nath , Miftaul Hasan Mehedi) - Batch - 31</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const mainNav = document.querySelector('.main-nav');
+        
+        mobileMenuToggle.addEventListener('click', function() {
+            mainNav.classList.toggle('active');
+            this.classList.toggle('active');
+        });
+
+        // Search toggle
+        const searchToggle = document.querySelector('.search-toggle');
+        const searchForm = document.querySelector('.search-form');
+        
+        searchToggle.addEventListener('click', function() {
+            searchForm.classList.toggle('active');
+        });
+        
+        // Close search when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.search-container')) {
+                searchForm.classList.remove('active');
+            }
+        });
+        
+        // Tab switching functionality
+        const studentTab = document.getElementById('student-tab');
+        const organizerTab = document.getElementById('organizer-tab');
+        const studentForm = document.getElementById('student-form');
+        const organizerForm = document.getElementById('organizer-form');
+        
+        // Check URL parameters to see if we should pre-select a tab
+        const urlParams = new URLSearchParams(window.location.search);
+        const userType = urlParams.get('type');
+        
+        if (userType === 'organizer') {
+            // Switch to organizer tab
+            studentTab.classList.remove('active');
+            organizerTab.classList.add('active');
+            studentForm.classList.remove('active');
+            organizerForm.classList.add('active');
+        } else {
+            // Default to student tab
+            studentTab.classList.add('active');
+            organizerTab.classList.remove('active');
+            studentForm.classList.add('active');
+            organizerForm.classList.remove('active');
+        }
+        
+        studentTab.addEventListener('click', function() {
+            studentTab.classList.add('active');
+            organizerTab.classList.remove('active');
+            studentForm.classList.add('active');
+            organizerForm.classList.remove('active');
+        });
+        
+        organizerTab.addEventListener('click', function() {
+            organizerTab.classList.add('active');
+            studentTab.classList.remove('active');
+            organizerForm.classList.add('active');
+            studentForm.classList.remove('active');
+        });
+
+        // Password confirmation validation for student form
+        const studentPassword = document.getElementById('student-password');
+        const studentConfirmPassword = document.getElementById('student-confirm-password');
+
+        studentForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const studentError = document.getElementById('student-error');
+            
+            // Password validation
+            if (studentPassword.value !== studentConfirmPassword.value) {
+                studentError.textContent = "Passwords don't match";
+                studentError.style.display = "block";
+                return;
+            }
+            
+            // Email validation
+            const email = document.getElementById('student-email').value;
+            const studentId = document.getElementById('student-id').value;
+            
+            if (!validateStudentId(studentId)) {
+                studentError.textContent = "Please enter a valid student ID";
+                studentError.style.display = "block";
+                return;
+            }
+            
+            // Show success message
+            studentForm.style.display = 'none';
+            document.getElementById('success-title').textContent = "Student Registration Successful!";
+            document.getElementById('success-text').textContent = "Your student account has been created. You can now log in to register for events.";
+            document.getElementById('success-message').style.display = 'block';
+        });
+
+        // Password confirmation validation for organizer form
+        const organizerPassword = document.getElementById('organizer-password');
+        const organizerConfirmPassword = document.getElementById('organizer-confirm-password');
+        
+        organizerForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const organizerError = document.getElementById('organizer-error');
+            const emailField = document.getElementById('organizer-email');
+            let email = emailField.value.trim();
+            
+            // If email doesn't contain '@', append @neub.edu.bd
+            if (email && !email.includes('@')) {
+                emailField.value = email + '@neub.edu.bd';
+                email = emailField.value;
+            }
+            
+            // Password validation
+            if (organizerPassword.value !== organizerConfirmPassword.value) {
+                organizerError.textContent = "Passwords don't match";
+                organizerError.style.display = "block";
+                return;
+            }
+            
+            // Always consider neub.edu.bd emails as valid
+            if (!email.endsWith('@neub.edu.bd') && !validateOrganizerEmail(email)) {
+                organizerError.textContent = "Please use an official university email address";
+                organizerError.style.display = "block";
+                return;
+            }
+            
+            // Show success message with different text for organizer
+            organizerForm.style.display = 'none';
+            document.getElementById('success-title').textContent = "Application Submitted!";
+            document.getElementById('success-text').textContent = 
+                "Your organizer account application has been submitted for review. You will receive an email when your account is approved.";
+            document.getElementById('success-message').style.display = 'block';
+        });
+        
+        // Show/hide new organization field based on selection
+        document.getElementById('organizer-organization').addEventListener('change', function() {
+            if (this.value === 'new-org') {
+                document.getElementById('new-org-field').style.display = 'block';
+                document.getElementById('new-organization').required = true;
+            } else {
+                document.getElementById('new-org-field').style.display = 'none';
+                document.getElementById('new-organization').required = false;
+            }
+        });
+        
+        // Function to validate organizer email
+        function validateOrganizerEmail(email) {
+            // Check if email is from an official domain
+            const officialDomains = ['neub.edu.bd', 'eventura.edu', 'organization.edu', 'university.edu', 'admin.edu'];
+            const domain = email.split('@')[1];
+            return officialDomains.some(officialDomain => domain && domain.includes(officialDomain));
+        }
+        
+        // Function to validate student ID
+        function validateStudentId(id) {
+            // Simple format validation - should be a number of 6-10 digits
+            return /^\d{6,10}$/.test(id);
+        }
+
+        // Add event listener to organizer email field to auto-append domain
+        document.getElementById('organizer-email').addEventListener('blur', function() {
+            const emailField = this;
+            let email = emailField.value.trim();
+            
+            // If email is not empty and doesn't contain '@', append @neub.edu.bd
+            if (email && !email.includes('@')) {
+                emailField.value = email + '@neub.edu.bd';
+            }
+        });
+
+        // Modify organizerForm submit handler to auto-append domain if needed
+        organizerForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const organizerError = document.getElementById('organizer-error');
+            const emailField = document.getElementById('organizer-email');
+            let email = emailField.value.trim();
+            
+            // If email doesn't contain '@', append @neub.edu.bd
+            if (email && !email.includes('@')) {
+                emailField.value = email + '@neub.edu.bd';
+                email = emailField.value;
+            }
+            
+            // Password validation
+            if (organizerPassword.value !== organizerConfirmPassword.value) {
+                organizerError.textContent = "Passwords don't match";
+                organizerError.style.display = "block";
+                return;
+            }
+            
+            // Always consider neub.edu.bd emails as valid
+            if (!email.endsWith('@neub.edu.bd') && !validateOrganizerEmail(email)) {
+                organizerError.textContent = "Please use an official university email address";
+                organizerError.style.display = "block";
+                return;
+            }
+            
+            // Show success message with different text for organizer
+            organizerForm.style.display = 'none';
+            document.getElementById('success-title').textContent = "Application Submitted!";
+            document.getElementById('success-text').textContent = 
+                "Your organizer account application has been submitted for review. You will receive an email when your account is approved.";
+            document.getElementById('success-message').style.display = 'block';
+        });
+        
+        // Update email field placeholder to show suffix hint
+        document.addEventListener('DOMContentLoaded', function() {
+            const emailField = document.getElementById('organizer-email');
+            emailField.placeholder = "Enter username (e.g., xyz) or full email";
+            
+            // Add help text about automatic suffix
+            const emailGroup = emailField.closest('.form-group');
+            const helpText = document.createElement('small');
+            helpText.style.color = 'var(--text-secondary)';
+            helpText.style.display = 'block';
+            helpText.style.marginTop = '5px';
+            helpText.innerHTML = "If you enter just a username, we'll automatically add <strong>@neub.edu.bd</strong>";
+            emailGroup.appendChild(helpText);
+        });
+    </script>
+</body>
+</html>

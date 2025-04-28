@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events - Eventura</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@300;400;500&family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Additional styles specific to the events page */
+        .events-header {
+            background-color: var(--surface-dark);
+            padding: 60px 0 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .events-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at top right, rgba(33, 150, 243, 0.05), transparent 60%);
+        }
+        
+        .events-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .filters-section {
+            background-color: var(--surface-dark-elevated);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            color: var(--text-primary);
+        }
+        
+        .filter-group select, 
+        .filter-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+        
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+        }
+        
+        .filter-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .event-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+        }
+        
+        .pagination-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            margin: 0 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            color: var(--text-secondary);
+            background-color: var(--surface-dark);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .pagination-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+        
+        .pagination-item.active {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+        
+        .pagination-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .events-header h1 {
+                font-size: 2rem;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-buttons {
+                flex-direction: column;
+            }
+            
+            .filter-buttons button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html"><h1>Eventura</h1></a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="events.html" class="active">Events</a></li>
+                    <li><a href="organizations.html">Organizations</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li class="dashboard-link"><a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                </ul>
+            </nav>
+            <div class="user-controls">
+                <div class="search-container">
+                    <button class="search-toggle"><i class="fas fa-search"></i></button>
+                    <div class="search-form">
+                        <input type="text" placeholder="Search events...">
+                        <button type="submit"><i class="fas fa-search"></i></button>
+                    </div>
+                </div>
+                <a href="login.html" class="btn btn-outline">Log In</a>
+                <a href="register.html" class="btn btn-primary">Sign Up</a>
+            </div>
+            <button class="mobile-menu-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <section class="events-header">
+        <div class="container">
+            <h1>Explore Events</h1>
+            <p>Discover and join upcoming events at your university</p>
+        </div>
+    </section>
+
+    <section class="events-content">
+        <div class="container">
+            <div class="filters-section">
+                <form id="event-filters">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label for="category">Category</label>
+                            <select id="category" name="category">
+                                <option value="">All Categories</option>
+                                <option value="technology">Technology</option>
+                                <option value="science">Science</option>
+                                <option value="arts">Arts</option>
+                                <option value="music">Music</option>
+                                <option value="sports">Sports</option>
+                                <option value="career">Career</option>
+                                <option value="social">Social</option>
+                                <option value="academic">Academic</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="date">Date</label>
+                            <select id="date" name="date">
+                                <option value="">Any Date</option>
+                                <option value="today">Today</option>
+                                <option value="tomorrow">Tomorrow</option>
+                                <option value="this-week">This Week</option>
+                                <option value="this-weekend">This Weekend</option>
+                                <option value="next-week">Next Week</option>
+                                <option value="this-month">This Month</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="venue">Venue</label>
+                            <select id="venue" name="venue">
+                                <option value="">All Venues</option>
+                                <option value="main-auditorium">Main Auditorium</option>
+                                <option value="science-center">Science Center</option>
+                                <option value="arts-building">Arts Building</option>
+                                <option value="university-center">University Center</option>
+                                <option value="library">Library</option>
+                                <option value="sports-complex">Sports Complex</option>
+                                <option value="student-union">Student Union</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="organization">Organization</label>
+                            <select id="organization" name="organization">
+                                <option value="">All Organizations</option>
+                                <option value="computer-science-society">Computer Science Society</option>
+                                <option value="student-union">Student Union</option>
+                                <option value="fine-arts-department">Fine Arts Department</option>
+                                <option value="engineering-club">Engineering Club</option>
+                                <option value="debate-society">Debate Society</option>
+                                <option value="photography-club">Photography Club</option>
+                                <option value="career-services">Career Services</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-buttons">
+                        <button type="reset" class="btn btn-outline">Reset Filters</button>
+                        <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="event-list">
+                <!-- Event Card 1 -->
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Tech Symposium">
+                        <span class="event-category">Technology</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-meta">
+                            <span class="event-date"><i class="far fa-calendar"></i> Apr 25, 2025</span>
+                            <span class="event-time"><i class="far fa-clock"></i> 10:00 AM</span>
+                        </div>
+                        <h3 class="event-title">Annual Tech Symposium</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Main Auditorium</p>
+                        <div class="event-organizer">
+                            <span>By Computer Science Society</span>
+                        </div>
+                        <a href="event-details.html" class="btn btn-secondary">Register Now</a>
+                    </div>
+                </div>
+
+                <!-- Event Card 2 -->
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1459908676235-d5f02a50184b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Art Exhibition">
+                        <span class="event-category">Arts</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-meta">
+                            <span class="event-date"><i class="far fa-calendar"></i> May 2, 2025</span>
+                            <span class="event-time"><i class="far fa-clock"></i> 1:00 PM</span>
+                        </div>
+                        <h3 class="event-title">Spring Art Exhibition</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Arts Building Gallery</p>
+                        <div class="event-organizer">
+                            <span>By Fine Arts Department</span>
+                        </div>
+                        <a href="event-details.html" class="btn btn-secondary">Register Now</a>
+                    </div>
+                </div>
+
+                <!-- Event Card 3 -->
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1560523160-754a9e25c68f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Career Fair">
+                        <span class="event-category">Career</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-meta">
+                            <span class="event-date"><i class="far fa-calendar"></i> May 10, 2025</span>
+                            <span class="event-time"><i class="far fa-clock"></i> 9:00 AM</span>
+                        </div>
+                        <h3 class="event-title">Spring Career Fair</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> University Center</p>
+                        <div class="event-organizer">
+                            <span>By Career Services</span>
+                        </div>
+                        <a href="event-details.html" class="btn btn-secondary">Register Now</a>
+                    </div>
+                </div>
+
+                <!-- Event Card 4 -->
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Robotics Workshop">
+                        <span class="event-category">Technology</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-meta">
+                            <span class="event-date"><i class="far fa-calendar"></i> May 5, 2025</span>
+                            <span class="event-time"><i class="far fa-clock"></i> 2:00 PM</span>
+                        </div>
+                        <h3 class="event-title">Robotics Workshop</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Engineering Building</p>
+                        <div class="event-organizer">
+                            <span>By Engineering Club</span>
+                        </div>
+                        <a href="event-details.html" class="btn btn-secondary">Register Now</a>
+                    </div>
+                </div>
+
+                <!-- Event Card 5 -->
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1511795409834-ef04bbd61622?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Student Debate">
+                        <span class="event-category">Academic</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-meta">
+                            <span class="event-date"><i class="far fa-calendar"></i> Apr 28, 2025</span>
+                            <span class="event-time"><i class="far fa-clock"></i> 5:00 PM</span>
+                        </div>
+                        <h3 class="event-title">Intercollegiate Debate</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Main Auditorium</p>
+                        <div class="event-organizer">
+                            <span>By Debate Society</span>
+                        </div>
+                        <a href="event-details.html" class="btn btn-secondary">Register Now</a>
+                    </div>
+                </div>
+
+                <!-- Event Card 6 -->
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Music Festival">
+                        <span class="event-category">Music</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-meta">
+                            <span class="event-date"><i class="far fa-calendar"></i> May 15, 2025</span>
+                            <span class="event-time"><i class="far fa-clock"></i> 7:00 PM</span>
+                        </div>
+                        <h3 class="event-title">Spring Music Festival</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Campus Lawn</p>
+                        <div class="event-organizer">
+                            <span>By Student Union</span>
+                        </div>
+                        <a href="event-details.html" class="btn btn-secondary">Register Now</a>
+                    </div>
+                </div>
+
+                <!-- Event Card 7 -->
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Startup Weekend">
+                        <span class="event-category">Career</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-meta">
+                            <span class="event-date"><i class="far fa-calendar"></i> May 20, 2025</span>
+                            <span class="event-time"><i class="far fa-clock"></i> 9:00 AM</span>
+                        </div>
+                        <h3 class="event-title">Startup Weekend</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Business School</p>
+                        <div class="event-organizer">
+                            <span>By Entrepreneurship Club</span>
+                        </div>
+                        <a href="event-details.html" class="btn btn-secondary">Register Now</a>
+                    </div>
+                </div>
+
+                <!-- Event Card 8 -->
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1535016120720-40c646be5580?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Basketball Tournament">
+                        <span class="event-category">Sports</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-meta">
+                            <span class="event-date"><i class="far fa-calendar"></i> Apr 30, 2025</span>
+                            <span class="event-time"><i class="far fa-clock"></i> 3:00 PM</span>
+                        </div>
+                        <h3 class="event-title">Intramural Basketball Tournament</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Sports Complex</p>
+                        <div class="event-organizer">
+                            <span>By Athletics Department</span>
+                        </div>
+                        <a href="event-details.html" class="btn btn-secondary">Register Now</a>
+                    </div>
+                </div>
+
+                <!-- Event Card 9 -->
+                <div class="event-card">
+                    <div class="event-image">
+                        <img src="https://images.unsplash.com/photo-1470940511639-1068d7764233?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Photography Workshop">
+                        <span class="event-category">Arts</span>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-meta">
+                            <span class="event-date"><i class="far fa-calendar"></i> May 8, 2025</span>
+                            <span class="event-time"><i class="far fa-clock"></i> 11:00 AM</span>
+                        </div>
+                        <h3 class="event-title">Digital Photography Workshop</h3>
+                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Media Center</p>
+                        <div class="event-organizer">
+                            <span>By Photography Club</span>
+                        </div>
+                        <a href="event-details.html" class="btn btn-secondary">Register Now</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pagination">
+                <a href="#" class="pagination-item"><i class="fas fa-angle-left"></i></a>
+                <a href="#" class="pagination-item active">1</a>
+                <a href="#" class="pagination-item">2</a>
+                <a href="#" class="pagination-item">3</a>
+                <a href="#" class="pagination-item">4</a>
+                <a href="#" class="pagination-item">5</a>
+                <a href="#" class="pagination-item"><i class="fas fa-angle-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-about">
+                    <h3>Eventura</h3>
+                    <p>The complete platform for university event management, helping students and organizations create memorable campus experiences.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="events.html">Browse Events</a></li>
+                        <li><a href="organizations.html">Organizations</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="login.html">Login</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="organization-details.html">Organization Details</a></li>
+                        <li><a href="event-details.html">Event Details</a></li>
+                        <li><a href="register.html">Register</a></li>
+                        <li><a href="admin-dashboard.html">Dashboard</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Organizations</h4>
+                    <ul>
+                        <li><a href="neub-cse-society.html">CSE Society</a></li>
+                        <li><a href="debate-society.html">Debate Society</a></li>
+                        <li><a href="photography-club.html">Photography Club</a></li>
+                        <li><a href="robotics-club.html">Robotics Club</a></li>
+                        <li><a href="sports-club.html">Sports Club</a></li>
+                    </ul>
+                </div>
+                <div class="footer-contact">
+                    <h4>Contact Us</h4>
+                    <p><i class="fas fa-envelope"></i> support@eventura.edu</p>
+                    <p><i class="fas fa-phone"></i> +1 (555) 123-4567</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; Developed by (Atqiya Anjum , Hrithik Dev Nath , Miftaul Hasan Mehedi) - Batch - 31</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Auth JS file for login state management -->
+    <script src="auth.js"></script>
+    <script>
+        // Mobile menu toggle
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const mainNav = document.querySelector('.main-nav');
+        
+        mobileMenuToggle.addEventListener('click', function() {
+            mainNav.classList.toggle('active');
+            this.classList.toggle('active');
+        });
+
+        // Search toggle
+        const searchToggle = document.querySelector('.search-toggle');
+        const searchForm = document.querySelector('.search-form');
+        
+        searchToggle.addEventListener('click', function() {
+            searchForm.classList.toggle('active');
+        });
+        
+        // Close search when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!event.target.closest('.search-container')) {
+                searchForm.classList.remove('active');
+            }
+        });
+
+        // Filter functionality (simplified demo)
+        document.getElementById('event-filters').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const category = document.getElementById('category').value;
+            const date = document.getElementById('date').value;
+            const venue = document.getElementById('venue').value;
+            const organization = document.getElementById('organization').value;
+            
+            alert(`Filters applied: Category: ${category || 'All'}, Date: ${date || 'Any'}, Venue: ${venue || 'All'}, Organization: ${organization || 'All'}`);
+            
+            // In a real implementation, this would trigger an AJAX request or redirect with query params
+        });
+    </script>
+</body>
+</html>
