@@ -320,47 +320,116 @@
     <script src="mobile.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching functionality
+            const studentTab = document.getElementById('student-tab');
+            const organizerTab = document.getElementById('organizer-tab');
+            const studentForm = document.getElementById('student-form');
+            const organizerForm = document.getElementById('organizer-form');
+            
+            // Check URL params to see if we should show organizer tab by default
             const urlParams = new URLSearchParams(window.location.search);
             const userType = urlParams.get('type');
             
             if (userType === 'organizer') {
-                document.getElementById('login-title').textContent = 'Organizer Login';
-                document.getElementById('login-subtitle').textContent = 'Access your organization dashboard';
-                document.querySelector('.auth-btn').textContent = 'Login as Organizer';
-            } else if (userType === 'student') {
-                document.getElementById('login-title').textContent = 'Student Login';
-                document.getElementById('login-subtitle').textContent = 'Access your personal account';
-                document.querySelector('.auth-btn').textContent = 'Login as Student';
+                studentTab.classList.remove('active');
+                organizerTab.classList.add('active');
+                studentForm.classList.remove('active');
+                organizerForm.classList.add('active');
             }
             
-            // Form submission
-            const loginForm = document.getElementById('login-form');
-            if (loginForm) {
-                loginForm.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const email = document.getElementById('email').value;
-                    const password = document.getElementById('password').value;
-                    const role = userType || 'student';
+            // Tab click handlers
+            studentTab.addEventListener('click', function() {
+                studentTab.classList.add('active');
+                organizerTab.classList.remove('active');
+                studentForm.classList.add('active');
+                organizerForm.classList.remove('active');
+            });
+            
+            organizerTab.addEventListener('click', function() {
+                organizerTab.classList.add('active');
+                studentTab.classList.remove('active');
+                organizerForm.classList.add('active');
+                studentForm.classList.remove('active');
+            });
+            
+            // Password visibility toggle
+            const toggleButtons = document.querySelectorAll('.password-toggle');
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const passwordField = this.previousElementSibling;
+                    const type = passwordField.getAttribute('type');
                     
-                    // Simulate successful login
-                    localStorage.setItem('isLoggedIn', 'true');
-                    localStorage.setItem('userRole', role);
-                    localStorage.setItem('userEmail', email);
-                    localStorage.setItem('userName', email.split('@')[0]);
-                    
-                    // Create session
-                    if (window.eventura && window.eventura.auth) {
-                        window.eventura.auth.createSession(role);
-                    }
-                    
-                    // Redirect based on role
-                    if (role === 'organizer') {
-                        window.location.href = 'admin-dashboard.html';
+                    if (type === 'password') {
+                        passwordField.setAttribute('type', 'text');
+                        this.innerHTML = '<i class="fas fa-eye-slash"></i>';
                     } else {
-                        window.location.href = 'index.html';
+                        passwordField.setAttribute('type', 'password');
+                        this.innerHTML = '<i class="fas fa-eye"></i>';
                     }
                 });
-            }
+            });
+            
+            // Student form submission
+            const studentLoginForm = document.getElementById('student-form');
+            studentLoginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('student-email').value;
+                const password = document.getElementById('student-password').value;
+                const errorElement = document.getElementById('student-error');
+                
+                // Validate inputs
+                if (!email || !password) {
+                    errorElement.textContent = 'Please enter both email/ID and password';
+                    errorElement.style.display = 'block';
+                    return;
+                }
+                
+                // Simulate successful login (in a real app, this would be an API call)
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userRole', 'student');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', email.split('@')[0]);
+                
+                // Create session
+                if (window.eventura && window.eventura.auth) {
+                    window.eventura.auth.createSession('student');
+                }
+                
+                // Redirect to home page
+                window.location.href = 'index.html';
+            });
+            
+            // Organizer form submission
+            const organizerLoginForm = document.getElementById('organizer-form');
+            organizerLoginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = document.getElementById('organizer-email').value;
+                const password = document.getElementById('organizer-password').value;
+                const orgCode = document.getElementById('organization-code').value;
+                const errorElement = document.getElementById('organizer-error');
+                
+                // Validate inputs
+                if (!email || !password || !orgCode) {
+                    errorElement.textContent = 'Please enter all required fields';
+                    errorElement.style.display = 'block';
+                    return;
+                }
+                
+                // Simulate successful login (in a real app, this would be an API call)
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userRole', 'organizer');
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userName', email.split('@')[0]);
+                localStorage.setItem('orgCode', orgCode);
+                
+                // Create session
+                if (window.eventura && window.eventura.auth) {
+                    window.eventura.auth.createSession('organizer');
+                }
+                
+                // Redirect to dashboard page
+                window.location.href = 'admin-dashboard.html';
+            });
         });
     </script>
 </body>

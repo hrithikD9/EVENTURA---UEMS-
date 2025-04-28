@@ -68,7 +68,9 @@
     <header class="main-header">
         <div class="container">
             <div class="logo">
-                <h1>Eventura</h1>
+                <a href="index.html" style="text-decoration: none; color: inherit;">
+                    <h1>Eventura</h1>
+                </a>
             </div>
             <nav class="main-nav">
                 <ul>
@@ -335,5 +337,29 @@
     <!-- Auth JS file for login state management -->
     <script src="auth.js"></script>
     <script src="mobile.js"></script>
+    
+    <script>
+        // Additional script to hide the "Create Account" button in the hero section when logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            // Get the create account dropdown in the hero section
+            const heroCreateAccount = document.querySelector('.hero-buttons .dropdown');
+            
+            // Hide the create account button if user is logged in
+            if (isLoggedIn && heroCreateAccount) {
+                heroCreateAccount.style.display = 'none';
+            }
+            
+            // Get the create account CTA at the bottom of the page
+            const ctaSection = document.querySelector('.cta');
+            
+            // Hide the CTA section if user is logged in
+            if (isLoggedIn && ctaSection) {
+                ctaSection.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
