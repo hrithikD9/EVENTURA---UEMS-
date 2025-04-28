@@ -240,6 +240,20 @@
             margin-bottom: 40px;
         }
         
+        @media screen and (max-width: 991px) {
+            .team-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+        }
+        
+        @media screen and (max-width: 767px) {
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+        
         .team-card {
             background-color: var(--surface-dark-elevated);
             border-radius: 16px;
