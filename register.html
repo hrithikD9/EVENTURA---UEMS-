@@ -211,11 +211,6 @@
                     <label for="student-email">Email Address <span class="required-indicator">*</span></label>
                     <input type="email" id="student-email" name="email" placeholder="Enter your email address" required>
                 </div>
-
-                <div class="form-group">
-                    <label for="student-id">Student ID <span class="required-indicator">*</span></label>
-                    <input type="text" id="student-id" name="student-id" placeholder="Enter your student ID (e.g: 056231..)" required>
-                </div>
                 
                 <div class="form-group">
                     <label for="student-department">Department <span class="required-indicator">*</span></label>
@@ -294,7 +289,6 @@
                         <option value="robotics-club">Robotics Club</option>
                         <option value="business-club">Business Club</option>
                         <option value="cultural-club">Cultural Club</option>
-                        <option value="new-org">Add New Organization</option>
                     </select>
                 </div>
                 
@@ -599,7 +593,6 @@
             helpText.style.color = 'var(--text-secondary)';
             helpText.style.display = 'block';
             helpText.style.marginTop = '5px';
-            helpText.innerHTML = "If you enter just a username, we'll automatically add <strong>@neub.edu.bd</strong>";
             emailGroup.appendChild(helpText);
         });
     </script>
