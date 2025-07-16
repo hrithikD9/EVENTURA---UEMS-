@@ -6,24 +6,55 @@ const User = require('../models/userModel');
 // @access  Private/Organizer
 const createEvent = async (req, res) => {
   try {
-    const { title, description, date } = req.body;
+    const { 
+      title, 
+      description, 
+      eventDate, 
+      location, 
+      capacity, 
+      category, 
+      status = 'active'
+    } = req.body;
 
     // Check if organizer has completed onboarding
     const organizer = await User.findById(req.user._id);
-    if (!organizer.organizationInfo.isOnboardingComplete) {
-      return res.status(400).json({ message: 'Please complete onboarding before creating events' });
+    if (organizer.organizationInfo && organizer.organizationInfo.isOnboardingComplete === false) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Please complete onboarding before creating events' 
+      });
     }
+
+    // Create organizer object with name and ID
+    const organizerObj = {
+      orgId: organizer.organizationInfo?._id || organizer._id,
+      name: organizer.name,
+      logo: organizer.organizationInfo?.logo || ''
+    };
 
     const event = await Event.create({
       title,
       description,
-      date,
-      organizer: req.user._id,
+      eventDate,
+      location,
+      capacity: parseInt(capacity) || 100,
+      category,
+      status,
+      organizer: organizerObj,
     });
 
-    res.status(201).json(event);
+    res.status(201).json({
+      success: true,
+      data: event,
+      message: 'Event created successfully'
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error in createEvent controller:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: error.message,
+      error: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 };
 
@@ -33,9 +64,16 @@ const createEvent = async (req, res) => {
 const getEvents = async (req, res) => {
   try {
     const events = await Event.find({}).populate('organizer', 'name organizationInfo.orgName');
-    res.json(events);
+    res.json({
+      success: true,
+      data: events,
+      count: events.length
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ 
+      success: false,
+      message: error.message 
+    });
   }
 };
 
@@ -47,12 +85,26 @@ const getEventById = async (req, res) => {
     const event = await Event.findById(req.params.id).populate('organizer', 'name organizationInfo.orgName');
 
     if (event) {
-      res.json(event);
+      // Track view
+      event.views = (event.views || 0) + 1;
+      event.lastViewed = new Date();
+      await event.save();
+      
+      res.json({
+        success: true,
+        data: event
+      });
     } else {
-      res.status(404).json({ message: 'Event not found' });
+      res.status(404).json({ 
+        success: false,
+        message: 'Event not found' 
+      });
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ 
+      success: false,
+      message: error.message 
+    });
   }
 };
 
@@ -88,10 +140,17 @@ const joinEvent = async (req, res) => {
 // @access  Private/Organizer
 const getOrganizerEvents = async (req, res) => {
   try {
-    const events = await Event.find({ organizer: req.user._id });
-    res.json(events);
+    const events = await Event.find({ 'organizer.name': req.user.name });
+    res.json({
+      success: true,
+      data: events,
+      count: events.length
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ 
+      success: false,
+      message: error.message 
+    });
   }
 };
 
