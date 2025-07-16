@@ -206,22 +206,62 @@ const joinEvent = async (req, res) => {
     const event = await Event.findById(req.params.id);
 
     if (!event) {
-      return res.status(404).json({ message: 'Event not found' });
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Event not found' 
+      });
     }
 
-    // Check if student is already participating
-    const alreadyJoined = event.participants.includes(req.user._id);
+    // Get the user
+    const user = await User.findById(req.user._id);
 
-    if (alreadyJoined) {
-      return res.status(400).json({ message: 'You have already joined this event' });
+    // Check if user is already registered
+    const alreadyRegistered = user.registeredEvents.some(
+      reg => reg.eventId.toString() === event._id.toString()
+    );
+
+    if (alreadyRegistered) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'You have already registered for this event' 
+      });
     }
 
-    event.participants.push(req.user._id);
+    // Add to event registrants
+    const newRegistrant = {
+      userId: user._id,
+      name: user.name,
+      email: user.email,
+      status: 'Confirmed'
+    };
+    
+    event.registrants.push(newRegistrant);
     await event.save();
 
-    res.json({ message: 'Successfully joined the event' });
+    // Add to user's registered events
+    user.registeredEvents.push({
+      eventId: event._id,
+      status: 'registered',
+      registeredAt: new Date()
+    });
+    
+    await user.save();
+
+    res.json({ 
+      success: true,
+      message: 'Successfully registered for the event',
+      data: {
+        eventId: event._id,
+        title: event.title,
+        registrationDate: new Date()
+      }
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error joining event:', error);
+    res.status(500).json({ 
+      success: false,
+      message: error.message 
+    });
   }
 };
 
@@ -244,4 +284,53 @@ const getOrganizerEvents = async (req, res) => {
   }
 };
 
-module.exports = { createEvent, getEvents, getEventById, joinEvent, getOrganizerEvents };
+// @desc    Get user's registered events
+// @route   GET /api/events/user/registered
+// @access  Private
+const getUserEvents = async (req, res) => {
+  try {
+    // Find the user with their registered events
+    const user = await User.findById(req.user._id).select('registeredEvents');
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+    
+    // Get the event IDs from the user's registeredEvents array
+    const eventIds = user.registeredEvents.map(registration => registration.eventId);
+    
+    // Find all events that the user has registered for
+    const events = await Event.find({ _id: { $in: eventIds } });
+    
+    // Map events to include registration status and date
+    const eventsWithRegistrationDetails = events.map(event => {
+      // Find the registration details for this event
+      const registration = user.registeredEvents.find(
+        reg => reg.eventId.toString() === event._id.toString()
+      );
+      
+      return {
+        ...event.toObject(),
+        registrationStatus: registration.status,
+        registrationDate: registration.registeredAt
+      };
+    });
+    
+    res.json({
+      success: true,
+      data: eventsWithRegistrationDetails,
+      count: eventsWithRegistrationDetails.length
+    });
+  } catch (error) {
+    console.error('Error fetching user events:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+module.exports = { createEvent, getEvents, getEventById, joinEvent, getOrganizerEvents, getUserEvents };

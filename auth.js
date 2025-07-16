@@ -8,10 +8,35 @@
 // API URL
 const API_URL = 'http://localhost:5000/api';
 
+// Server status flag
+let isServerConnected = true;
+
 // Check login status when the page loads
 document.addEventListener('DOMContentLoaded', function() {
-    checkLoginStatus();
+    checkServerConnectivity().then(() => {
+        checkLoginStatus();
+    });
 });
+
+/**
+ * Checks if the backend server is accessible
+ * @returns {Promise<boolean>} True if server is connected, false otherwise
+ */
+async function checkServerConnectivity() {
+    try {
+        const response = await fetch(`${API_URL.split('/api')[0]}`, {
+            method: 'GET',
+            signal: AbortSignal.timeout(3000)
+        });
+        
+        isServerConnected = response.ok;
+        return isServerConnected;
+    } catch (error) {
+        console.error('Server connectivity check failed:', error);
+        isServerConnected = false;
+        return false;
+    }
+}
 
 /**
  * Checks if the user is logged in and updates the UI accordingly

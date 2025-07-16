@@ -34,6 +34,24 @@ const userSchema = mongoose.Schema(
         default: false
       }
     },
+    registeredEvents: [
+      {
+        eventId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Event'
+        },
+        status: {
+          type: String,
+          enum: ['registered', 'attended', 'cancelled'],
+          default: 'registered'
+        },
+        registeredAt: {
+          type: Date,
+          default: Date.now
+        },
+        checkedInAt: Date
+      }
+    ]
   },
   {
     timestamps: true,
