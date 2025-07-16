@@ -1,13 +1,82 @@
 # Eventura - University Event Management System
-## UI/UX Guide
 
-This document provides a comprehensive guide to the user interface and experience design for the Eventura platform. It covers all pages, modules, and design principles to ensure consistent implementation and understanding of the system.
+Eventura is a web-based platform for event management, focused on university clubs, societies, and organizations.
 
-## Table of Contents
-1. [Design Principles](#design-principles)
-2. [Color Palette & Typography](#color-palette--typography)
-3. [User Roles & Access](#user-roles--access)
-4. [Common UI Components](#common-ui-components)
+## Features
+
+### User Roles
+
+- **Student**
+  - Explore and join events
+  - Explore and follow organizations
+
+- **Organizer**
+  - Create and manage an organization profile
+  - Create and manage multiple events
+  - Complete onboarding to provide organization details
+
+## Tech Stack
+
+- **Frontend**: HTML, CSS, JavaScript
+- **Backend**: Express.js, Node.js
+- **Database**: MongoDB
+
+## Setup Instructions
+
+### Prerequisites
+
+- Node.js and npm
+- MongoDB
+
+### Backend Setup
+
+1. Navigate to the backend folder:
+   ```
+   cd backend
+   ```
+
+2. Install dependencies:
+   ```
+   npm install
+   ```
+
+3. Create a `.env` file with the following variables:
+   ```
+   MONGO_URI=mongodb://localhost:27017/eventura
+   JWT_SECRET=your_secret_key
+   PORT=5000
+   ```
+
+4. Start the development server:
+   ```
+   npm run dev
+   ```
+
+### Frontend Setup
+
+The frontend is built with vanilla HTML, CSS, and JavaScript. Simply open the HTML files in your browser.
+
+For local development, you can use any local server like Live Server for VS Code.
+
+## API Endpoints
+
+### Authentication
+- `POST /api/users/register` - Register a new user (student/organizer)
+- `POST /api/users/login` - User login
+- `GET /api/users/profile` - Get user profile
+- `PUT /api/users/onboarding` - Complete organizer onboarding
+
+### Events
+- `GET /api/events` - Get all events
+- `POST /api/events` - Create a new event (organizer only)
+- `GET /api/events/:id` - Get event by ID
+- `PUT /api/events/:id/join` - Join an event (student only)
+- `GET /api/events/myevents` - Get organizer's events
+
+### Organizations
+- `GET /api/organizations` - Get all organizations
+- `GET /api/organizations/:id` - Get organization by ID
+- `PUT /api/organizations/:id/follow` - Follow an organization (student only)
 5. [Page Descriptions](#page-descriptions)
    - [Authentication Pages](#authentication-pages)
    - [Dashboard Pages](#dashboard-pages)

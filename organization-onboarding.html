@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organization Onboarding - Eventura</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@300;400;500&family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .onboarding-card {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 30px;
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .onboarding-title {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .onboarding-subtitle {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--text-secondary);
+        }
+        
+        .steps-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+        
+        .step-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .step.active .step-circle {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+        
+        .step.completed .step-circle {
+            background-color: var(--success-green);
+            color: white;
+        }
+        
+        .step-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+        
+        .step.active .step-label {
+            color: var(--primary-blue);
+        }
+        
+        .step.completed .step-label {
+            color: var(--success-green);
+        }
+        
+        .step-line {
+            flex: 1;
+            height: 3px;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin: 20px 10px 0;
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+        }
+        
+        .form-section-title {
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+        
+        .form-error {
+            color: var(--error-red);
+            text-align: center;
+            margin-bottom: 15px;
+            padding: 8px;
+            border-radius: 4px;
+            background-color: rgba(244, 67, 54, 0.1);
+            display: none;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        
+        .upload-btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .upload-btn i {
+            margin-right: 5px;
+        }
+        
+        .upload-btn:hover {
+            background-color: rgba(33, 150, 243, 0.3);
+        }
+        
+        .file-preview {
+            margin-top: 10px;
+            display: none;
+            align-items: center;
+        }
+        
+        .file-preview img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        
+        .file-info {
+            flex: 1;
+        }
+        
+        .file-name {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        
+        .file-size {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        
+        .remove-file {
+            color: var(--error-red);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <h1><a href="index.html">Eventura</a></h1>
+            </div>
+            
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="events.html">Events</a></li>
+                    <li><a href="organizations.html">Organizations</a></li>
+                </ul>
+            </nav>
+            
+            <div class="user-controls">
+                <!-- Filled dynamically by auth.js -->
+            </div>
+            
+            <button class="mobile-menu-toggle">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="auth-page onboarding-page">
+            <div class="auth-card onboarding-card">
+                <h2 class="onboarding-title">Complete Your Organization Profile</h2>
+                <p class="onboarding-subtitle">Provide details about your organization to get started</p>
+                
+                <form id="onboarding-form" class="onboarding-form">
+                    <div class="form-section">
+                        <h3 class="form-section-title">Organization Information</h3>
+                        
+                        <div class="form-group">
+                            <label for="org-name">Organization Name <span class="required-indicator">*</span></label>
+                            <input type="text" id="org-name" name="org-name" placeholder="Enter your organization's name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="org-description">Description <span class="required-indicator">*</span></label>
+                            <textarea id="org-description" name="org-description" placeholder="Describe your organization and its purpose" required></textarea>
+                        </div>
+                    </div>
+                    
+                    <!-- Form Error (hidden by default) -->
+                    <div class="form-error" id="onboarding-error"></div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="skip-btn" class="btn btn-text">Skip for now</button>
+                        <button type="submit" class="btn btn-primary">Complete Profile</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-bottom">
+                <p>&copy; Developed by (Atqiya Anjum , Hrithik Dev Nath , Miftaul Hasan Mehedi) - Batch - 31</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="auth.js"></script>
+    <script src="mobile.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in and is an organizer
+            if (!window.eventura.auth.isLoggedIn() || window.eventura.auth.getUserRole() !== 'organizer') {
+                window.location.href = 'login.html?type=organizer';
+                return;
+            }
+            
+            const onboardingForm = document.getElementById('onboarding-form');
+            const onboardingError = document.getElementById('onboarding-error');
+            const skipBtn = document.getElementById('skip-btn');
+            
+            // Form submission
+            onboardingForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const orgName = document.getElementById('org-name').value.trim();
+                const description = document.getElementById('org-description').value.trim();
+                
+                if (!orgName || !description) {
+                    onboardingError.textContent = "Please fill in all required fields";
+                    onboardingError.style.display = "block";
+                    return;
+                }
+                
+                try {
+                    const result = await window.eventura.auth.completeOnboarding(orgName, description);
+                    
+                    if (result.success) {
+                        // Redirect will happen in the completeOnboarding function
+                    } else {
+                        onboardingError.textContent = result.message || "An error occurred while saving your profile";
+                        onboardingError.style.display = "block";
+                    }
+                } catch (error) {
+                    onboardingError.textContent = "An error occurred while saving your profile";
+                    onboardingError.style.display = "block";
+                    console.error(error);
+                }
+            });
+            
+            // Skip button
+            skipBtn.addEventListener('click', function() {
+                window.location.href = 'admin-dashboard.html';
+            });
+        });
+    </script>
+</body>
+</html>

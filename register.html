@@ -359,6 +359,8 @@
         </div>
     </footer>
 
+    <script src="auth.js"></script>
+    <script src="mobile.js"></script>
     <script>
         // Mobile menu toggle
         const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
@@ -426,10 +428,14 @@
         const studentPassword = document.getElementById('student-password');
         const studentConfirmPassword = document.getElementById('student-confirm-password');
 
-        studentForm.addEventListener('submit', function(event) {
+        studentForm.addEventListener('submit', async function(event) {
             event.preventDefault();
             
             const studentError = document.getElementById('student-error');
+            const studentName = document.getElementById('student-fullname').value.trim();
+            const email = document.getElementById('student-email').value.trim();
+            const studentPassword = document.getElementById('student-password');
+            const studentConfirmPassword = document.getElementById('student-confirm-password');
             
             // Password validation
             if (studentPassword.value !== studentConfirmPassword.value) {
@@ -438,32 +444,35 @@
                 return;
             }
             
-            // Email validation
-            const email = document.getElementById('student-email').value;
-            const studentId = document.getElementById('student-id').value;
-            
-            if (!validateStudentId(studentId)) {
-                studentError.textContent = "Please enter a valid student ID";
+            try {
+                // Call the registration API
+                const result = await window.eventura.auth.register(studentName, email, studentPassword.value, 'student');
+                
+                if (result.success) {
+                    // Registration successful, redirect will happen in the register function
+                } else {
+                    // Show error message
+                    studentError.textContent = result.message || "Registration failed. Please try again.";
+                    studentError.style.display = "block";
+                }
+            } catch (error) {
+                studentError.textContent = "An error occurred during registration. Please try again.";
                 studentError.style.display = "block";
-                return;
+                console.error(error);
             }
-            
-            // Show success message
-            studentForm.style.display = 'none';
-            document.getElementById('success-title').textContent = "Student Registration Successful!";
-            document.getElementById('success-text').textContent = "Your student account has been created. You can now log in to register for events.";
-            document.getElementById('success-message').style.display = 'block';
         });
 
         // Password confirmation validation for organizer form
         const organizerPassword = document.getElementById('organizer-password');
         const organizerConfirmPassword = document.getElementById('organizer-confirm-password');
         
-        organizerForm.addEventListener('submit', function(event) {
+        organizerForm.addEventListener('submit', async function(event) {
             event.preventDefault();
             
             const organizerError = document.getElementById('organizer-error');
+            const nameField = document.getElementById('organizer-name');
             const emailField = document.getElementById('organizer-email');
+            const name = nameField.value.trim();
             let email = emailField.value.trim();
             
             // If email doesn't contain '@', append @neub.edu.bd
@@ -479,19 +488,22 @@
                 return;
             }
             
-            // Always consider neub.edu.bd emails as valid
-            if (!email.endsWith('@neub.edu.bd') && !validateOrganizerEmail(email)) {
-                organizerError.textContent = "Please use an official university email address";
+            try {
+                // Call the registration API
+                const result = await window.eventura.auth.register(name, email, organizerPassword.value, 'organizer');
+                
+                if (result.success) {
+                    // Registration successful, redirect will happen in the register function
+                } else {
+                    // Show error message
+                    organizerError.textContent = result.message || "Registration failed. Please try again.";
+                    organizerError.style.display = "block";
+                }
+            } catch (error) {
+                organizerError.textContent = "An error occurred during registration. Please try again.";
                 organizerError.style.display = "block";
-                return;
+                console.error(error);
             }
-            
-            // Show success message with different text for organizer
-            organizerForm.style.display = 'none';
-            document.getElementById('success-title').textContent = "Application Submitted!";
-            document.getElementById('success-text').textContent = 
-                "Your organizer account application has been submitted for review. You will receive an email when your account is approved.";
-            document.getElementById('success-message').style.display = 'block';
         });
         
         // Show/hide new organization field based on selection
@@ -530,13 +542,19 @@
             }
         });
 
-        // Modify organizerForm submit handler to auto-append domain if needed
-        organizerForm.addEventListener('submit', function(event) {
+        // Modify organizerForm submit handler to use our API
+        organizerForm.addEventListener('submit', async function(event) {
             event.preventDefault();
             
             const organizerError = document.getElementById('organizer-error');
+            const nameField = document.getElementById('organizer-name');
             const emailField = document.getElementById('organizer-email');
+            const passwordField = document.getElementById('organizer-password');
+            const confirmPasswordField = document.getElementById('organizer-confirm-password');
+            
             let email = emailField.value.trim();
+            const name = nameField.value.trim();
+            const password = passwordField.value;
             
             // If email doesn't contain '@', append @neub.edu.bd
             if (email && !email.includes('@')) {
@@ -545,25 +563,28 @@
             }
             
             // Password validation
-            if (organizerPassword.value !== organizerConfirmPassword.value) {
+            if (passwordField.value !== confirmPasswordField.value) {
                 organizerError.textContent = "Passwords don't match";
                 organizerError.style.display = "block";
                 return;
             }
             
-            // Always consider neub.edu.bd emails as valid
-            if (!email.endsWith('@neub.edu.bd') && !validateOrganizerEmail(email)) {
-                organizerError.textContent = "Please use an official university email address";
+            try {
+                // Call the registration API
+                const result = await window.eventura.auth.register(name, email, password, 'organizer');
+                
+                if (result.success) {
+                    // Registration successful, redirect will happen in the register function
+                } else {
+                    // Show error message
+                    organizerError.textContent = result.message || "Registration failed. Please try again.";
+                    organizerError.style.display = "block";
+                }
+            } catch (error) {
+                organizerError.textContent = "An error occurred during registration. Please try again.";
                 organizerError.style.display = "block";
-                return;
+                console.error(error);
             }
-            
-            // Show success message with different text for organizer
-            organizerForm.style.display = 'none';
-            document.getElementById('success-title').textContent = "Application Submitted!";
-            document.getElementById('success-text').textContent = 
-                "Your organizer account application has been submitted for review. You will receive an email when your account is approved.";
-            document.getElementById('success-message').style.display = 'block';
         });
         
         // Update email field placeholder to show suffix hint

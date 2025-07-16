@@ -5,6 +5,9 @@
  * for organizers across the entire site.
  */
 
+// API URL
+const API_URL = 'http://localhost:5000/api';
+
 // Check login status when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     checkLoginStatus();
@@ -14,7 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
  * Checks if the user is logged in and updates the UI accordingly
  */
 function checkLoginStatus() {
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+    const token = localStorage.getItem('token');
+    const isLoggedIn = !!token;
     const userRole = localStorage.getItem('userRole');
     const userName = localStorage.getItem('userName');
     const userEmail = localStorage.getItem('userEmail');
@@ -158,15 +162,135 @@ function createUserDropdown(userName, userRole) {
 }
 
 /**
+ * Handles user login
+ */
+async function login(email, password) {
+    try {
+        const response = await fetch(`${API_URL}/users/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.message || 'Login failed');
+        }
+
+        // Save user data
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userRole', data.role);
+        localStorage.setItem('userName', data.name);
+        localStorage.setItem('userEmail', data.email);
+        localStorage.setItem('userId', data._id);
+        localStorage.setItem('isLoggedIn', 'true');
+        
+        // Create session
+        createSession(data.role);
+
+        // Redirect based on role and onboarding status
+        if (data.role === 'organizer') {
+            if (data.organizationInfo && data.organizationInfo.isOnboardingComplete) {
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                window.location.href = 'organization-onboarding.html';
+            }
+        } else {
+            window.location.href = 'index.html';
+        }
+
+        return { success: true };
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+}
+
+/**
+ * Handles user registration
+ */
+async function register(name, email, password, role) {
+    try {
+        const response = await fetch(`${API_URL}/users/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name, email, password, role }),
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.message || 'Registration failed');
+        }
+
+        // Save user data
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userRole', data.role);
+        localStorage.setItem('userName', data.name);
+        localStorage.setItem('userEmail', data.email);
+        localStorage.setItem('userId', data._id);
+        localStorage.setItem('isLoggedIn', 'true');
+        
+        // Create session
+        createSession(data.role);
+
+        // Redirect based on role
+        if (data.role === 'organizer') {
+            window.location.href = 'organization-onboarding.html';
+        } else {
+            window.location.href = 'index.html';
+        }
+
+        return { success: true };
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+}
+
+/**
+ * Complete organization onboarding
+ */
+async function completeOnboarding(orgName, description) {
+    try {
+        const token = localStorage.getItem('token');
+        
+        const response = await fetch(`${API_URL}/users/onboarding`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ orgName, description }),
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.message || 'Onboarding failed');
+        }
+
+        window.location.href = 'admin-dashboard.html';
+        return { success: true };
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+}
+
+/**
  * Handles user logout
  */
 function logout() {
     // Clear authentication data
-    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('token');
     localStorage.removeItem('userRole');
     localStorage.removeItem('userName');
     localStorage.removeItem('userEmail');
-    localStorage.removeItem('orgCode');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('isLoggedIn');
     
     // Remove session-related items
     localStorage.removeItem('sessionStart');
@@ -215,13 +339,43 @@ function startActivityMonitoring() {
     // No-op - Timeout checking disabled
 }
 
+/**
+ * Get the authenticated user profile
+ */
+async function getUserProfile() {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('User not authenticated');
+        
+        const response = await fetch(`${API_URL}/users/profile`, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to get profile');
+        }
+
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+}
+
 // Export functions for use in other scripts
 window.eventura = window.eventura || {};
 window.eventura.auth = {
     checkLoginStatus,
     logout,
+    login,
+    register,
+    completeOnboarding,
     createSession,
-    isLoggedIn: () => localStorage.getItem('isLoggedIn') === 'true',
+    getUserProfile,
+    isLoggedIn: () => !!localStorage.getItem('token'),
     getUserRole: () => localStorage.getItem('userRole'),
     getUserName: () => localStorage.getItem('userName'),
     getUserEmail: () => localStorage.getItem('userEmail')

@@ -361,7 +361,7 @@
             
             // Student form submission
             const studentLoginForm = document.getElementById('student-form');
-            studentLoginForm.addEventListener('submit', function(e) {
+            studentLoginForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const email = document.getElementById('student-email').value;
                 const password = document.getElementById('student-password').value;
@@ -369,56 +369,50 @@
                 
                 // Validate inputs
                 if (!email || !password) {
-                    errorElement.textContent = 'Please enter both email/ID and password';
+                    errorElement.textContent = 'Please enter both email and password';
                     errorElement.style.display = 'block';
                     return;
                 }
                 
-                // Simulate successful login (in a real app, this would be an API call)
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userRole', 'student');
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('userName', email.split('@')[0]);
+                // Call the login API
+                const result = await window.eventura.auth.login(email, password);
                 
-                // Create session
-                if (window.eventura && window.eventura.auth) {
-                    window.eventura.auth.createSession('student');
+                // Handle errors
+                if (!result.success) {
+                    errorElement.textContent = result.message || 'Login failed. Please check your credentials.';
+                    errorElement.style.display = 'block';
+                    return;
                 }
                 
-                // Redirect to home page
-                window.location.href = 'index.html';
+                // Redirect happens in the login function
             });
             
             // Organizer form submission
             const organizerLoginForm = document.getElementById('organizer-form');
-            organizerLoginForm.addEventListener('submit', function(e) {
+            organizerLoginForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const email = document.getElementById('organizer-email').value;
                 const password = document.getElementById('organizer-password').value;
-                const orgCode = document.getElementById('organization-code').value;
                 const errorElement = document.getElementById('organizer-error');
                 
                 // Validate inputs
-                if (!email || !password || !orgCode) {
-                    errorElement.textContent = 'Please enter all required fields';
+                if (!email || !password) {
+                    errorElement.textContent = 'Please enter both email and password';
                     errorElement.style.display = 'block';
                     return;
                 }
                 
-                // Simulate successful login (in a real app, this would be an API call)
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('userRole', 'organizer');
-                localStorage.setItem('userEmail', email);
-                localStorage.setItem('userName', email.split('@')[0]);
-                localStorage.setItem('orgCode', orgCode);
+                // Call the login API
+                const result = await window.eventura.auth.login(email, password);
                 
-                // Create session
-                if (window.eventura && window.eventura.auth) {
-                    window.eventura.auth.createSession('organizer');
+                // Handle errors
+                if (!result.success) {
+                    errorElement.textContent = result.message || 'Login failed. Please check your credentials.';
+                    errorElement.style.display = 'block';
+                    return;
                 }
                 
-                // Redirect to dashboard page
-                window.location.href = 'admin-dashboard.html';
+                // Redirect happens in the login function
             });
         });
     </script>
