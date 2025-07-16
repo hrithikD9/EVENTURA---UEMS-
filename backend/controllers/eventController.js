@@ -58,18 +58,108 @@ const createEvent = async (req, res) => {
   }
 };
 
-// @desc    Get all events
+// @desc    Get all events with filtering and pagination
 // @route   GET /api/events
 // @access  Public
 const getEvents = async (req, res) => {
   try {
-    const events = await Event.find({}).populate('organizer', 'name organizationInfo.orgName');
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 9;
+    const skip = (page - 1) * limit;
+    
+    // Build filter object
+    const filterObj = {};
+    
+    // Category filter
+    if (req.query.category) {
+      filterObj.category = req.query.category;
+    }
+    
+    // Organization filter
+    if (req.query.organization) {
+      filterObj['organizer.name'] = { $regex: req.query.organization, $options: 'i' };
+    }
+    
+    // Venue/Location filter
+    if (req.query.venue) {
+      filterObj.location = { $regex: req.query.venue, $options: 'i' };
+    }
+    
+    // Date filter
+    if (req.query.date) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      
+      const nextWeek = new Date(today);
+      nextWeek.setDate(nextWeek.getDate() + 7);
+      
+      const thisWeekend = new Date(today);
+      thisWeekend.setDate(thisWeekend.getDate() + (6 - today.getDay())); // Saturday
+      
+      const nextMonth = new Date(today);
+      nextMonth.setMonth(nextMonth.getMonth() + 1);
+      
+      switch (req.query.date) {
+        case 'today':
+          filterObj.eventDate = { $gte: today, $lt: tomorrow };
+          break;
+        case 'tomorrow':
+          filterObj.eventDate = { $gte: tomorrow, $lt: new Date(tomorrow.getTime() + 24 * 60 * 60 * 1000) };
+          break;
+        case 'this-week':
+          filterObj.eventDate = { $gte: today, $lt: nextWeek };
+          break;
+        case 'this-weekend':
+          filterObj.eventDate = { $gte: thisWeekend, $lt: new Date(thisWeekend.getTime() + 2 * 24 * 60 * 60 * 1000) };
+          break;
+        case 'next-week':
+          filterObj.eventDate = { $gte: nextWeek, $lt: new Date(nextWeek.getTime() + 7 * 24 * 60 * 60 * 1000) };
+          break;
+        case 'this-month':
+          filterObj.eventDate = { $gte: today, $lt: nextMonth };
+          break;
+        default:
+          break;
+      }
+    }
+    
+    // Search query (searches in title and description)
+    if (req.query.search) {
+      const searchRegex = { $regex: req.query.search, $options: 'i' };
+      filterObj.$or = [
+        { title: searchRegex },
+        { description: searchRegex },
+        { location: searchRegex },
+        { 'organizer.name': searchRegex }
+      ];
+    }
+    
+    // Only show active events by default
+    if (!filterObj.status) {
+      filterObj.status = 'active';
+    }
+
+    // Count total documents for pagination
+    const count = await Event.countDocuments(filterObj);
+    
+    // Get events with pagination
+    const events = await Event.find(filterObj)
+      .sort({ eventDate: 1 }) // Sort by date ascending (upcoming first)
+      .skip(skip)
+      .limit(limit);
+    
     res.json({
       success: true,
       data: events,
-      count: events.length
+      count: events.length,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page
     });
   } catch (error) {
+    console.error('Error fetching events:', error);
     res.status(500).json({ 
       success: false,
       message: error.message 
