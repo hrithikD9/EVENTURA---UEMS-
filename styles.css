@@ -1579,6 +1579,24 @@ section {
     background: rgba(255, 255, 255, 0.07);
 }
 
+.form-group select {
+    width: 100%;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all var(--transition-fast);
+    color: var(--text-primary);
+}
+
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+    background: rgba(255, 255, 255, 0.07);
+}
+
 .form-options {
     display: flex;
     justify-content: space-between;
