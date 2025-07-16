@@ -211,14 +211,25 @@ async function login(email, password) {
 /**
  * Handles user registration
  */
-async function register(name, email, password, role) {
+async function register(name, email, password, role, userData = {}) {
     try {
+        // Prepare registration data with additional user info
+        const registrationData = { 
+            name, 
+            email, 
+            password, 
+            role,
+            ...userData
+        };
+        
+        console.log('Registering with data:', registrationData);
+        
         const response = await fetch(`${API_URL}/users/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ name, email, password, role }),
+            body: JSON.stringify(registrationData),
         });
 
         const data = await response.json();

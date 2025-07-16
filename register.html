@@ -427,10 +427,15 @@
             event.preventDefault();
             
             const studentError = document.getElementById('student-error');
-            const studentName = document.getElementById('student-fullname').value.trim();
-            const email = document.getElementById('student-email').value.trim();
+            const studentNameField = document.getElementById('student-fullname');
+            const studentEmailField = document.getElementById('student-email');
+            const studentDepartmentField = document.getElementById('student-department');
             const studentPassword = document.getElementById('student-password');
             const studentConfirmPassword = document.getElementById('student-confirm-password');
+            
+            const studentName = studentNameField.value.trim();
+            const email = studentEmailField.value.trim();
+            const department = studentDepartmentField.value.trim();
             
             // Password validation
             if (studentPassword.value !== studentConfirmPassword.value) {
@@ -439,9 +444,22 @@
                 return;
             }
             
+            // Create user data object with department info
+            const userData = {
+                studentInfo: {
+                    department: department
+                }
+            };
+            
+            // Show loading state
+            const submitBtn = studentForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.textContent = 'Creating Account...';
+            submitBtn.disabled = true;
+            
             try {
                 // Call the registration API
-                const result = await window.eventura.auth.register(studentName, email, studentPassword.value, 'student');
+                const result = await window.eventura.auth.register(studentName, email, studentPassword.value, 'student', userData);
                 
                 if (result.success) {
                     // Registration successful, redirect will happen in the register function
@@ -454,6 +472,10 @@
                 studentError.textContent = "An error occurred during registration. Please try again.";
                 studentError.style.display = "block";
                 console.error(error);
+            } finally {
+                // Reset button
+                submitBtn.textContent = originalBtnText;
+                submitBtn.disabled = false;
             }
         });
 
@@ -461,45 +483,7 @@
         const organizerPassword = document.getElementById('organizer-password');
         const organizerConfirmPassword = document.getElementById('organizer-confirm-password');
         
-        organizerForm.addEventListener('submit', async function(event) {
-            event.preventDefault();
-            
-            const organizerError = document.getElementById('organizer-error');
-            const nameField = document.getElementById('organizer-name');
-            const emailField = document.getElementById('organizer-email');
-            const name = nameField.value.trim();
-            let email = emailField.value.trim();
-            
-            // If email doesn't contain '@', append @neub.edu.bd
-            if (email && !email.includes('@')) {
-                emailField.value = email + '@neub.edu.bd';
-                email = emailField.value;
-            }
-            
-            // Password validation
-            if (organizerPassword.value !== organizerConfirmPassword.value) {
-                organizerError.textContent = "Passwords don't match";
-                organizerError.style.display = "block";
-                return;
-            }
-            
-            try {
-                // Call the registration API
-                const result = await window.eventura.auth.register(name, email, organizerPassword.value, 'organizer');
-                
-                if (result.success) {
-                    // Registration successful, redirect will happen in the register function
-                } else {
-                    // Show error message
-                    organizerError.textContent = result.message || "Registration failed. Please try again.";
-                    organizerError.style.display = "block";
-                }
-            } catch (error) {
-                organizerError.textContent = "An error occurred during registration. Please try again.";
-                organizerError.style.display = "block";
-                console.error(error);
-            }
-        });
+        // First organizer form submit handler removed to avoid duplicates
         
         // Show/hide new organization field based on selection
         document.getElementById('organizer-organization').addEventListener('change', function() {
@@ -542,7 +526,7 @@
             event.preventDefault();
             
             const organizerError = document.getElementById('organizer-error');
-            const nameField = document.getElementById('organizer-name');
+            const nameField = document.getElementById('organizer-fullname');
             const emailField = document.getElementById('organizer-email');
             const passwordField = document.getElementById('organizer-password');
             const confirmPasswordField = document.getElementById('organizer-confirm-password');
@@ -564,9 +548,27 @@
                 return;
             }
             
+            // Get additional organizer data
+            const position = document.getElementById('organizer-position').value.trim();
+            const organization = document.getElementById('organizer-organization').value.trim();
+            
             try {
+                // Create user data object with organization info
+                const userData = {
+                    organizationInfo: {
+                        position: position,
+                        orgName: organization
+                    }
+                };
+                
+                // Show loading state
+                const submitBtn = organizerForm.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.textContent;
+                submitBtn.textContent = 'Submitting Application...';
+                submitBtn.disabled = true;
+                
                 // Call the registration API
-                const result = await window.eventura.auth.register(name, email, password, 'organizer');
+                const result = await window.eventura.auth.register(name, email, password, 'organizer', userData);
                 
                 if (result.success) {
                     // Registration successful, redirect will happen in the register function
@@ -579,6 +581,10 @@
                 organizerError.textContent = "An error occurred during registration. Please try again.";
                 organizerError.style.display = "block";
                 console.error(error);
+            } finally {
+                // Reset button
+                submitBtn.textContent = originalBtnText;
+                submitBtn.disabled = false;
             }
         });
         

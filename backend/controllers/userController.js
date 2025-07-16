@@ -6,7 +6,7 @@ const { generateToken } = require('../utils/generateToken');
 // @access  Public
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, role, studentInfo, organizationInfo } = req.body;
 
     const userExists = await User.findOne({ email });
 
@@ -14,12 +14,26 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'User already exists' });
     }
 
-    const user = await User.create({
+    // Prepare user data with additional info
+    const userData = {
       name,
       email,
       password,
       role,
-    });
+    };
+
+    // Add student info if provided
+    if (role === 'student' && studentInfo) {
+      userData.studentInfo = studentInfo;
+    }
+
+    // Add organization info if provided
+    if (role === 'organizer' && organizationInfo) {
+      userData.organizationInfo = organizationInfo;
+    }
+
+    console.log('Creating user with data:', userData);
+    const user = await User.create(userData);
 
     if (user) {
       res.status(201).json({
@@ -27,6 +41,7 @@ const registerUser = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        studentInfo: user.studentInfo,
         organizationInfo: user.organizationInfo,
         token: generateToken(user._id),
       });
