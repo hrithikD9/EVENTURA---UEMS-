@@ -309,6 +309,16 @@
                 gap: 15px;
             }
         }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-10px); }
+        }
     </style>
 </head>
 <body>
@@ -358,24 +368,18 @@
                         <div class="profile-role" id="profile-role">Student</div>
                     </div>
                     <div class="profile-stats">
-                        <div class="profile-stat">
-                            <div class="profile-stat-value">12</div>
-                            <div class="profile-stat-label">Events</div>
+                        <div class="profile-stat student-stats" style="display: none;">
+                            <div class="profile-stat-value">0</div>
+                            <div class="profile-stat-label">Events Joined</div>
                         </div>
-                        <div class="profile-stat">
-                            <div class="profile-stat-value">5</div>
-                            <div class="profile-stat-label">Organizations</div>
+                        <div class="profile-stat organizer-stats" style="display: none;">
+                            <div class="profile-stat-value">0</div>
+                            <div class="profile-stat-label">Events Created</div>
                         </div>
                     </div>
                     <div class="profile-links">
                         <a href="#account" class="profile-link active">
                             <i class="fas fa-user"></i>Account Details
-                        </a>
-                        <a href="#preferences" class="profile-link">
-                            <i class="fas fa-cog"></i>Preferences
-                        </a>
-                        <a href="#interests" class="profile-link">
-                            <i class="fas fa-heart"></i>Interests
                         </a>
                         <a href="#security" class="profile-link">
                             <i class="fas fa-lock"></i>Security
@@ -386,7 +390,7 @@
                     <div class="profile-card" id="account">
                         <div class="profile-card-header">
                             <h3 class="profile-card-title">Account Details</h3>
-                            <button class="btn btn-outline">Save Changes</button>
+                            <button class="btn btn-outline" id="save-profile">Save Changes</button>
                         </div>
                         <div class="profile-form">
                             <div class="profile-form-row">
@@ -404,7 +408,7 @@
                                 <input type="email" id="email" value="" disabled>
                             </div>
                             <div class="profile-form-row">
-                                <div class="profile-form-group">
+                                <div class="profile-form-group student-fields">
                                     <label for="department">Department</label>
                                     <select id="department" style="background-color: var(--surface-dark-higher);">
                                         <option value="">Select Department</option>
@@ -415,9 +419,9 @@
                                         <option value="medicine">Medicine</option>
                                     </select>
                                 </div>
-                                <div class="profile-form-group">
+                                <div class="profile-form-group student-fields">
                                     <label for="student-id">Student ID</label>
-                                    <input type="text" id="student-id" value="" disabled>
+                                    <input type="text" id="student-id" value="" placeholder="Enter your student ID">
                                 </div>
                             </div>
                             <div class="profile-form-group">
@@ -425,71 +429,6 @@
                                 <textarea id="bio" rows="4" placeholder="Tell us about yourself..."></textarea>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="profile-card" id="preferences">
-                        <div class="profile-card-header">
-                            <h3 class="profile-card-title">Notification Preferences</h3>
-                        </div>
-                        <div class="preference-item">
-                            <div>
-                                <div class="preference-label">Event Reminders</div>
-                                <div class="preference-description">Receive reminders before your registered events</div>
-                            </div>
-                            <label class="preference-toggle">
-                                <input type="checkbox" class="toggle-input" checked>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div class="preference-item">
-                            <div>
-                                <div class="preference-label">New Event Alerts</div>
-                                <div class="preference-description">Get notified when new events match your interests</div>
-                            </div>
-                            <label class="preference-toggle">
-                                <input type="checkbox" class="toggle-input" checked>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div class="preference-item">
-                            <div>
-                                <div class="preference-label">Organization Updates</div>
-                                <div class="preference-description">Receive updates from organizations you follow</div>
-                            </div>
-                            <label class="preference-toggle">
-                                <input type="checkbox" class="toggle-input" checked>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                        <div class="preference-item">
-                            <div>
-                                <div class="preference-label">Email Notifications</div>
-                                <div class="preference-description">Receive notifications via email</div>
-                            </div>
-                            <label class="preference-toggle">
-                                <input type="checkbox" class="toggle-input" checked>
-                                <span class="toggle-slider"></span>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div class="profile-card" id="interests">
-                        <div class="profile-card-header">
-                            <h3 class="profile-card-title">Your Interests</h3>
-                        </div>
-                        <p>Select your interests to get personalized event recommendations:</p>
-                        <div class="interest-tags">
-                            <div class="interest-tag">Technology <i class="fas fa-times"></i></div>
-                            <div class="interest-tag">Science <i class="fas fa-times"></i></div>
-                            <div class="interest-tag">Arts <i class="fas fa-times"></i></div>
-                            <div class="interest-tag">Music <i class="fas fa-times"></i></div>
-                            <div class="interest-tag">Sports <i class="fas fa-times"></i></div>
-                            <div class="interest-tag">Career <i class="fas fa-times"></i></div>
-                        </div>
-                        <div class="profile-form-group" style="margin-top: 20px;">
-                            <input type="text" placeholder="Add a new interest..." id="new-interest">
-                        </div>
-                        <button class="btn btn-outline">Add Interest</button>
                     </div>
 
                     <div class="profile-card" id="security">
@@ -511,7 +450,7 @@
                                     <input type="password" id="confirm-password" placeholder="Confirm new password">
                                 </div>
                             </div>
-                            <button class="btn btn-outline">Update Password</button>
+                            <button class="btn btn-outline" id="update-password">Update Password</button>
                         </div>
                     </div>
                 </div>
@@ -563,40 +502,227 @@
     </footer>
 
     <script src="auth.js"></script>
+    <script src="mobile.js"></script>
+    <script src="js/server-status.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Fill user profile data from localStorage
-            const userName = localStorage.getItem('userName');
-            const userRole = localStorage.getItem('userRole');
-            const userEmail = localStorage.getItem('userEmail');
-            
-            if (userName) {
-                document.getElementById('profile-name').textContent = userName;
-                document.getElementById('profile-avatar-image').src = `https://api.dicebear.com/7.x/initials/svg?seed=${userName}`;
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Check if user is logged in
+            if (!window.eventura.auth.isLoggedIn()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Fetch user profile data from API
+            try {
+                const profileResult = await window.eventura.auth.getUserProfile();
                 
-                // Split name into first and last
-                const nameParts = userName.split(' ');
-                if (document.getElementById('first-name')) {
-                    document.getElementById('first-name').value = nameParts[0] || '';
+                if (profileResult.success) {
+                    const userData = profileResult.data;
+                    
+                    // Update profile display
+                    document.getElementById('profile-name').textContent = userData.name;
+                    document.getElementById('profile-avatar-image').src = `https://api.dicebear.com/7.x/initials/svg?seed=${userData.name}`;
+                    document.getElementById('profile-role').textContent = userData.role.charAt(0).toUpperCase() + userData.role.slice(1);
+                    
+                    // Show stats based on user role
+                    if (userData.role === 'student') {
+                        document.querySelector('.student-stats').style.display = 'block';
+                    } else if (userData.role === 'organizer') {
+                        document.querySelector('.organizer-stats').style.display = 'block';
+                    }
+                    
+                    // Fill form fields
+                    const nameParts = userData.name.split(' ');
+                    if (document.getElementById('first-name')) {
+                        document.getElementById('first-name').value = nameParts[0] || '';
+                    }
+                    if (document.getElementById('last-name')) {
+                        document.getElementById('last-name').value = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
+                    }
+                    
+                    document.getElementById('email').value = userData.email;
+                    
+                    // Handle role-specific fields
+                    if (userData.role === 'organizer') {
+                        // For organizers, show organization description in bio field
+                        if (document.getElementById('bio')) {
+                            document.getElementById('bio').value = userData.organizationInfo?.description || '';
+                        }
+                        
+                        // Hide student-specific fields
+                        document.querySelectorAll('.student-fields').forEach(el => {
+                            el.style.display = 'none';
+                        });
+                    } else if (userData.role === 'student') {
+                        // For students, set student fields
+                        if (document.getElementById('bio')) {
+                            document.getElementById('bio').value = userData.studentInfo?.bio || '';
+                        }
+                        
+                        if (document.getElementById('department')) {
+                            document.getElementById('department').value = userData.studentInfo?.department || '';
+                        }
+                        
+                        if (document.getElementById('student-id')) {
+                            document.getElementById('student-id').value = userData.studentInfo?.studentId || '';
+                        }
+                    }
+                } else {
+                    console.error('Failed to fetch profile:', profileResult.message);
+                    alert('Failed to load profile data. Please try again.');
                 }
-                if (document.getElementById('last-name')) {
-                    document.getElementById('last-name').value = nameParts[1] || '';
+            } catch (error) {
+                console.error('Error fetching profile:', error);
+                if (error.message && error.message.includes('Failed to fetch')) {
+                    alert('Backend server connection failed. Please ensure the server is running at http://localhost:5000');
+                } else {
+                    alert('An unexpected error occurred. Please try again.');
                 }
             }
             
-            if (userRole) {
-                document.getElementById('profile-role').textContent = userRole.charAt(0).toUpperCase() + userRole.slice(1);
-            }
-            
-            if (userEmail) {
-                document.getElementById('email').value = userEmail;
+            // Handle profile form submission
+            const accountForm = document.getElementById('save-profile');
+            accountForm.addEventListener('click', async function(e) {
+                e.preventDefault();
                 
-                // For demo purposes, set a dummy student ID based on the email
-                if (document.getElementById('student-id')) {
-                    const emailParts = userEmail.split('@');
-                    document.getElementById('student-id').value = '062' + Math.floor(Math.random() * 10000);
+                // Show loading state
+                const originalText = this.textContent;
+                this.textContent = 'Saving...';
+                this.disabled = true;
+                
+                // Get form values
+                const firstName = document.getElementById('first-name').value.trim();
+                const lastName = document.getElementById('last-name').value.trim();
+                const fullName = firstName + (lastName ? ' ' + lastName : '');
+                const bio = document.getElementById('bio').value.trim();
+                
+                // Create profile data object
+                const profileData = {
+                    name: fullName
+                };
+                
+                // Add role-specific data
+                const userRole = window.eventura.auth.getUserRole();
+                if (userRole === 'organizer') {
+                    // For organizers, bio goes to description
+                    profileData.bio = bio;
+                } else if (userRole === 'student') {
+                    // For students, get department and studentId
+                    profileData.bio = bio;
+                    profileData.department = document.getElementById('department').value.trim();
+                    profileData.studentId = document.getElementById('student-id').value.trim();
                 }
-            }
+                
+                try {
+                    // Call API to update profile
+                    const result = await window.eventura.auth.updateProfile(profileData);
+                    
+                    if (result.success) {
+                        // Update displayed name
+                        document.getElementById('profile-name').textContent = fullName;
+                        document.getElementById('profile-avatar-image').src = `https://api.dicebear.com/7.x/initials/svg?seed=${fullName}`;
+                        
+                        // Show success message
+                        const successMsg = document.createElement('div');
+                        successMsg.className = 'alert alert-success';
+                        successMsg.textContent = 'Profile updated successfully';
+                        successMsg.style.cssText = 'background-color: rgba(0, 200, 0, 0.1); color: #00c853; padding: 10px; border-radius: 4px; margin: 10px 0; animation: fadeIn 0.3s ease-out;';
+                        document.querySelector('.profile-form').prepend(successMsg);
+                        
+                        // Remove success message after 3 seconds
+                        setTimeout(() => {
+                            successMsg.style.animation = 'fadeOut 0.5s ease-out forwards';
+                            setTimeout(() => successMsg.remove(), 500);
+                        }, 3000);
+                    } else {
+                        alert('Failed to update profile: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error updating profile:', error);
+                    alert('An error occurred while updating your profile');
+                } finally {
+                    // Reset button
+                    accountForm.textContent = originalText;
+                    accountForm.disabled = false;
+                }
+            });
+            
+            // Handle password change form submission
+            const securityForm = document.getElementById('update-password');
+            securityForm.addEventListener('click', async function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                const originalText = this.textContent;
+                this.textContent = 'Updating...';
+                this.disabled = true;
+                
+                const currentPassword = document.getElementById('current-password').value;
+                const newPassword = document.getElementById('new-password').value;
+                const confirmPassword = document.getElementById('confirm-password').value;
+                
+                // Simple validation
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    alert('Please fill in all password fields');
+                    return;
+                }
+                
+                if (newPassword !== confirmPassword) {
+                    alert('New passwords do not match');
+                    return;
+                }
+                
+                try {
+                    // Call API to change password
+                    const result = await window.eventura.auth.changePassword(currentPassword, newPassword);
+                    
+                    if (result.success) {
+                        // Clear password fields
+                        document.getElementById('current-password').value = '';
+                        document.getElementById('new-password').value = '';
+                        document.getElementById('confirm-password').value = '';
+                        
+                        // Show success message
+                        const successMsg = document.createElement('div');
+                        successMsg.className = 'alert alert-success';
+                        successMsg.textContent = 'Password changed successfully';
+                        successMsg.style.cssText = 'background-color: rgba(0, 200, 0, 0.1); color: #00c853; padding: 10px; border-radius: 4px; margin: 10px 0; animation: fadeIn 0.3s ease-out;';
+                        document.querySelector('#security .profile-form').prepend(successMsg);
+                        
+                        // Remove success message after 3 seconds
+                        setTimeout(() => {
+                            successMsg.style.animation = 'fadeOut 0.5s ease-out forwards';
+                            setTimeout(() => successMsg.remove(), 500);
+                        }, 3000);
+                    } else {
+                        // Show error message
+                        const errorMsg = document.createElement('div');
+                        errorMsg.className = 'alert alert-error';
+                        errorMsg.textContent = 'Failed to change password: ' + result.message;
+                        errorMsg.style.cssText = 'background-color: rgba(255, 0, 0, 0.1); color: #f44336; padding: 10px; border-radius: 4px; margin: 10px 0; animation: fadeIn 0.3s ease-out;';
+                        document.querySelector('#security .profile-form').prepend(errorMsg);
+                        
+                        // Remove error message after 5 seconds
+                        setTimeout(() => {
+                            errorMsg.style.animation = 'fadeOut 0.5s ease-out forwards';
+                            setTimeout(() => errorMsg.remove(), 500);
+                        }, 5000);
+                    }
+                } catch (error) {
+                    console.error('Error changing password:', error);
+                    
+                    // Show error message
+                    const errorMsg = document.createElement('div');
+                    errorMsg.className = 'alert alert-error';
+                    errorMsg.textContent = 'An error occurred while changing your password';
+                    errorMsg.style.cssText = 'background-color: rgba(255, 0, 0, 0.1); color: #f44336; padding: 10px; border-radius: 4px; margin: 10px 0; animation: fadeIn 0.3s ease-out;';
+                    document.querySelector('#security .profile-form').prepend(errorMsg);
+                } finally {
+                    // Reset button
+                    securityForm.textContent = originalText;
+                    securityForm.disabled = false;
+                }
+            });
             
             // Tab navigation
             const profileLinks = document.querySelectorAll('.profile-link');
@@ -622,34 +748,6 @@
                     }
                 });
             });
-            
-            // Mobile menu functionality
-            const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-            const mainNav = document.querySelector('.main-nav');
-            
-            if (mobileMenuToggle && mainNav) {
-                mobileMenuToggle.addEventListener('click', function() {
-                    mainNav.classList.toggle('active');
-                    this.classList.toggle('active');
-                });
-            }
-            
-            // Search toggle
-            const searchToggle = document.querySelector('.search-toggle');
-            const searchForm = document.querySelector('.search-form');
-            
-            if (searchToggle && searchForm) {
-                searchToggle.addEventListener('click', function() {
-                    searchForm.classList.toggle('active');
-                });
-                
-                // Close search when clicking outside
-                document.addEventListener('click', function(event) {
-                    if (!event.target.closest('.search-container')) {
-                        searchForm.classList.remove('active');
-                    }
-                });
-            }
         });
     </script>
 </body>

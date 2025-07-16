@@ -114,6 +114,7 @@ const getUserProfile = async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
+        studentInfo: user.studentInfo,
         organizationInfo: user.organizationInfo,
       });
     } else {
@@ -124,4 +125,83 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, completeOnboarding, getUserProfile };
+// @desc    Update user profile
+// @route   PUT /api/users/profile
+// @access  Private
+const updateProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update basic user information
+    if (req.body.name) {
+      user.name = req.body.name;
+    }
+
+    // Update student info if user is a student
+    if (user.role === 'student') {
+      user.studentInfo = {
+        ...user.studentInfo,
+        department: req.body.department || user.studentInfo?.department,
+        studentId: req.body.studentId || user.studentInfo?.studentId,
+        bio: req.body.bio || user.studentInfo?.bio
+      };
+    }
+
+    // Update organization info if user is an organizer
+    if (user.role === 'organizer') {
+      user.organizationInfo = {
+        ...user.organizationInfo,
+        description: req.body.bio || user.organizationInfo?.description
+      };
+    }
+
+    const updatedUser = await user.save();
+
+    res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      role: updatedUser.role,
+      studentInfo: updatedUser.studentInfo,
+      organizationInfo: updatedUser.organizationInfo,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Change user password
+// @route   PUT /api/users/change-password
+// @access  Private
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Check if current password matches
+    const isMatch = await user.matchPassword(currentPassword);
+
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Current password is incorrect' });
+    }
+
+    // Update password
+    user.password = newPassword;
+    await user.save();
+
+    res.json({ message: 'Password updated successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { registerUser, loginUser, completeOnboarding, getUserProfile, updateProfile, changePassword };

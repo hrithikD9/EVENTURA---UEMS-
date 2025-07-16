@@ -21,6 +21,11 @@ const userSchema = mongoose.Schema(
       enum: ['student', 'organizer'],
       required: true,
     },
+    studentInfo: {
+      department: String,
+      studentId: String,
+      bio: String
+    },
     organizationInfo: {
       orgName: String,
       description: String,

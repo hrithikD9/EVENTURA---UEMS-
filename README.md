@@ -51,12 +51,41 @@ Eventura is a web-based platform for event management, focused on university clu
    ```
    npm run dev
    ```
+   or for production:
+   ```
+   npm start
+   ```
 
 ### Frontend Setup
 
-The frontend is built with vanilla HTML, CSS, and JavaScript. Simply open the HTML files in your browser.
+1. Open the HTML files directly in a browser or use a local server.
+2. Make sure the backend server is running before accessing the profile or other authenticated pages.
 
-For local development, you can use any local server like Live Server for VS Code.
+## Troubleshooting
+
+### Connection Refused Error
+
+If you see a "Failed to fetch" or "ERR_CONNECTION_REFUSED" error:
+
+1. Ensure the backend server is running on port 5000:
+   ```
+   cd backend && npm run dev
+   ```
+
+2. Verify MongoDB is running:
+   ```
+   mongod --version
+   ```
+
+3. Check that your `.env` file has the correct MongoDB URI and port settings.
+
+### Authentication Issues
+
+If you can't log in or access protected routes:
+
+1. Clear your browser's local storage
+2. Ensure you're using the correct credentials
+3. Check the browser console for specific error messages
 
 ## API Endpoints
 

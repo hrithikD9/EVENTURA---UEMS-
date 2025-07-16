@@ -361,6 +361,79 @@ async function getUserProfile() {
 
         return { success: true, data };
     } catch (error) {
+        console.error('Profile fetch error:', error);
+        // Check if it's a network error (server not running)
+        if (!window.navigator.onLine || error.name === 'TypeError') {
+            return { success: false, message: 'Backend server connection failed. Please ensure the server is running.' };
+        }
+        return { success: false, message: error.message };
+    }
+}
+
+/**
+ * Update user profile
+ */
+async function updateProfile(profileData) {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('User not authenticated');
+        
+        // Before sending, log to see what we're sending
+        console.log('Updating profile with data:', profileData);
+        
+        const response = await fetch(`${API_URL}/users/profile`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(profileData),
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to update profile');
+        }
+
+        // Update local storage with new name if it was changed
+        if (profileData.name) {
+            localStorage.setItem('userName', data.name);
+        }
+        
+        console.log('Profile updated successfully:', data);
+
+        return { success: true, data };
+    } catch (error) {
+        return { success: false, message: error.message };
+    }
+}
+
+/**
+ * Change user password
+ */
+async function changePassword(currentPassword, newPassword) {
+    try {
+        const token = localStorage.getItem('token');
+        if (!token) throw new Error('User not authenticated');
+        
+        const response = await fetch(`${API_URL}/users/change-password`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({ currentPassword, newPassword }),
+        });
+
+        const data = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(data.message || 'Failed to change password');
+        }
+
+        return { success: true, message: data.message };
+    } catch (error) {
         return { success: false, message: error.message };
     }
 }
@@ -375,6 +448,8 @@ window.eventura.auth = {
     completeOnboarding,
     createSession,
     getUserProfile,
+    updateProfile,
+    changePassword,
     isLoggedIn: () => !!localStorage.getItem('token'),
     getUserRole: () => localStorage.getItem('userRole'),
     getUserName: () => localStorage.getItem('userName'),
