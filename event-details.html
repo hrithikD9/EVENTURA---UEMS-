@@ -3,14 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Annual Tech Symposium - Eventura</title>
+    <title>Event Details - Eventura</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@300;400;500&family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Server status check script -->
+    <script src="js/server-status.js" defer></script>
     <style>
         /* Event Detail Page Styles */
+        .error-message {
+            background-color: rgba(235, 87, 87, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: none;
+            max-width: 450px;
+            width: 90%;
+            line-height: 1.5;
+        }
+        
+        .error-message button {
+            margin-top: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        
+        .error-message ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .loading-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-blue);
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
         .event-hero {
             position: relative;
             height: 400px;
@@ -285,6 +345,62 @@
             gap: 30px;
         }
         
+        .event-card {
+            background-color: var(--surface-dark-elevated);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .event-card-image {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+        }
+        
+        .event-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .event-card-image .badge {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+        }
+        
+        .event-card-content {
+            padding: 20px;
+        }
+        
+        .event-card-content .event-date {
+            font-size: 0.85rem;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+        }
+        
+        .event-card-content h3 {
+            font-size: 1.2rem;
+            margin: 0 0 10px;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+        
+        .event-location {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+        }
+        
         @media screen and (max-width: 1024px) {
             .event-content {
                 grid-template-columns: 1fr;
@@ -300,6 +416,113 @@
             }
         }
         
+        /* Speakers Grid Styles */
+        .speakers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .speaker-card {
+            background-color: var(--surface-dark);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .speaker-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .speaker-image {
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+        }
+        
+        .speaker-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .speaker-card h4 {
+            font-size: 1.1rem;
+            margin: 15px 15px 5px;
+            color: var(--text-primary);
+        }
+        
+        .speaker-title {
+            font-size: 0.85rem;
+            margin: 0 15px 10px;
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+        
+        .speaker-bio {
+            font-size: 0.9rem;
+            margin: 0 15px 15px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* Timeline styles for schedule */
+        .timeline {
+            position: relative;
+            margin: 30px 0;
+        }
+        
+        .timeline-item {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .timeline-item:not(:last-child):after {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 60px;
+            width: 2px;
+            height: calc(100% + 30px);
+            background-color: rgba(255, 255, 255, 0.1);
+            z-index: 1;
+        }
+        
+        .timeline-time {
+            background-color: var(--primary-blue);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .timeline-content {
+            background-color: rgba(255, 255, 255, 0.03);
+            padding: 15px 20px;
+            border-radius: 8px;
+        }
+        
+        .timeline-content h4 {
+            margin: 0 0 8px;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+        }
+        
+        .timeline-content p {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
         @media screen and (max-width: 768px) {
             .event-hero {
                 height: 300px;
@@ -312,6 +535,19 @@
             
             .similar-events-list {
                 grid-template-columns: 1fr;
+            }
+            
+            .timeline-item {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .timeline-item:after {
+                left: 20px;
+            }
+            
+            .speakers-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
         }
     </style>
@@ -350,15 +586,15 @@
     </header>
 
     <div class="event-hero">
-        <img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" alt="Tech Symposium" class="event-hero-image">
+        <img src="https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" alt="Event" class="event-hero-image">
         <div class="container event-hero-content">
-            <span class="badge badge-primary">Technology</span>
-            <h1>Annual Tech Symposium 2025</h1>
+            <span class="badge badge-primary">Loading...</span>
+            <h1>Loading event details...</h1>
             <div class="event-meta-highlight">
-                <span class="event-meta-item"><i class="far fa-calendar"></i> April 25, 2025</span>
-                <span class="event-meta-item"><i class="far fa-clock"></i> 10:00 AM - 4:00 PM</span>
-                <span class="event-meta-item"><i class="fas fa-map-marker-alt"></i> Main Auditorium</span>
-                <span class="event-meta-item"><i class="fas fa-users"></i> By Computer Science Society</span>
+                <span class="event-meta-item"><i class="far fa-calendar"></i> Loading date...</span>
+                <span class="event-meta-item"><i class="far fa-clock"></i> Loading time...</span>
+                <span class="event-meta-item"><i class="fas fa-map-marker-alt"></i> Loading location...</span>
+                <span class="event-meta-item"><i class="fas fa-users"></i> By Loading...</span>
             </div>
         </div>
     </div>
@@ -369,110 +605,36 @@
                 <div class="event-main-content">
                     <div class="event-section">
                         <h3>About This Event</h3>
-                        <p>Join us for the Annual Tech Symposium 2025, the premier technology event on campus that brings together students, faculty, industry professionals, and technology enthusiasts.</p>
-                        
-                        <p>This year's symposium will feature cutting-edge presentations, interactive workshops, networking opportunities, and demonstrations of emerging technologies. Whether you're a computer science major, a tech hobbyist, or simply curious about the latest innovations, this event offers something for everyone.</p>
-                        
-                        <p>The symposium will cover a wide range of topics including:</p>
-                        <ul>
-                            <li>Artificial Intelligence and Machine Learning</li>
-                            <li>Blockchain and Cryptocurrency</li>
-                            <li>Cybersecurity and Digital Privacy</li>
-                            <li>Web3 and Decentralized Applications</li>
-                            <li>Augmented and Virtual Reality</li>
-                            <li>Quantum Computing</li>
-                        </ul>
+                        <div class="event-description">
+                            <p>Loading event description...</p>
+                        </div>
                     </div>
                     
-                    <div class="event-section">
+                    <div class="event-section schedule-section" style="display: none;">
                         <h3>Schedule</h3>
                         <div class="timeline">
-                            <div class="timeline-item">
-                                <div class="timeline-time">10:00 AM</div>
-                                <div class="timeline-content">
-                                    <h4>Opening Keynote: The Future of Technology</h4>
-                                    <p>Dr. Sarah Chen, Chief Technology Officer at TechFuture Inc.</p>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-time">11:15 AM</div>
-                                <div class="timeline-content">
-                                    <h4>Panel Discussion: Ethics in AI Development</h4>
-                                    <p>Industry experts discuss the ethical implications of AI systems</p>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-time">12:30 PM</div>
-                                <div class="timeline-content">
-                                    <h4>Lunch Break & Networking</h4>
-                                    <p>Catered lunch provided for all attendees</p>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-time">1:30 PM</div>
-                                <div class="timeline-content">
-                                    <h4>Workshop Sessions (Parallel Tracks)</h4>
-                                    <p>Track A: Hands-on Machine Learning<br>
-                                    Track B: Web3 Development<br>
-                                    Track C: Cybersecurity Fundamentals</p>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-time">3:00 PM</div>
-                                <div class="timeline-content">
-                                    <h4>Technology Showcase & Demos</h4>
-                                    <p>Student and faculty projects on display</p>
-                                </div>
-                            </div>
-                            <div class="timeline-item">
-                                <div class="timeline-time">4:00 PM</div>
-                                <div class="timeline-content">
-                                    <h4>Closing Remarks & Raffle Drawing</h4>
-                                    <p>Chance to win tech prizes including a new laptop</p>
-                                </div>
+                            <!-- Schedule items will be dynamically loaded here -->
+                            <div class="loading-container">
+                                <div class="loading-spinner"></div>
+                                <p>Loading event schedule...</p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="event-section">
+                    <div class="event-section speakers-section" style="display: none;">
                         <h3>Speakers</h3>
                         <div class="speakers-grid">
-                            <div class="speaker-card">
-                                <div class="speaker-image">
-                                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Dr. Sarah Chen">
-                                </div>
-                                <div class="speaker-info">
-                                    <h4>Dr. Sarah Chen</h4>
-                                    <p>Chief Technology Officer, TechFuture Inc.</p>
-                                </div>
-                            </div>
-                            <div class="speaker-card">
-                                <div class="speaker-image">
-                                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="James Rodriguez">
-                                </div>
-                                <div class="speaker-info">
-                                    <h4>James Rodriguez</h4>
-                                    <p>AI Ethics Researcher, Digital Rights Foundation</p>
-                                </div>
-                            </div>
-                            <div class="speaker-card">
-                                <div class="speaker-image">
-                                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Prof. Lisa Wang">
-                                </div>
-                                <div class="speaker-info">
-                                    <h4>Prof. Lisa Wang</h4>
-                                    <p>Computer Science Department Chair</p>
-                                </div>
+                            <!-- Speakers will be dynamically loaded if available -->
+                            <div class="loading-container">
+                                <div class="loading-spinner"></div>
+                                <p>Loading speakers...</p>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="event-section">
+                    <div class="event-section location-section">
                         <h3>Location & Directions</h3>
-                        <p><strong>Main Auditorium</strong><br>
-                        Technology Building, North Campus<br>
-                        123 University Drive<br>
-                        Campus, CA 90210</p>
+                        <p class="location-address">Loading location information...</p>
                         
                         <div class="event-location-map">
                             <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Event Location Map">
@@ -480,8 +642,6 @@
                                 <button>Open Map</button>
                             </div>
                         </div>
-                        
-                        <p class="location-notes"><i class="fas fa-info-circle"></i> Parking is available in the North Campus Parking Structure. Shuttle service will run from the South Campus starting at 9:00 AM.</p>
                     </div>
                 </div>
             </div>
@@ -489,32 +649,31 @@
             <div class="event-sidebar">
                 <div class="event-action-card">
                     <div class="event-action-content">
-                        <div class="event-price">Free</div>
-                        <span class="registration-status status-open">Registration Open</span>
+                        <div class="event-price">Loading...</div>
+                        <span class="registration-status status-open">Loading...</span>
                         
                         <div class="event-countdown">
                             <div class="countdown-title">Event Starts In:</div>
                             <div class="countdown-timer">
                                 <div class="countdown-segment">
-                                    <span class="countdown-number" id="days">06</span>
+                                    <span class="countdown-number" id="days">00</span>
                                     <span class="countdown-label">days</span>
                                 </div>
                                 <div class="countdown-segment">
-                                    <span class="countdown-number" id="hours">12</span>
+                                    <span class="countdown-number" id="hours">00</span>
                                     <span class="countdown-label">hours</span>
                                 </div>
                                 <div class="countdown-segment">
-                                    <span class="countdown-number" id="minutes">34</span>
+                                    <span class="countdown-number" id="minutes">00</span>
                                     <span class="countdown-label">minutes</span>
                                 </div>
                                 <div class="countdown-segment">
-                                    <span class="countdown-number" id="seconds">56</span>
+                                    <span class="countdown-number" id="seconds">00</span>
                                     <span class="countdown-label">seconds</span>
                                 </div>
                             </div>
                         </div>
                         <div style="display: flex; gap: 10px; flex-direction: column;">
-
                             <button class="btn btn-primary btn-block">Register Now</button>
                             <button class="btn btn-outline btn-block">Add to Calendar</button>
                         </div>
@@ -539,12 +698,12 @@
                                 <i class="fas fa-laptop-code"></i>
                             </div>
                             <div class="organizer-detail">
-                                <h4>Computer Science Society</h4>
-                                <a href="organization-details.html">View Profile</a>
+                                <h4>Loading...</h4>
+                                <a href="#" class="organizer-profile-link">View Profile</a>
                             </div>
                         </div>
-                        <p class="organizer-description">The Computer Science Society is a student-run organization dedicated to promoting technology education and professional development.</p>
-                        <button class="btn btn-secondary btn-block">Contact Organizer</button>
+                        <p class="organizer-description">Loading organizer information...</p>
+                        <button class="btn btn-secondary btn-block contact-organizer-btn">Contact Organizer</button>
                     </div>
                 </div>
                 
@@ -552,75 +711,23 @@
                     <div class="event-action-content">
                         <h3>Event Details</h3>
                         <ul class="event-details-list">
-                            <li><i class="fas fa-users"></i> <strong>Capacity:</strong> 300 attendees</li>
-                            <li><i class="fas fa-ticket-alt"></i> <strong>Registration Deadline:</strong> Apr 24, 2025</li>
-                            <li><i class="fas fa-id-card"></i> <strong>Check-in Required:</strong> Yes</li>
-                            <li><i class="fas fa-utensils"></i> <strong>Refreshments:</strong> Provided</li>
-                            <li><i class="fas fa-certificate"></i> <strong>Certificate:</strong> Yes, for workshop participants</li>
+                            <li><i class="fas fa-users"></i> <strong>Capacity:</strong> <span class="capacity-value">Loading...</span></li>
+                            <li><i class="fas fa-users"></i> <strong>Registered:</strong> <span class="registered-value">Loading...</span></li>
+                            <li><i class="fas fa-ticket-alt"></i> <strong>Registration Deadline:</strong> <span class="deadline-value">Loading...</span></li>
+                            <li><i class="fas fa-map-marker-alt"></i> <strong>Venue:</strong> <span class="venue-value">Loading...</span></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
         
-        <div class="similar-events">
+        <div class="similar-events" style="display: none;">
             <h2>Similar Events</h2>
             <div class="similar-events-list">
-                <div class="event-card">
-                    <div class="event-image">
-                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Robotics Workshop">
-                        <span class="event-category">Technology</span>
-                    </div>
-                    <div class="event-details">
-                        <div class="event-meta">
-                            <span class="event-date"><i class="far fa-calendar"></i> May 5, 2025</span>
-                            <span class="event-time"><i class="far fa-clock"></i> 2:00 PM</span>
-                        </div>
-                        <h3 class="event-title">Robotics Workshop</h3>
-                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Engineering Building</p>
-                        <div class="event-organizer">
-                            <span>By Engineering Club</span>
-                        </div>
-                        <a href="event-details.html" class="btn btn-secondary">Register Now</a>
-                    </div>
-                </div>
-                
-                <div class="event-card">
-                    <div class="event-image">
-                        <img src="https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Startup Weekend">
-                        <span class="event-category">Career</span>
-                    </div>
-                    <div class="event-details">
-                        <div class="event-meta">
-                            <span class="event-date"><i class="far fa-calendar"></i> May 20, 2025</span>
-                            <span class="event-time"><i class="far fa-clock"></i> 9:00 AM</span>
-                        </div>
-                        <h3 class="event-title">Startup Weekend</h3>
-                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Business School</p>
-                        <div class="event-organizer">
-                            <span>By Entrepreneurship Club</span>
-                        </div>
-                        <a href="event-details.html" class="btn btn-secondary">Register Now</a>
-                    </div>
-                </div>
-                
-                <div class="event-card">
-                    <div class="event-image">
-                        <img src="https://images.unsplash.com/photo-1591115765373-5207764f72e7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Cybersecurity Panel">
-                        <span class="event-category">Technology</span>
-                    </div>
-                    <div class="event-details">
-                        <div class="event-meta">
-                            <span class="event-date"><i class="far fa-calendar"></i> May 12, 2025</span>
-                            <span class="event-time"><i class="far fa-clock"></i> 5:00 PM</span>
-                        </div>
-                        <h3 class="event-title">Cybersecurity Panel Discussion</h3>
-                        <p class="event-location"><i class="fas fa-map-marker-alt"></i> Computer Science Building</p>
-                        <div class="event-organizer">
-                            <span>By Information Security Club</span>
-                        </div>
-                        <a href="event-details.html" class="btn btn-secondary">Register Now</a>
-                    </div>
+                <!-- Similar events will be dynamically loaded if available -->
+                <div class="loading-container">
+                    <div class="loading-spinner"></div>
+                    <p>Loading similar events...</p>
                 </div>
             </div>
         </div>
@@ -693,99 +800,25 @@
                 searchForm.classList.remove('active');
             }
         });
-
-        // Countdown timer
-        function updateCountdown() {
-            // Update the event date to a future date - May 28, 2025 (one month from now)
-            const eventDate = new Date("May 28, 2025 10:00:00").getTime();
-            
-            // Get current date and time
-            const now = new Date().getTime();
-            
-            // Calculate time remaining
-            const timeRemaining = eventDate - now;
-            
-            // Check if the event has already passed
-            if (timeRemaining < 0) {
-                // Event has already started/passed
-                document.querySelector('.event-countdown').innerHTML = '<div class="countdown-title">Event In Progress</div>';
-                document.querySelector('.registration-status').className = 'registration-status status-closed';
-                document.querySelector('.registration-status').textContent = 'Registration Closed';
-                
-                const registerButton = document.querySelector('.event-action-content .btn-primary');
-                if (registerButton) {
-                    registerButton.disabled = true;
-                    registerButton.textContent = "Event In Progress";
-                    registerButton.classList.add('disabled');
-                }
-                
-                // No need to continue updates
-                clearInterval(countdownTimer);
-                return;
-            }
-            
-            // Calculate days, hours, minutes, seconds
-            const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-            
-            // Update the countdown display
-            document.getElementById("days").innerText = String(days).padStart(2, '0');
-            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
-            document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
-            document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
-        }
-        
-        // Function to simulate different countdown scenarios for demo purposes
-        function simulateCountdown(dateString) {
-            const simulatedEventDate = new Date(dateString).getTime();
-            const now = new Date().getTime();
-            const timeRemaining = simulatedEventDate - now;
-            
-            if (timeRemaining < 0) {
-                document.querySelector('.event-countdown').innerHTML = '<div class="countdown-title">Event Has Ended</div>';
-                document.querySelector('.registration-status').className = 'registration-status status-closed';
-                document.querySelector('.registration-status').textContent = 'Registration Closed';
-                return;
-            }
-            
-            const days = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-            
-            document.getElementById("days").innerText = String(days).padStart(2, '0');
-            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
-            document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
-            document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
-        }
-        
-        // Initial update
-        updateCountdown();
-        
-        // Set up the countdown interval to update every second
-        const countdownTimer = setInterval(updateCountdown, 1000);
         
         // Add to Calendar functionality
         document.querySelector('.btn-outline.btn-block').addEventListener('click', function() {
+            const eventTitle = document.querySelector('.event-hero-content h1').textContent;
+            const eventDate = document.querySelector('.event-meta-item:first-child').textContent.replace(/[^\d/]+/g, '');
+            const eventLocation = document.querySelector('.event-meta-item:nth-child(3)').textContent.replace(/[^a-zA-Z0-9 ]/g, '').trim();
+            
+            // Create calendar entries for different calendar types
+            const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(eventTitle)}&dates=${encodeURIComponent(eventDate)}&location=${encodeURIComponent(eventLocation)}`;
+            
+            // For demo purposes, just show an alert
             alert('Event added to your calendar!');
-        });
-        
-        // Register button functionality
-        document.querySelector('.btn-primary.btn-block').addEventListener('click', function() {
-            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             
-            if (!isLoggedIn) {
-                // Redirect to login page with return URL
-                window.location.href = 'login.html?returnUrl=' + encodeURIComponent(window.location.href);
-                return;
-            }
-            
-            alert('Registration successful! You\'ll receive a confirmation email shortly.');
-            this.textContent = 'Registered';
-            this.disabled = true;
+            // In a real implementation, you might open a modal with calendar options
+            // window.open(googleCalendarUrl, '_blank');
         });
     </script>
+    
+    <!-- Custom JS for event details -->
+    <script src="js/event-details.js"></script>
 </body>
 </html>

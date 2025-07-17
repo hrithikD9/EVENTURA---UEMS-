@@ -31,6 +31,30 @@ const attendeeSchema = mongoose.Schema({
   },
 });
 
+const speakerSchema = mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  title: String,
+  bio: String,
+  image: String,
+});
+
+const scheduleItemSchema = mongoose.Schema({
+  title: {
+    type: String,
+    required: true,
+  },
+  description: String,
+  startTime: {
+    type: Date,
+    required: true,
+  },
+  endTime: Date,
+  speaker: String,
+});
+
 const eventSchema = mongoose.Schema(
   {
     title: {
@@ -68,6 +92,15 @@ const eventSchema = mongoose.Schema(
     image: {
       type: String,
     },
+    price: {
+      type: Number,
+      default: 0,
+    },
+    registrationDeadline: {
+      type: Date,
+    },
+    speakers: [speakerSchema],
+    schedule: [scheduleItemSchema],
     registrants: [registrantSchema],
     attendees: [attendeeSchema],
     status: {

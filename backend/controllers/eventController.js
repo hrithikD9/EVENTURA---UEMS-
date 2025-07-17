@@ -13,7 +13,12 @@ const createEvent = async (req, res) => {
       location, 
       capacity, 
       category, 
-      status = 'active'
+      status = 'active',
+      price,
+      registrationDeadline,
+      speakers,
+      schedule,
+      image
     } = req.body;
 
     // Check if organizer has completed onboarding
@@ -41,6 +46,11 @@ const createEvent = async (req, res) => {
       category,
       status,
       organizer: organizerObj,
+      price: parseFloat(price) || 0,
+      registrationDeadline: registrationDeadline || eventDate,
+      speakers,
+      schedule,
+      image
     });
 
     res.status(201).json({

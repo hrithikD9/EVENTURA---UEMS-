@@ -520,163 +520,457 @@
         }
         
         .modal-close:hover {
-            color: var(--error-red);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
             color: var(--text-primary);
-            font-weight: 500;
         }
         
-        .form-control {
-            width: 100%;
-            padding: 12px 16px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 1rem;
-            transition: all var(--transition-fast);
-        }
-        
-        .form-control:focus {
-            border-color: var(--primary-blue);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
-        }
-        
-        .form-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23BDBDBD' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            background-size: 12px;
-            padding-right: 40px;
-        }
-        
-        .form-textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-        
-        .form-actions {
+        /* Form tabs styles */
+        .form-tabs {
             display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            overflow-x: auto;
+            white-space: nowrap;
         }
         
-        .chart-container {
-            height: 300px;
-            margin-top: 20px;
+        .form-tab {
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-right: 20px;
+            padding: 10px 5px;
+            transition: all 0.2s ease;
         }
         
-        /* Responsive adjustments */
-        @media (max-width: 992px) {
-            .admin-sidebar {
-                width: 70px;
-                padding: 20px 0;
+        .form-tab.active {
+            color: var(--primary-blue);
+            border-bottom-color: var(--primary-blue);
+        }
+        
+        .form-tab-content {
+            display: none;
+            overflow-y: auto;
+            padding: 0 5px; /* Add some padding for scrollbar */
+            scrollbar-width: thin; /* For Firefox */
+            scroll-behavior: smooth;
+        }
+        
+        .form-tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+            max-height: calc(70vh - 140px); /* Set max height for scrollable content */
+            overflow-y: auto;
+        }
+        
+        /* Customize scrollbar for webkit browsers */
+        .form-tab-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .form-tab-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        .form-tab-content::-webkit-scrollbar-thumb {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Enhanced form styles for better mobile experience */
+        @media (max-width: 480px) {
+            .admin-modal {
+                padding: 10px;
             }
             
-            .admin-sidebar-header {
-                padding: 0 10px 20px;
-                text-align: center;
+            .modal-content {
+                margin: 0;
+                max-height: 98vh;
+                border-radius: 8px;
             }
             
-            .admin-sidebar-header h3,
-            .admin-sidebar-header p,
-            .admin-nav-link span {
-                display: none;
+            .modal-header {
+                padding: 15px;
             }
             
-            .admin-nav-link {
-                padding: 15px 0;
-                justify-content: center;
+            .form-actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+                gap: 8px;
             }
             
-            .admin-nav-link i {
-                margin-right: 0;
-                font-size: 1.2rem;
+            .form-actions button {
+                width: 100%;
+                margin: 0;
             }
             
-            .admin-main {
-                margin-left: 70px;
+            .form-tab {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+            }
+            
+            .form-tab-content.active {
+                max-height: calc(80vh - 200px);
             }
         }
         
-        @media (max-width: 768px) {
-            .stat-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .admin-main {
-                padding: 20px 15px;
-            }
-            
-            .admin-card {
-                padding: 20px;
-            }
+        /* Speaker and schedule item styles */
+        .speaker-item, .schedule-item {
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            animation: fadeIn 0.3s ease;
         }
         
-        /* User dropdown styles */
-        .dropdown {
+        .remove-item-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 0, 0, 0.1);
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .remove-item-btn:hover {
+            background-color: rgba(255, 0, 0, 0.3);
+            color: white;
+        }
+        
+        /* Error message styling */
+        .error-message {
+            background-color: rgba(255, 0, 0, 0.1);
+            border-left: 3px solid #ff5555;
+            color: #ff5555;
+            padding: 10px 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+        
+        /* Form navigation and steps */
+        .form-navigation {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            position: sticky;
+            top: 0;
+            background-color: var(--surface-dark-elevated);
+            padding-top: 10px;
+            padding-bottom: 10px;
+            z-index: 5;
+        }
+        
+        .form-step-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             position: relative;
         }
         
-        .dropdown-content {
-            display: none;
+        .form-step {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+            border: 2px solid transparent;
+        }
+        
+        .form-step.active {
+            background-color: var(--primary-blue);
+            transform: scale(1.2);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2);
+        }
+        
+        .form-step-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        
+        .form-step-container:has(.form-step.active) .form-step-label {
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+        
+        /* Add connecting lines between steps */
+        .form-step-container:not(:last-child)::after {
+            content: '';
             position: absolute;
-            top: 100%;
-            right: 0;
-            min-width: 200px;
-            background-color: var(--surface-dark-higher);
+            top: 7px;
+            right: -30px;
+            width: 30px;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .form-step-container:has(.form-step.active) + .form-step-container:not(:has(.form-step.active))::after {
+            background: linear-gradient(to right, var(--primary-blue), rgba(255, 255, 255, 0.1));
+        }
+        
+        .error-field {
+            border-color: var(--error-red) !important;
+            box-shadow: 0 0 0 1px var(--error-red) !important;
+        }
+        
+        .error-message-inline {
+            color: var(--error-red);
+            font-size: 0.85rem;
+            margin-top: 5px;
+            display: none;
+        }
+        
+        /* Improved textarea styles */
+        textarea.form-textarea {
+            line-height: 1.5;
+            padding: 12px;
+        }
+        
+        /* Empty state styling */
+        .empty-state {
+            background-color: rgba(255, 255, 255, 0.03);
             border-radius: 8px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            overflow: hidden;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+        
+        .empty-state p {
+            color: var(--text-tertiary);
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        
+        /* Optional tag styling */
+        .optional-tag {
+            color: var(--text-tertiary);
+            font-size: 0.85rem;
+            font-weight: normal;
+        }
+        
+        /* Helper text styles */
+        .help-text {
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        /* Summary styles */
+        .event-summary {
+            margin-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 20px;
+        }
+        
+        .summary-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
-        .dropdown-content.active {
-            display: block;
-            animation: fadeInDown 0.3s ease;
+        .summary-section {
+            margin-bottom: 20px;
         }
         
-        .dropdown-content a {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            color: var(--text-primary);
-            text-decoration: none;
-            transition: background-color 0.3s ease;
+        .summary-section:last-child {
+            margin-bottom: 0;
         }
         
-        .dropdown-content a i {
-            margin-right: 10px;
-            width: 20px;
-            text-align: center;
-            color: var(--text-secondary);
-        }
-        
-        .dropdown-content a:hover {
-            background-color: rgba(255, 255, 255, 0.05);
+        .summary-section h5 {
             color: var(--primary-blue);
+            margin-bottom: 10px;
+            font-size: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 10px;
         }
         
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
+        .summary-section h5 i {
+            margin-right: 8px;
+        }
+        
+        .summary-item {
+            display: flex;
+            margin-bottom: 8px;
+        }
+        
+        .summary-label {
+            color: var(--text-secondary);
+            width: 40%;
+            font-size: 0.9rem;
+        }
+        
+        .summary-value {
+            color: var(--text-primary);
+            width: 60%;
+            font-weight: 500;
+            word-break: break-word;
+        }
+        
+        .text-center {
+            text-align: center;
+        }
+        
+        /* Modal responsive fixes */
+        .admin-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: flex-start; /* Changed from center to allow better scrolling */
+            justify-content: center;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+        
+        .admin-modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background-color: var(--surface-dark-elevated);
+            border-radius: 12px;
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin: 2vh auto; /* Added space at top and bottom */
+            display: flex;
+            flex-direction: column; /* Helps with sticky headers and footers */
+        }
+        
+        .modal-large {
+            max-width: 800px;
+        }
+        
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: sticky;
+            top: 0;
+            background-color: var(--surface-dark-elevated);
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-title {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.8rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        
+        #create-event-form {
+            padding: 20px;
+            overflow-y: visible;
+            flex-grow: 1; /* Takes up available space */
+            display: flex;
+            flex-direction: column; /* Helps with tab content layout */
+            max-height: calc(86vh - 80px); /* Limits form height to improve scrolling */
+        }
+        
+        .form-actions {
+            position: sticky;
+            bottom: 0;
+            background-color: var(--surface-dark-elevated);
+            padding: 15px 20px;
+            margin: auto -20px -20px -20px;
+            z-index: 5;
+            box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+            
+            .form-col {
+                width: 100%;
+                padding: 0;
+                margin-bottom: 15px;
+            }
+            
+            .form-navigation {
+                gap: 15px;
+            }
+            
+            .form-step-container:not(:last-child)::after {
+                width: 15px;
+                right: -15px;
+            }
+            
+            .form-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .form-tab {
+                flex: 1;
+                min-width: 100px;
+                text-align: center;
+                margin-right: 10px;
+                margin-bottom: 5px;
+                padding: 8px 5px;
+                font-size: 0.9rem;
+            }
+            
+            .summary-item {
+                flex-direction: column;
+                margin-bottom: 15px;
+            }
+            
+            .summary-label, .summary-value {
+                width: 100%;
+            }
+            
+            .summary-label {
+                margin-bottom: 5px;
+                font-weight: 500;
             }
         }
     </style>
@@ -953,50 +1247,224 @@
 
     <!-- Create Event Modal -->
     <div id="create-event-modal" class="admin-modal">
-        <div class="modal-content">
+        <div class="modal-content modal-large">
             <div class="modal-header">
                 <h2 class="modal-title">Create New Event</h2>
                 <button id="close-modal" class="modal-close">&times;</button>
             </div>
             <form id="create-event-form">
-                <div class="form-group">
-                    <label for="event-title" class="form-label">Event Title</label>
-                    <input type="text" id="event-title" class="form-control" required>
+                <div class="form-tabs">
+                    <button type="button" class="form-tab active" data-tab="basic-info">Basic Info</button>
+                    <button type="button" class="form-tab" data-tab="details">Details</button>
+                    <button type="button" class="form-tab" data-tab="speakers-schedule">Speakers & Schedule</button>
                 </div>
-                <div class="form-group">
-                    <label for="event-description" class="form-label">Description</label>
-                    <textarea id="event-description" class="form-control form-textarea" required></textarea>
+                <div class="form-navigation">
+                    <div class="form-step-container">
+                        <span class="form-step active" data-step="0"></span>
+                        <span class="form-step-label">Basic Info</span>
+                    </div>
+                    <div class="form-step-container">
+                        <span class="form-step" data-step="1"></span>
+                        <span class="form-step-label">Details</span>
+                    </div>
+                    <div class="form-step-container">
+                        <span class="form-step" data-step="2"></span>
+                        <span class="form-step-label">Speakers & Schedule</span>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="event-category" class="form-label">Category</label>
-                    <select id="event-category" class="form-control form-select" style="background-color: var(--surface-dark-higher);">
-                        <option value="technology">Technology</option>
-                        <option value="science">Science</option>
-                        <option value="arts">Arts</option>
-                        <option value="music">Music</option>
-                        <option value="sports">Sports</option>
-                        <option value="career">Career</option>
-                    </select>
+                
+                <!-- Basic Info Tab -->
+                <div class="form-tab-content active" id="basic-info-content">
+                    <div class="form-group">
+                        <label for="event-title" class="form-label required">Event Title</label>
+                        <input type="text" id="event-title" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="event-description" class="form-label required">Description</label>
+                        <textarea id="event-description" class="form-control form-textarea" rows="5" required style="resize: vertical; min-height: 120px;"></textarea>
+                        <small class="form-text">Use line breaks for paragraphs. HTML formatting is not supported.</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="event-category" class="form-label required">Category</label>
+                        <select id="event-category" class="form-control form-select" style="background-color: var(--surface-dark-higher);" required>
+                            <option value="technology">Technology</option>
+                            <option value="science">Science</option>
+                            <option value="arts">Arts</option>
+                            <option value="music">Music</option>
+                            <option value="sports">Sports</option>
+                            <option value="career">Career</option>
+                            <option value="academic">Academic</option>
+                            <option value="social">Social</option>
+                            <option value="cultural">Cultural</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group form-col">
+                            <label for="event-date" class="form-label required">Event Date</label>
+                            <input type="date" id="event-date" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-group form-col">
+                            <label for="event-time" class="form-label required">Event Time</label>
+                            <input type="time" id="event-time" class="form-control" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="event-location" class="form-label required">Location</label>
+                        <input type="text" id="event-location" class="form-control" placeholder="Building name, room number, address, etc." required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="event-date" class="form-label">Event Date</label>
-                    <input type="date" id="event-date" class="form-control" required>
+                
+                <!-- Details Tab -->
+                <div class="form-tab-content" id="details-content">
+                    <div class="form-row">
+                        <div class="form-group form-col">
+                            <label for="event-capacity" class="form-label">Maximum Capacity</label>
+                            <input type="number" id="event-capacity" class="form-control" min="1" value="100">
+                            <small class="form-text">Default: 100 attendees</small>
+                        </div>
+                        
+                        <div class="form-group form-col">
+                            <label for="event-price" class="form-label optional">Price</label>
+                            <div class="input-with-prefix">
+                                <span class="input-prefix">$</span>
+                                <input type="number" id="event-price" class="form-control" min="0" step="0.01" placeholder="0.00">
+                            </div>
+                            <small class="form-text">Leave at 0 for free events</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group form-col">
+                            <label for="registration-deadline" class="form-label optional">Registration Deadline</label>
+                            <input type="date" id="registration-deadline" class="form-control">
+                            <small class="form-text">If left empty, defaults to event date</small>
+                        </div>
+                        
+                        <div class="form-group form-col">
+                            <label for="event-status" class="form-label">Event Status</label>
+                            <select id="event-status" class="form-control form-select" style="background-color: var(--surface-dark-higher);">
+                                <option value="active">Active</option>
+                                <option value="draft">Draft</option>
+                            </select>
+                            <small class="form-text">Draft events won't appear in listings</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="event-image" class="form-label optional">Event Image URL</label>
+                        <input type="url" id="event-image" class="form-control" placeholder="https://example.com/image.jpg">
+                        <small class="form-text">A default image will be used if left empty</small>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="event-time" class="form-label">Event Time</label>
-                    <input type="time" id="event-time" class="form-control" required>
+                
+                <!-- Speakers & Schedule Tab -->
+                <div class="form-tab-content" id="speakers-schedule-content">
+                    <div class="form-section">
+                        <h4>Speakers <span class="optional-tag">(Optional)</span></h4>
+                        <p class="help-text">Add featured speakers for your event. This will enhance your event page with speaker profiles.</p>
+                        
+                        <div id="speakers-container">
+                            <!-- Speakers will be added here -->
+                            <div class="empty-state" id="speakers-empty-state">
+                                <p>No speakers added yet. Click the button below to add speakers.</p>
+                            </div>
+                        </div>
+                        
+                        <button type="button" id="add-speaker-btn" class="btn btn-outline btn-sm">
+                            <i class="fas fa-plus"></i> Add Speaker
+                        </button>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h4>Schedule <span class="optional-tag">(Optional)</span></h4>
+                        <p class="help-text">Add a timeline of activities for your event. This will display on the event details page.</p>
+                        
+                        <div id="schedule-container">
+                            <!-- Schedule items will be added here -->
+                            <div class="empty-state" id="schedule-empty-state">
+                                <p>No schedule items added yet. Click the button below to add to your event schedule.</p>
+                            </div>
+                        </div>
+                        
+                        <button type="button" id="add-schedule-btn" class="btn btn-outline btn-sm">
+                            <i class="fas fa-plus"></i> Add Schedule Item
+                        </button>
+                    </div>
+                    
+                    <div class="form-section event-summary">
+                        <h4>Event Summary</h4>
+                        <p class="help-text">Review your event details before submitting. Click "Create Event" when you're ready.</p>
+                        
+                        <div class="summary-card">
+                            <div class="summary-section">
+                                <h5><i class="fas fa-info-circle"></i> Basic Information</h5>
+                                <div class="summary-item">
+                                    <span class="summary-label">Event Title:</span>
+                                    <span class="summary-value" id="summary-title">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Category:</span>
+                                    <span class="summary-value" id="summary-category">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Date & Time:</span>
+                                    <span class="summary-value" id="summary-datetime">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Location:</span>
+                                    <span class="summary-value" id="summary-location">-</span>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-section">
+                                <h5><i class="fas fa-cog"></i> Event Details</h5>
+                                <div class="summary-item">
+                                    <span class="summary-label">Capacity:</span>
+                                    <span class="summary-value" id="summary-capacity">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Price:</span>
+                                    <span class="summary-value" id="summary-price">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Registration Deadline:</span>
+                                    <span class="summary-value" id="summary-deadline">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Has Image:</span>
+                                    <span class="summary-value" id="summary-image">-</span>
+                                </div>
+                            </div>
+                            
+                            <div class="summary-section">
+                                <h5><i class="fas fa-user"></i> Additional Content</h5>
+                                <div class="summary-item">
+                                    <span class="summary-label">Speakers:</span>
+                                    <span class="summary-value" id="summary-speakers">-</span>
+                                </div>
+                                <div class="summary-item">
+                                    <span class="summary-label">Schedule Items:</span>
+                                    <span class="summary-value" id="summary-schedule">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <p class="help-text text-center">
+                            <i class="fas fa-info-circle"></i> Once created, you can still edit your event details later.
+                        </p>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="event-location" class="form-label">Location</label>
-                    <input type="text" id="event-location" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="event-capacity" class="form-label">Maximum Capacity</label>
-                    <input type="number" id="event-capacity" class="form-control" min="1">
-                </div>
-                <div class="form-actions">
+                <div class="form-actions" id="form-actions">
                     <button type="button" class="btn btn-outline" id="cancel-event">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Create Event</button>
+                    <button type="button" class="btn btn-primary" id="prev-tab-btn">Previous</button>
+                    <button type="button" class="btn btn-primary" id="next-tab-btn">Next</button>
+                    <button type="submit" class="btn btn-primary" id="create-event-btn-submit" style="display: none;">Create Event</button>
                 </div>
             </form>
         </div>
@@ -1023,7 +1491,524 @@
             
             // Load user profile data
             loadUserProfile();
+            
+            // Initialize form tabs
+            initFormTabs();
+            
+            // Initialize dynamic speakers and schedule fields
+            initDynamicFields();
         });
+        
+        // Form tabs functionality
+        function initFormTabs() {
+            const formTabs = document.querySelectorAll('.form-tab');
+            const formTabContents = document.querySelectorAll('.form-tab-content');
+            const prevTabBtn = document.getElementById('prev-tab-btn');
+            const nextTabBtn = document.getElementById('next-tab-btn');
+            const submitBtn = document.getElementById('create-event-btn-submit');
+            
+            // Function to navigate to a specific tab
+            function navigateToTab(tabIndex) {
+                // Remove active class from all tabs and contents
+                formTabs.forEach(t => t.classList.remove('active'));
+                formTabContents.forEach(c => c.classList.remove('active'));
+                
+                // Remove active class from all step indicators
+                document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+                
+                // Add active class to the tab at the given index
+                formTabs[tabIndex].classList.add('active');
+                
+                // Add active class to the current step indicator
+                document.querySelector(`.form-step[data-step="${tabIndex}"]`).classList.add('active');
+                
+                // Show corresponding content
+                const tabId = formTabs[tabIndex].getAttribute('data-tab');
+                document.getElementById(`${tabId}-content`).classList.add('active');
+                
+                // Update navigation buttons
+                prevTabBtn.style.display = tabIndex === 0 ? 'none' : 'inline-block';
+                nextTabBtn.style.display = tabIndex === formTabs.length - 1 ? 'none' : 'inline-block';
+                submitBtn.style.display = tabIndex === formTabs.length - 1 ? 'inline-block' : 'none';
+                
+                // Update summary if navigating to the last tab
+                if (tabIndex === formTabs.length - 1) {
+                    updateEventSummary();
+                }
+            }
+            
+            // Function to update the event summary
+            function updateEventSummary() {
+                // Basic info
+                document.getElementById('summary-title').textContent = document.getElementById('event-title').value || '-';
+                document.getElementById('summary-category').textContent = document.getElementById('event-category').options[document.getElementById('event-category').selectedIndex].text || '-';
+                
+                // Format date and time
+                const eventDate = document.getElementById('event-date').value;
+                const eventTime = document.getElementById('event-time').value;
+                if (eventDate && eventTime) {
+                    try {
+                        const dateObj = new Date(`${eventDate}T${eventTime}`);
+                        const formattedDateTime = dateObj.toLocaleString('en-US', { 
+                            weekday: 'long',
+                            month: 'long', 
+                            day: 'numeric', 
+                            year: 'numeric',
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true
+                        });
+                        document.getElementById('summary-datetime').textContent = formattedDateTime;
+                    } catch (error) {
+                        document.getElementById('summary-datetime').textContent = `${eventDate} at ${eventTime}`;
+                    }
+                } else {
+                    document.getElementById('summary-datetime').textContent = '-';
+                }
+                
+                document.getElementById('summary-location').textContent = document.getElementById('event-location').value || '-';
+                
+                // Details
+                document.getElementById('summary-capacity').textContent = document.getElementById('event-capacity').value || '100';
+                
+                const price = document.getElementById('event-price').value;
+                document.getElementById('summary-price').textContent = price && parseFloat(price) > 0 ? `$${parseFloat(price).toFixed(2)}` : 'Free';
+                
+                // Format deadline
+                const deadline = document.getElementById('registration-deadline').value;
+                if (deadline) {
+                    try {
+                        const deadlineObj = new Date(deadline);
+                        document.getElementById('summary-deadline').textContent = deadlineObj.toLocaleDateString('en-US', {
+                            weekday: 'long',
+                            month: 'long', 
+                            day: 'numeric', 
+                            year: 'numeric'
+                        });
+                    } catch (error) {
+                        document.getElementById('summary-deadline').textContent = deadline;
+                    }
+                } else {
+                    document.getElementById('summary-deadline').textContent = 'Same as event date';
+                }
+                
+                // Image
+                const hasImage = document.getElementById('event-image').value.trim() !== '';
+                document.getElementById('summary-image').textContent = hasImage ? 'Yes' : 'Using default image';
+                
+                // Speakers and Schedule
+                const speakerCount = document.querySelectorAll('.speaker-item').length;
+                document.getElementById('summary-speakers').textContent = speakerCount > 0 ? `${speakerCount} speaker(s) added` : 'None';
+                
+                const scheduleCount = document.querySelectorAll('.schedule-item').length;
+                document.getElementById('summary-schedule').textContent = scheduleCount > 0 ? `${scheduleCount} item(s) added` : 'None';
+            }
+            
+            // Initialize to first tab
+            navigateToTab(0);
+            
+            // Handle tab clicks
+            formTabs.forEach((tab, index) => {
+                tab.addEventListener('click', function() {
+                    // Only allow direct navigation to tabs if current tab is valid or going backwards
+                    const currentTabIndex = Array.from(formTabs).findIndex(tab => tab.classList.contains('active'));
+                    if (index < currentTabIndex || validateCurrentTab(currentTabIndex)) {
+                        navigateToTab(index);
+                    }
+                });
+            });
+            
+            // Handle step indicator clicks
+            document.querySelectorAll('.form-step').forEach((step, index) => {
+                step.addEventListener('click', function() {
+                    // Only allow direct navigation to steps if current tab is valid or going backwards
+                    const currentTabIndex = Array.from(formTabs).findIndex(tab => tab.classList.contains('active'));
+                    if (index < currentTabIndex || validateCurrentTab(currentTabIndex)) {
+                        navigateToTab(index);
+                    }
+                });
+            });
+            
+            // Handle next button click
+            nextTabBtn.addEventListener('click', function() {
+                const currentTabIndex = Array.from(formTabs).findIndex(tab => tab.classList.contains('active'));
+                if (currentTabIndex < formTabs.length - 1) {
+                    // Validate current tab before proceeding
+                    if (validateCurrentTab(currentTabIndex)) {
+                        navigateToTab(currentTabIndex + 1);
+                    }
+                }
+            });
+            
+            // Handle previous button click
+            prevTabBtn.addEventListener('click', function() {
+                const currentTabIndex = Array.from(formTabs).findIndex(tab => tab.classList.contains('active'));
+                if (currentTabIndex > 0) {
+                    navigateToTab(currentTabIndex - 1);
+                }
+            });
+            
+            // Function to validate the current tab
+            function validateCurrentTab(tabIndex) {
+                let isValid = true;
+                
+                // Validate basic info tab
+                if (tabIndex === 0) {
+                    const title = document.getElementById('event-title').value.trim();
+                    const description = document.getElementById('event-description').value.trim();
+                    const date = document.getElementById('event-date').value;
+                    const time = document.getElementById('event-time').value;
+                    const location = document.getElementById('event-location').value.trim();
+                    
+                    if (!title) {
+                        showValidationError('Please enter an event title');
+                        isValid = false;
+                    } else if (!description) {
+                        showValidationError('Please enter an event description');
+                        isValid = false;
+                    } else if (!date) {
+                        showValidationError('Please select an event date');
+                        isValid = false;
+                    } else if (!time) {
+                        showValidationError('Please select an event time');
+                        isValid = false;
+                    } else if (!location) {
+                        showValidationError('Please enter an event location');
+                        isValid = false;
+                    } else {
+                        // Validate date is today or in the future
+                        try {
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0); // Set to start of day for date comparison
+                            
+                            const eventDateObj = new Date(date);
+                            eventDateObj.setHours(0, 0, 0, 0); // Set to start of day for date comparison
+                            
+                            if (eventDateObj < today) {
+                                // Date is in the past
+                                showValidationError('Event date must be today or in the future');
+                                isValid = false;
+                            } else if (eventDateObj.getTime() === today.getTime()) {
+                                // Date is today, check if time is in the future
+                                const now = new Date();
+                                const [hours, minutes] = time.split(':').map(Number);
+                                const eventTimeDate = new Date();
+                                eventTimeDate.setHours(hours, minutes, 0, 0);
+                                
+                                if (eventTimeDate <= now) {
+                                    showValidationError('Event time must be in the future');
+                                    isValid = false;
+                                }
+                            }
+                        } catch (error) {
+                            console.error('Date validation error:', error);
+                            showValidationError('Invalid event date format. Please check and try again.');
+                            isValid = false;
+                        }
+                    }
+                }
+                
+                // Validate details tab
+                else if (tabIndex === 1) {
+                    // Check registration deadline if provided
+                    const eventDate = document.getElementById('event-date').value;
+                    const eventTime = document.getElementById('event-time').value;
+                    const registrationDeadline = document.getElementById('registration-deadline').value;
+                    
+                    if (registrationDeadline) {
+                        try {
+                            // Create event date object
+                            const eventDateObj = new Date(eventDate);
+                            const [hours, minutes] = eventTime.split(':').map(Number);
+                            const eventDateTime = new Date(eventDateObj);
+                            eventDateTime.setHours(hours, minutes, 0, 0);
+                            
+                            // Create deadline date object (set to end of day)
+                            const deadlineObj = new Date(registrationDeadline);
+                            const deadlineDateTime = new Date(deadlineObj);
+                            deadlineDateTime.setHours(23, 59, 59, 999);
+                            
+                            // Check if deadline is valid
+                            if (isNaN(deadlineDateTime.getTime())) {
+                                throw new Error('Invalid deadline date');
+                            }
+                            
+                            // Check deadline is on or before event date
+                            if (deadlineDateTime > eventDateTime) {
+                                showValidationError('Registration deadline must be on or before the event date');
+                                isValid = false;
+                            }
+                            
+                            // Check if deadline is in the past
+                            const today = new Date();
+                            if (deadlineObj < today && deadlineObj.toDateString() !== today.toDateString()) {
+                                showValidationError('Registration deadline cannot be in the past');
+                                isValid = false;
+                            }
+                        } catch (error) {
+                            console.error('Deadline validation error:', error);
+                            showValidationError('Invalid registration deadline format. Please check and try again.');
+                            isValid = false;
+                        }
+                    }
+                    
+                    // Validate capacity is a positive number
+                    const capacity = document.getElementById('event-capacity').value;
+                    if (capacity && parseInt(capacity) <= 0) {
+                        showValidationError('Capacity must be a positive number');
+                        isValid = false;
+                    }
+                    
+                    // Validate price is non-negative
+                    const price = document.getElementById('event-price').value;
+                    if (price && parseFloat(price) < 0) {
+                        showValidationError('Price cannot be negative');
+                        isValid = false;
+                    }
+                }
+                
+                return isValid;
+            }
+            
+            function showValidationError(message) {
+                // Create error message element
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+                
+                // Find active tab content to show error in
+                const activeTabContent = document.querySelector('.form-tab-content.active');
+                
+                // Remove any existing error messages
+                const existingErrors = activeTabContent.querySelectorAll('.error-message');
+                existingErrors.forEach(err => err.remove());
+                
+                // Insert at top of active tab content
+                if (activeTabContent.firstChild) {
+                    activeTabContent.insertBefore(errorDiv, activeTabContent.firstChild);
+                } else {
+                    activeTabContent.appendChild(errorDiv);
+                }
+                
+                // Scroll to the top of the form to show error
+                activeTabContent.scrollTop = 0;
+                
+                // Auto-dismiss after 5 seconds
+                setTimeout(() => {
+                    errorDiv.remove();
+                }, 5000);
+            }
+        }
+        
+        // Dynamic speakers and schedule fields functionality
+        function initDynamicFields() {
+            // Speaker functionality
+            let speakerCount = 0;
+            
+            document.getElementById('add-speaker-btn').addEventListener('click', function() {
+                const speakersContainer = document.getElementById('speakers-container');
+                const speakerId = `speaker-${speakerCount}`;
+                
+                // Hide the empty state if it exists
+                const emptyState = document.getElementById('speakers-empty-state');
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+                
+                const speakerItem = document.createElement('div');
+                speakerItem.className = 'speaker-item';
+                speakerItem.dataset.id = speakerId;
+                speakerItem.innerHTML = `
+                    <button type="button" class="remove-item-btn" data-remove="${speakerId}" title="Remove Speaker">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">Speaker Name</label>
+                        <input type="text" name="speaker-name-${speakerId}" class="form-control speaker-name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label optional">Title/Role</label>
+                        <input type="text" name="speaker-title-${speakerId}" class="form-control speaker-title" placeholder="e.g. Professor of Computer Science">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label optional">Bio</label>
+                        <textarea name="speaker-bio-${speakerId}" class="form-control speaker-bio" rows="2" placeholder="Brief biography"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label optional">Image URL</label>
+                        <input type="url" name="speaker-image-${speakerId}" class="form-control speaker-image" placeholder="https://example.com/speaker.jpg">
+                    </div>
+                `;
+                
+                speakersContainer.appendChild(speakerItem);
+                speakerCount++;
+                
+                // Attach remove button functionality
+                speakerItem.querySelector('.remove-item-btn').addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-remove');
+                    document.querySelector(`.speaker-item[data-id="${itemId}"]`).remove();
+                    
+                    // Check if there are any speakers left
+                    const speakerItems = document.querySelectorAll('.speaker-item');
+                    if (speakerItems.length === 0 && emptyState) {
+                        emptyState.style.display = 'block';
+                    }
+                });
+                
+                // Focus the name input for better UX
+                setTimeout(() => {
+                    speakerItem.querySelector('.speaker-name').focus();
+                }, 50);
+            });
+            
+            // Schedule functionality
+            let scheduleCount = 0;
+            
+            document.getElementById('add-schedule-btn').addEventListener('click', function() {
+                const scheduleContainer = document.getElementById('schedule-container');
+                const scheduleId = `schedule-${scheduleCount}`;
+                
+                // Hide the empty state if it exists
+                const emptyState = document.getElementById('schedule-empty-state');
+                if (emptyState) {
+                    emptyState.style.display = 'none';
+                }
+                
+                const scheduleItem = document.createElement('div');
+                scheduleItem.className = 'schedule-item';
+                scheduleItem.dataset.id = scheduleId;
+                
+                // Get event date for default schedule date
+                const eventDate = document.getElementById('event-date').value || '';
+                
+                // Get event time for default schedule time
+                const eventTime = document.getElementById('event-time').value || '';
+                
+                scheduleItem.innerHTML = `
+                    <button type="button" class="remove-item-btn" data-remove="${scheduleId}" title="Remove Schedule Item">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    
+                    <div class="form-group">
+                        <label class="form-label required">Activity Title</label>
+                        <input type="text" name="schedule-title-${scheduleId}" class="form-control schedule-title" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label optional">Description</label>
+                        <textarea name="schedule-desc-${scheduleId}" class="form-control schedule-description" rows="2" placeholder="Brief description of this activity"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group form-col">
+                            <label class="form-label optional">Date</label>
+                            <input type="date" name="schedule-date-${scheduleId}" class="form-control schedule-date" value="${eventDate}">
+                            <small class="form-text">Defaults to event date if left empty</small>
+                        </div>
+                        
+                        <div class="form-group form-col">
+                            <label class="form-label required">Time</label>
+                            <input type="time" name="schedule-time-${scheduleId}" class="form-control schedule-time" required value="${eventTime}">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label optional">Speaker/Presenter</label>
+                        <input type="text" name="schedule-speaker-${scheduleId}" class="form-control schedule-speaker" placeholder="Name of presenter for this activity">
+                    </div>
+                `;
+                
+                scheduleContainer.appendChild(scheduleItem);
+                scheduleCount++;
+                
+                // Attach remove button functionality
+                scheduleItem.querySelector('.remove-item-btn').addEventListener('click', function() {
+                    const itemId = this.getAttribute('data-remove');
+                    document.querySelector(`.schedule-item[data-id="${itemId}"]`).remove();
+                    
+                    // Check if there are any schedule items left
+                    const scheduleItems = document.querySelectorAll('.schedule-item');
+                    if (scheduleItems.length === 0 && emptyState) {
+                        emptyState.style.display = 'block';
+                    }
+                });
+                
+                // Focus the title input for better UX
+                setTimeout(() => {
+                    scheduleItem.querySelector('.schedule-title').focus();
+                }, 50);
+            });
+        }
+        
+        /**
+         * Collect all speakers data from form
+         * @returns {Array} Array of speaker objects
+         */
+        function collectSpeakersData() {
+            const speakerItems = document.querySelectorAll('.speaker-item');
+            const speakers = [];
+            
+            speakerItems.forEach(item => {
+                const nameInput = item.querySelector('.speaker-name');
+                const titleInput = item.querySelector('.speaker-title');
+                const bioInput = item.querySelector('.speaker-bio');
+                const imageInput = item.querySelector('.speaker-image');
+                
+                // Only add if name is provided
+                if (nameInput.value.trim()) {
+                    speakers.push({
+                        name: nameInput.value.trim(),
+                        title: titleInput.value.trim(),
+                        bio: bioInput.value.trim(),
+                        image: imageInput.value.trim()
+                    });
+                }
+            });
+            
+            return speakers;
+        }
+        
+        /**
+         * Collect all schedule data from form
+         * @returns {Array} Array of schedule item objects
+         */
+        function collectScheduleData() {
+            const scheduleItems = document.querySelectorAll('.schedule-item');
+            const schedule = [];
+            
+            scheduleItems.forEach(item => {
+                const titleInput = item.querySelector('.schedule-title');
+                const descInput = item.querySelector('.schedule-description');
+                const dateInput = item.querySelector('.schedule-date');
+                const timeInput = item.querySelector('.schedule-time');
+                const speakerInput = item.querySelector('.schedule-speaker');
+                
+                // Only add if title and time are provided
+                if (titleInput.value.trim() && timeInput.value) {
+                    let startTime;
+                    
+                    // Use the event date if schedule date is not provided
+                    const useDate = dateInput.value || document.getElementById('event-date').value;
+                    
+                    if (useDate && timeInput.value) {
+                        startTime = new Date(`${useDate}T${timeInput.value}`);
+                    }
+                    
+                    schedule.push({
+                        title: titleInput.value.trim(),
+                        description: descInput.value.trim(),
+                        startTime: startTime ? startTime.toISOString() : null,
+                        speaker: speakerInput.value.trim()
+                    });
+                }
+            });
+            
+            return schedule;
+        }
 
         async function loadUserProfile() {
             try {
@@ -1039,110 +2024,14 @@
                 console.error('Error fetching profile:', error);
             }
         }
-        
-        function updateDashboardUI(userData) {
-            // Update profile avatar and name
-            const adminAvatar = document.querySelector('.admin-avatar');
-            const adminUserName = document.querySelector('.dropdown-toggle span');
-            const sidebarHeaderTitle = document.querySelector('.admin-sidebar-header h3');
-            const dashboardTitle = document.querySelector('.admin-header h2');
-            
-            if (adminAvatar) {
-                adminAvatar.src = `https://api.dicebear.com/7.x/initials/svg?seed=${userData.name}`;
-                adminAvatar.alt = userData.name;
-            }
-            
-            if (adminUserName) {
-                adminUserName.textContent = userData.name;
-            }
-            
-            // Update organization name in the sidebar and header if available
-            if (userData.organizationInfo && userData.organizationInfo.orgName) {
-                const orgName = userData.organizationInfo.orgName;
-                
-                if (sidebarHeaderTitle) {
-                    sidebarHeaderTitle.textContent = orgName;
-                }
-                
-                if (dashboardTitle) {
-                    dashboardTitle.textContent = `${orgName} Dashboard`;
-                }
-            }
-        }
-        
-        // Mobile menu toggle
-        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
-        const mainNav = document.querySelector('.main-nav');
-        
-        mobileMenuToggle.addEventListener('click', function() {
-            mainNav.classList.toggle('active');
-            this.classList.toggle('active');
-        });
-        
-        // Setup logout functionality for both logout buttons
-        function setupLogoutButton(buttonId) {
-            const logoutBtn = document.getElementById(buttonId);
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    if (window.eventura && window.eventura.auth) {
-                        window.eventura.auth.logout();
-                    } else {
-                        // Fallback if auth.js is not properly loaded
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('userRole');
-                        localStorage.removeItem('userName');
-                        localStorage.removeItem('userEmail');
-                        localStorage.removeItem('userId');
-                        localStorage.removeItem('isLoggedIn');
-                        window.location.href = 'index.html';
-                    }
-                });
-            }
-        }
-        
-        // Setup both logout buttons
-        setupLogoutButton('logout-btn');
-        setupLogoutButton('sidebar-logout-btn');
 
-        // Search toggle with animation
-        const searchToggle = document.querySelector('.search-toggle');
-        const searchForm = document.querySelector('.search-form');
-        
-        searchToggle.addEventListener('click', function() {
-            searchForm.classList.toggle('active');
-        });
-        
-        // Close search when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!event.target.closest('.search-container')) {
-                searchForm.classList.remove('active');
-            }
-            
-            // Toggle dropdown menu when clicking on the dropdown toggle
-            const dropdown = document.querySelector('.dropdown');
-            if (dropdown && event.target.closest('.dropdown-toggle')) {
-                const dropdownContent = dropdown.querySelector('.dropdown-content');
-                if (dropdownContent) {
-                    dropdownContent.classList.toggle('active');
-                    event.stopPropagation();
-                }
-            } else if (!event.target.closest('.dropdown-content')) {
-                // Close dropdown when clicking outside
-                const dropdownContent = document.querySelector('.dropdown-content');
-                if (dropdownContent) {
-                    dropdownContent.classList.remove('active');
-                }
-            }
-        });
-        
-        // Modal functionality
-        const createEventBtn = document.getElementById('create-event-btn');
+        // Create Event Modal functionality
+        const createEventModalBtn = document.getElementById('create-event-btn');
         const createEventModal = document.getElementById('create-event-modal');
         const closeModalBtn = document.getElementById('close-modal');
         const cancelEventBtn = document.getElementById('cancel-event');
         
-        createEventBtn.addEventListener('click', function() {
+        createEventModalBtn.addEventListener('click', function() {
             createEventModal.classList.add('active');
         });
         
@@ -1161,40 +2050,180 @@
             }
         });
         
+        // Validate the complete form before submission
+        function validateEventForm() {
+            // Get form values
+            const title = document.getElementById('event-title').value.trim();
+            const description = document.getElementById('event-description').value.trim();
+            const dateValue = document.getElementById('event-date').value;
+            const timeValue = document.getElementById('event-time').value;
+            const location = document.getElementById('event-location').value.trim();
+            
+            // Check required fields
+            if (!title) {
+                showErrorMessage('Event title is required');
+                return false;
+            }
+            if (!description) {
+                showErrorMessage('Event description is required');
+                return false;
+            }
+            if (!dateValue) {
+                showErrorMessage('Event date is required');
+                return false;
+            }
+            if (!timeValue) {
+                showErrorMessage('Event time is required');
+                return false;
+            }
+            if (!location) {
+                showErrorMessage('Event location is required');
+                return false;
+            }
+            
+            // Check if event date is in the future
+            try {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // Set to start of day for date comparison
+                
+                const eventDateObj = new Date(dateValue);
+                eventDateObj.setHours(0, 0, 0, 0); // Set to start of day for date comparison
+                
+                if (eventDateObj < today) {
+                    // Date is in the past
+                    showErrorMessage('Event date must be today or in the future');
+                    return false;
+                } else if (eventDateObj.getTime() === today.getTime()) {
+                    // Date is today, check if time is in the future
+                    const now = new Date();
+                    const [hours, minutes] = timeValue.split(':').map(Number);
+                    const eventTimeDate = new Date();
+                    eventTimeDate.setHours(hours, minutes, 0, 0);
+                    
+                    if (eventTimeDate <= now) {
+                        showErrorMessage('Event time must be in the future');
+                        return false;
+                    }
+                }
+            } catch (error) {
+                console.error('Date validation error:', error);
+                showErrorMessage('Invalid event date format. Please check and try again.');
+                return false;
+            }
+            
+            // Check registration deadline if provided
+            const registrationDeadline = document.getElementById('registration-deadline').value;
+            if (registrationDeadline) {
+                try {
+                    // Create event date object
+                    const eventDateObj = new Date(dateValue);
+                    const [hours, minutes] = timeValue.split(':').map(Number);
+                    const eventDateTime = new Date(eventDateObj);
+                    eventDateTime.setHours(hours, minutes, 0, 0);
+                    
+                    // Create deadline date object (set to end of day)
+                    const deadlineObj = new Date(registrationDeadline);
+                    const deadlineDateTime = new Date(deadlineObj);
+                    deadlineDateTime.setHours(23, 59, 59, 999);
+                    
+                    // Check if deadline is valid
+                    if (isNaN(deadlineDateTime.getTime())) {
+                        throw new Error('Invalid deadline date');
+                    }
+                    
+                    // Check deadline is on or before event date
+                    if (deadlineDateTime > eventDateTime) {
+                        showErrorMessage('Registration deadline must be on or before the event date');
+                        return false;
+                    }
+                    
+                    // Check if deadline is in the past
+                    const today = new Date();
+                    if (deadlineObj < today && deadlineObj.toDateString() !== today.toDateString()) {
+                        showErrorMessage('Registration deadline cannot be in the past');
+                        return false;
+                    }
+                } catch (error) {
+                    console.error('Deadline validation error:', error);
+                    showErrorMessage('Invalid registration deadline format. Please check and try again.');
+                    return false;
+                }
+            }
+            
+            // Validate capacity and price
+            const capacity = document.getElementById('event-capacity').value;
+            if (capacity && parseInt(capacity) <= 0) {
+                showErrorMessage('Capacity must be a positive number');
+                return false;
+            }
+            
+            const price = document.getElementById('event-price').value;
+            if (price && parseFloat(price) < 0) {
+                showErrorMessage('Price cannot be negative');
+                return false;
+            }
+            
+            return true;
+        }
+
         // Handle event form submission
         document.getElementById('create-event-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            // Validate the entire form
+            if (!validateEventForm()) {
+                return; // Stop if validation fails
+            }
+            
             // Show loading state
-            const submitBtn = this.querySelector('button[type="submit"]');
+            const submitBtn = document.getElementById('create-event-btn-submit');
             const originalBtnText = submitBtn.innerHTML;
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Creating...';
             
             try {
-                // Get form data
                 // Get form values
-                const title = document.getElementById('event-title').value;
-                const description = document.getElementById('event-description').value;
+                const title = document.getElementById('event-title').value.trim();
+                const description = document.getElementById('event-description').value.trim();
                 const category = document.getElementById('event-category').value;
                 const dateValue = document.getElementById('event-date').value;
                 const timeValue = document.getElementById('event-time').value;
-                const location = document.getElementById('event-location').value;
+                const location = document.getElementById('event-location').value.trim();
                 const capacity = document.getElementById('event-capacity').value || "100";
+                const price = document.getElementById('event-price').value;
+                const imageUrl = document.getElementById('event-image').value;
+                const status = document.getElementById('event-status').value;
+                const registrationDeadline = document.getElementById('registration-deadline').value;
 
-                // Validate required fields
-                if (!title) throw new Error('Event title is required');
-                if (!description) throw new Error('Event description is required');
-                if (!dateValue) throw new Error('Event date is required');
-                if (!timeValue) throw new Error('Event time is required');
-                if (!location) throw new Error('Event location is required');
-
+                // Collect speakers and schedule data
+                const speakers = collectSpeakersData();
+                const schedule = collectScheduleData();
+                
                 // Safely create date object
                 let eventDateTime;
+                let deadlineDateTime = null;
+                
                 try {
-                    eventDateTime = new Date(`${dateValue}T${timeValue}`);
+                    // Create event date time properly
+                    const eventDateObj = new Date(dateValue);
+                    const [hours, minutes] = timeValue.split(':').map(Number);
+                    eventDateTime = new Date(eventDateObj);
+                    eventDateTime.setHours(hours, minutes, 0, 0);
+                    
                     if (isNaN(eventDateTime.getTime())) {
                         throw new Error('Invalid date or time format');
+                    }
+                    
+                    // Parse registration deadline if provided
+                    if (registrationDeadline) {
+                        // Set deadline to end of day
+                        const deadlineObj = new Date(registrationDeadline);
+                        deadlineDateTime = new Date(deadlineObj);
+                        deadlineDateTime.setHours(23, 59, 59, 999);
+                        
+                        if (isNaN(deadlineDateTime.getTime())) {
+                            throw new Error('Invalid registration deadline format');
+                        }
                     }
                 } catch (dateError) {
                     console.error('Date error:', dateError);
@@ -1209,7 +2238,12 @@
                     eventDate: eventDateTime.toISOString(),
                     location,
                     capacity,
-                    status: 'active'
+                    status,
+                    price: price ? parseFloat(price) : 0,
+                    registrationDeadline: deadlineDateTime ? deadlineDateTime.toISOString() : null,
+                    image: imageUrl || null,
+                    speakers,
+                    schedule
                 };
                 
                 // Log the data being sent for debugging
@@ -1220,9 +2254,6 @@
                 if (!token) {
                     throw new Error('Authentication token not found. Please login again.');
                 }
-                
-                // Log the data being sent
-                console.log('Creating event with data:', formData);
 
                 // Send data to server
                 const response = await fetch('http://localhost:5000/api/events', {
@@ -1251,14 +2282,39 @@
                 }
                 
                 if (response.ok && result.success) {
+                    // Store the event ID in localStorage for reference
+                    if (result.data && result.data._id) {
+                        localStorage.setItem('lastCreatedEventId', result.data._id);
+                    }
+                    
                     // Reset form
                     document.getElementById('create-event-form').reset();
                     
                     // Close modal
                     createEventModal.classList.remove('active');
                     
-                    // Show success message with nicer UI than alert
-                    showSuccessMessage('Event created successfully! It will appear in your events list.');
+                    // Show success message with view button
+                    const successMsg = document.createElement('div');
+                    successMsg.innerHTML = `
+                        Event created successfully!
+                        <div style="margin-top: 10px;">
+                            <button class="btn btn-secondary" id="view-new-event-btn">
+                                View Event Details
+                            </button>
+                        </div>
+                    `;
+                    
+                    showSuccessMessage(successMsg.innerHTML);
+                    
+                    // Add event listener to the button after it's in the DOM
+                    setTimeout(() => {
+                        const viewBtn = document.getElementById('view-new-event-btn');
+                        if (viewBtn) {
+                            viewBtn.addEventListener('click', () => {
+                                window.location.href = `event-details.html?id=${result.data._id}`;
+                            });
+                        }
+                    }, 100);
                     
                     // Refresh events list
                     fetchDashboardData();
@@ -1406,6 +2462,196 @@
                 }
             }
         });
+        
+        /**
+         * Show a success message toast
+         * @param {string} message - Message to display (can include HTML)
+         * @param {number} duration - Duration in milliseconds
+         */
+        function showSuccessMessage(message, duration = 5000) {
+            // Create toast element if it doesn't exist
+            let toastContainer = document.getElementById('toast-container');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.id = 'toast-container';
+                toastContainer.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    z-index: 2050;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    max-width: 90vw;
+                `;
+                document.body.appendChild(toastContainer);
+            }
+            
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-success';
+            toast.style.cssText = `
+                background-color: rgba(39, 174, 96, 0.95);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                margin-bottom: 10px;
+                min-width: 250px;
+                max-width: min(400px, 85vw);
+                position: relative;
+                animation: slideIn 0.3s ease;
+                transition: all 0.3s ease;
+                word-wrap: break-word;
+            `;
+            
+            // Create message element with icon
+            const messageEl = document.createElement('div');
+            messageEl.innerHTML = `<i class="fas fa-check-circle" style="margin-right: 8px;"></i> ${message}`;
+            messageEl.style.paddingRight = '20px'; // Space for close button
+            
+            // Add close button
+            const closeBtn = document.createElement('span');
+            closeBtn.innerHTML = '&times;';
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                cursor: pointer;
+                opacity: 0.8;
+                background-color: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+            `;
+            closeBtn.addEventListener('click', () => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(10px)';
+                setTimeout(() => toast.remove(), 300);
+            });
+            
+            // Add elements to toast
+            toast.appendChild(messageEl);
+            toast.appendChild(closeBtn);
+            
+            // Add to container
+            toastContainer.appendChild(toast);
+            
+            // Auto-remove after duration
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(10px)';
+                    setTimeout(() => {
+                        if (toast.parentElement) toast.remove();
+                    }, 300);
+                }
+            }, duration);
+        }
+        
+        /**
+         * Show an error message toast
+         * @param {string} message - Message to display (can include HTML)
+         * @param {number} duration - Duration in milliseconds
+         */
+        function showErrorMessage(message, duration = 5000) {
+            // Create toast element if it doesn't exist
+            let toastContainer = document.getElementById('toast-container');
+            if (!toastContainer) {
+                toastContainer = document.createElement('div');
+                toastContainer.id = 'toast-container';
+                toastContainer.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    z-index: 2050;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    max-width: 90vw;
+                `;
+                document.body.appendChild(toastContainer);
+            }
+            
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-error';
+            toast.style.cssText = `
+                background-color: rgba(235, 87, 87, 0.95);
+                color: white;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                margin-bottom: 10px;
+                min-width: 250px;
+                max-width: min(400px, 85vw);
+                position: relative;
+                animation: slideIn 0.3s ease;
+                transition: all 0.3s ease;
+                word-wrap: break-word;
+            `;
+            
+            // Create message element with icon
+            const messageEl = document.createElement('div');
+            messageEl.innerHTML = `<i class="fas fa-exclamation-circle" style="margin-right: 8px;"></i> ${message}`;
+            messageEl.style.paddingRight = '20px'; // Space for close button
+            
+            // Add close button
+            const closeBtn = document.createElement('span');
+            closeBtn.innerHTML = '&times;';
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                cursor: pointer;
+                opacity: 0.8;
+                background-color: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+            `;
+            closeBtn.addEventListener('click', () => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(10px)';
+                setTimeout(() => toast.remove(), 300);
+            });
+            
+            // Add elements to toast
+            toast.appendChild(messageEl);
+            toast.appendChild(closeBtn);
+            
+            // Add to container
+            toastContainer.appendChild(toast);
+            
+            // Auto-remove after duration
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(10px)';
+                    setTimeout(() => {
+                        if (toast.parentElement) toast.remove();
+                    }, 300);
+                }
+            }, duration);
+        }
+        
+        // Add slideIn animation
+        const styleSheet = document.createElement("style");
+        styleSheet.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(styleSheet);
     </script>
 </body>
 </html>
