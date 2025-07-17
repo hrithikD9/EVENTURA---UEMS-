@@ -33,8 +33,34 @@ const getOrganizations = async (req, res) => {
     
     // Filter by admin user if specified
     if (req.query.adminUser) {
-      query.adminUser = req.query.adminUser;
-      console.log(`Filtering organizations for adminUser: ${req.query.adminUser}`);
+      const adminUserId = req.query.adminUser;
+      console.log(`Checking for organizations with adminUser: ${adminUserId}`);
+      
+      // First verify if there are any organizations for this admin at all
+      const allAdminOrgs = await Organization.find({ 
+        adminUser: adminUserId,
+        status: 'active'
+      });
+      
+      console.log(`Found ${allAdminOrgs.length} total organizations for adminUser ${adminUserId}`);
+      
+      if (allAdminOrgs.length === 0) {
+        console.log('No organizations found for this admin user. Checking user existence...');
+        
+        // Check if user exists
+        const user = await User.findById(adminUserId);
+        if (!user) {
+          console.log(`User with ID ${adminUserId} does not exist`);
+        } else {
+          console.log(`User exists: ${user.name} (${user.role}), but has no organizations`);
+        }
+      } else {
+        console.log(`Organizations found for ${adminUserId}:`, 
+          allAdminOrgs.map(o => ({ id: o._id, name: o.name })));
+      }
+      
+      // Set the query filter
+      query.adminUser = adminUserId;
     }
     
     // Count total documents
@@ -59,12 +85,21 @@ const getOrganizations = async (req, res) => {
         sortCriteria = { name: 1 }; // alphabetical by default
     }
     
-    // Fetch organizations with pagination
+    // Fetch organizations with pagination and populate adminUser
     const organizations = await Organization.find(query)
       .sort(sortCriteria)
       .skip((pageNumber - 1) * pageSize)
       .limit(pageSize)
-      .select('-members');
+      .select('-members')
+      .populate({
+        path: 'adminUser',
+        select: 'name email _id'
+      });
+    
+    // Log organizations found
+    console.log(`Found ${organizations.length} organizations matching query:`, 
+                JSON.stringify(query, (key, value) => 
+                  key === 'adminUser' && typeof value === 'object' ? value.toString() : value));
     
     // Return with pagination info
     res.json({
@@ -74,7 +109,8 @@ const getOrganizations = async (req, res) => {
         totalPages: Math.ceil(totalOrgs / pageSize),
         currentPage: pageNumber,
         hasNextPage: pageNumber * pageSize < totalOrgs,
-        hasPrevPage: pageNumber > 1
+        hasPrevPage: pageNumber > 1,
+        query: { ...query, adminUser: query.adminUser ? query.adminUser.toString() : null } // For debugging
       }
     });
   } catch (error) {
