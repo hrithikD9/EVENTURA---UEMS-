@@ -239,10 +239,128 @@ const getOrganizationCategories = async (req, res) => {
   }
 };
 
+// @desc    Debug endpoint to check organizations by admin ID
+// @route   GET /api/organizations/debug/:adminId
+// @access  Public
+const debugOrganizationsByAdmin = async (req, res) => {
+  try {
+    const adminId = req.params.adminId;
+    console.log(`Debug request for admin ID: ${adminId}`);
+    
+    // Check direct match without conversion
+    const directMatch = await Organization.find({ adminUser: adminId })
+                                          .select('name description adminUser')
+                                          .populate({
+                                            path: 'adminUser',
+                                            select: 'name email _id'
+                                          });
+    
+    // Try with ObjectId conversion
+    let objectIdMatch = [];
+    try {
+      const mongoose = require('mongoose');
+      if (mongoose.Types.ObjectId.isValid(adminId)) {
+        const objId = mongoose.Types.ObjectId(adminId);
+        objectIdMatch = await Organization.find({ adminUser: objId })
+                                         .select('name description adminUser')
+                                         .populate({
+                                           path: 'adminUser',
+                                           select: 'name email _id'
+                                         });
+      }
+    } catch (err) {
+      console.error('Error with ObjectId conversion:', err);
+    }
+    
+    // Check if user exists
+    let user = null;
+    try {
+      const User = require('../models/userModel');
+      user = await User.findById(adminId).select('-password');
+      
+      if (!user) {
+        // Try finding by string comparison if ObjectId fails
+        user = await User.findOne({ _id: adminId }).select('-password');
+      }
+    } catch (err) {
+      console.error('Error finding user:', err);
+    }
+    
+    // Get organizations count by type for reference
+    const orgCountByType = await Organization.aggregate([
+      { $group: { _id: "$category", count: { $sum: 1 } } },
+      { $sort: { count: -1 } }
+    ]);
+    
+    // Get all organizations (for comparison) - limited sample
+    const allOrgs = await Organization.find()
+                                     .select('name adminUser category')
+                                     .limit(5)
+                                     .populate({
+                                       path: 'adminUser',
+                                       select: 'name email _id'
+                                     });
+    
+    res.json({
+      adminId,
+      user,
+      directMatchCount: directMatch.length,
+      directMatches: directMatch,
+      objectIdMatchCount: objectIdMatch.length,
+      objectIdMatches: objectIdMatch,
+      allOrgsCount: await Organization.countDocuments(),
+      allOrgsSample: allOrgs,
+      categoryStats: orgCountByType,
+      possibleIssue: !user ? "User not found" : 
+                    directMatch.length === 0 && objectIdMatch.length === 0 ? 
+                    "No organizations for this user" : null
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// @desc    Create a debug organization (only for development)
+// @route   POST /api/admin/organizations
+// @access  Private/Admin
+const createDebugOrganization = async (req, res) => {
+  try {
+    const { name, description, category, adminUser } = req.body;
+    
+    console.log('Debug org creation request received:', req.body);
+    
+    if (!name || !description || !category || !adminUser) {
+      return res.status(400).json({ message: 'Please provide all required fields' });
+    }
+    
+    // Try to create even if user doesn't exist (for debugging purposes)
+    console.log(`Creating debug organization with adminUser: ${adminUser}`);
+    
+    // Create the organization
+    const organization = new Organization({
+      name,
+      description,
+      category,
+      adminUser,
+      ...req.body
+    });
+    
+    const savedOrg = await organization.save();
+    console.log('Debug organization created successfully:', savedOrg);
+    
+    res.status(201).json(savedOrg);
+  } catch (error) {
+    console.error('Error creating debug organization:', error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getOrganizations,
   getOrganizationById,
   followOrganization,
   getFeaturedOrganizations,
-  getOrganizationCategories
+  getOrganizationCategories,
+  debugOrganizationsByAdmin,
+  createDebugOrganization
 };

@@ -1,0 +1,252 @@
+/* Toast notifications for real-time updates */
+.toast-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 350px;
+}
+
+/* Real-time animations for featured events */
+.event-card.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.event-card.highlight-new {
+  animation: highlightNew 3s;
+  border: 2px solid var(--primary-blue);
+}
+
+.event-card.highlight-update {
+  animation: highlightUpdate 3s;
+  border: 2px solid var(--warning);
+}
+
+@keyframes highlightNew {
+  0% { box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.5); }
+  70% { box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.5); }
+  100% { box-shadow: none; }
+}
+
+@keyframes highlightUpdate {
+  0% { box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.5); }
+  70% { box-shadow: 0 0 0 4px rgba(255, 193, 7, 0.5); }
+  100% { box-shadow: none; }
+}
+
+/* Organization card animations */
+.org-card.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.org-card.highlight-new {
+  animation: highlightNew 3s;
+}
+
+.org-card.highlight-update {
+  animation: highlightUpdate 3s;
+}
+
+/* Loading indicator */
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  width: 100%;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(33, 150, 243, 0.3);
+  border-top-color: var(--primary-blue);
+  border-radius: 50%;
+  animation: spinner 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+@keyframes spinner {
+  to {transform: rotate(360deg);}
+}
+
+/* Error message */
+.error-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--danger);
+  width: 100%;
+}
+
+.error-message i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.no-events-message,
+.no-orgs-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  width: 100%;
+}
+
+.no-events-message i,
+.no-orgs-message i {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+
+.toast {
+  background-color: var(--surface-dark-higher);
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-header {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.toast-header i {
+  margin-right: 8px;
+  color: var(--primary-blue);
+}
+
+.toast-header strong {
+  flex-grow: 1;
+}
+
+.toast-close {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 8px;
+  transition: color 0.2s;
+}
+
+.toast-close:hover {
+  color: var(--text-primary);
+}
+
+.toast-body {
+  padding: 12px 15px;
+}
+
+/* Event Capacity Styles */
+.event-capacity.almost-full {
+  color: var(--danger);
+  font-weight: 600;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+/* Attendee List Updates */
+.attendee-item {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Network Status Indicator */
+.network-status {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background-color: var(--surface-dark);
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 9999;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+
+.network-status.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+
+.network-status.online {
+  background-color: rgba(9, 132, 23, 0.8);
+  color: white;
+}
+
+.network-status.offline {
+  background-color: rgba(220, 53, 69, 0.8);
+  color: white;
+}
+
+.status-indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.status-indicator.online {
+  background-color: var(--success);
+}
+
+.status-indicator.offline {
+  background-color: var(--danger);
+}

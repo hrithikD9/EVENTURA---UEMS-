@@ -21,12 +21,21 @@ document.addEventListener('DOMContentLoaded', async function() {
     manageCreateOrgVisibility();
     
     // Show organizer-specific message if applicable
-    setTimeout(() => {
+    setTimeout(async () => {
       // Use setTimeout to ensure DOM is fully loaded and container is available
       if (userRole === 'organizer') {
-        showOrganizerMessage();
+        await showOrganizerMessage();
+        
         // Debug function to check organization access
-        checkOrganizerAccess();
+        const orgCount = await checkOrganizerAccess();
+        
+        // Add debug console message about organization count
+        console.log(`Organization count for organizer: ${orgCount && orgCount.length || 0}`);
+        
+        // Show a debug button on the page for development
+        if ((orgCount && orgCount.length === 0) || !orgCount) {
+          addDebugButton();
+        }
       }
     }, 0);
     
@@ -124,7 +133,7 @@ function manageCreateOrgVisibility() {
 /**
  * Display organizer-specific message
  */
-function showOrganizerMessage() {
+async function showOrganizerMessage() {
   // Find the first container after the header
   const container = document.querySelector('.container');
   if (!container) return;
@@ -135,12 +144,39 @@ function showOrganizerMessage() {
     return; // Message already shown
   }
   
+  // Check if this is a new organizer with no organizations
+  const isNewOrganizer = await checkNewOrganizer();
+  
   const messageEl = document.createElement('div');
   messageEl.className = 'server-message info organizer-message';
-  messageEl.innerHTML = `
-    <i class="fas fa-info-circle"></i>
-    <p><strong>Organizer View:</strong> You are only seeing organizations you manage. To create or manage your organizations, visit your <a href="admin-dashboard.html" style="color: var(--primary-blue); text-decoration: underline;">dashboard</a>.</p>
-  `;
+  
+  if (isNewOrganizer) {
+    messageEl.innerHTML = `
+      <i class="fas fa-info-circle"></i>
+      <div>
+        <p><strong>Welcome, New Organizer!</strong> You don't have any organizations yet.</p>
+        <div style="display: flex; gap: 10px; margin-top: 10px;">
+          <a href="admin-dashboard.html?section=create-org" class="btn btn-primary btn-sm">Create Your First Organization</a>
+          <button onclick="createDebugOrganization()" class="btn btn-outline btn-sm">Debug: Create Test Org</button>
+        </div>
+      </div>
+    `;
+  } else {
+    messageEl.innerHTML = `
+      <i class="fas fa-info-circle"></i>
+      <p><strong>Organizer View:</strong> You are only seeing organizations you manage. To create or manage your organizations, visit your <a href="admin-dashboard.html" style="color: var(--primary-blue); text-decoration: underline;">dashboard</a>.</p>
+    `;
+  }
+  
+  // Find insertion point - after filter bar or at beginning
+  const filterBarElem = document.querySelector('.filter-bar');
+  if (filterBarElem) {
+    filterBarElem.parentNode.insertBefore(messageEl, filterBarElem.nextSibling);
+  } else if (container.firstChild) {
+    container.insertBefore(messageEl, container.firstChild);
+  } else {
+    container.appendChild(messageEl);
+  }
   
   // Find a better insertion point - after filter bar or as the first element of categories section
   const filterBar = document.querySelector('.filter-bar');
@@ -314,8 +350,18 @@ async function loadOrganizations() {
       
       // If user is an organizer, filter to show only organizations they manage
       if (userRole === 'organizer' && userId) {
-        params.append('adminUser', userId);
-        console.log('Filtering organizations for organizer:', userId);
+        // Use a special endpoint for organizers to ensure proper ID comparison
+        const debugEndpoint = await fetch(`http://localhost:5000/api/organizations/debug/${userId}`);
+        const debugData = await debugEndpoint.json();
+        
+        if (debugData.directMatchCount > 0 || debugData.objectIdMatchCount > 0) {
+          console.log(`Found ${debugData.directMatchCount + debugData.objectIdMatchCount} orgs for this organizer`);
+          params.append('adminUser', userId);
+        } else {
+          console.log('No organizations found for this organizer in debug mode');
+          // Still add the parameter for consistency
+          params.append('adminUser', userId);
+        }
         
         // Create a special header to ensure proper ID comparison in MongoDB
         headers['X-User-Is-Organizer'] = 'true';
@@ -1000,14 +1046,139 @@ async function checkOrganizerAccess() {
   }
   
   try {
-    // Direct API call to get organizations without filtering
-    const headers = { 'Content-Type': 'application/json' };
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+    console.log('Checking organizer access for user ID:', userId);
+    
+    // Use the debug endpoint to check for organizations
+    const response = await fetch(`http://localhost:5000/api/organizations/debug/${userId}`);
+    
+    if (!response.ok) {
+      throw new Error(`Server responded with status ${response.status}`);
     }
     
-    const response = await fetch(`http://localhost:5000/api/organizations`, {
-      headers: headers
+    const data = await response.json();
+    console.log('Debug response:', data);
+    
+    const directMatches = data.directMatches || [];
+    const objectIdMatches = data.objectIdMatches || [];
+    
+    // Display results in console
+    console.log('User ID:', userId);
+    console.log(`Direct matches: ${data.directMatchCount}`);
+    console.log(`Object ID matches: ${data.objectIdMatchCount}`);
+    
+    if (directMatches.length === 0 && objectIdMatches.length === 0) {
+      console.warn('⚠️ User is an organizer but does not manage any organizations!');
+      
+      // Show a more informative message to the user
+      showWarningMessage('You are logged in as an organizer but don\'t have any organizations yet. Create one from your dashboard.');
+      
+      // Add a create organization button
+      const container = document.querySelector('.container');
+      if (container) {
+        const createOrgBtn = document.createElement('div');
+        createOrgBtn.className = 'server-message warning';
+        createOrgBtn.innerHTML = `
+          <i class="fas fa-plus-circle"></i>
+          <div>
+            <p><strong>No organizations found.</strong> Create your first organization to get started.</p>
+            <a href="admin-dashboard.html?section=create-org" class="btn btn-primary" style="margin-top: 10px;">Create Organization</a>
+          </div>
+        `;
+        
+        // Insert after the organizer message or at the beginning
+        const orgMessage = document.querySelector('.organizer-message');
+        if (orgMessage && orgMessage.nextSibling) {
+          container.insertBefore(createOrgBtn, orgMessage.nextSibling);
+        } else {
+          const filterBar = document.querySelector('.filter-bar');
+          if (filterBar) {
+            container.insertBefore(createOrgBtn, filterBar.nextSibling);
+          }
+        }
+      }
+    }
+    
+    // Return all found organizations
+    return [...directMatches, ...objectIdMatches];
+  } catch (error) {
+    console.error('Error checking organizer access:', error);
+    return [];
+  }
+}
+
+/**
+ * Check if user is a new organizer with no organizations yet
+ */
+async function checkNewOrganizer() {
+  const userId = localStorage.getItem('userId');
+  const userRole = localStorage.getItem('userRole');
+  
+  if (userRole !== 'organizer' || !userId) return false;
+  
+  try {
+    const response = await fetch(`http://localhost:5000/api/organizations/debug/${userId}`);
+    
+    if (!response.ok) {
+      throw new Error(`Server responded with status ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return (data.directMatchCount === 0 && data.objectIdMatchCount === 0);
+  } catch (error) {
+    console.error('Error checking if new organizer:', error);
+    return false;
+  }
+}
+
+/**
+ * Manual function to create a debug organization (only for development)
+ */
+async function createDebugOrganization() {
+  const userId = localStorage.getItem('userId');
+  const userRole = localStorage.getItem('userRole');
+  const token = localStorage.getItem('token');
+  const userName = localStorage.getItem('userName') || 'Test User';
+  
+  if (!userId) {
+    console.log('Missing user ID');
+    alert('Cannot create organization: Missing user ID. Please log in again.');
+    return;
+  }
+  
+  if (!confirm('Create a debug organization for testing? This is only for development purposes.')) {
+    return;
+  }
+  
+  try {
+    // Generate random timestamp to make the org name unique
+    const timestamp = new Date().getTime().toString().slice(-6);
+    
+    const orgData = {
+      name: `Debug Org ${timestamp}`,
+      description: `This is a debug organization created for testing purposes by ${userName}`,
+      category: 'Technology',
+      type: 'Club',
+      adminUser: userId,
+      status: 'active',
+      location: 'On Campus',
+      website: 'https://example.com',
+      email: 'debug@example.com',
+      stats: {
+        totalMembers: 1,
+        totalFollowers: 0,
+        totalEvents: 0
+      }
+    };
+    
+    console.log('Sending organization data:', orgData);
+    
+    const response = await fetch('http://localhost:5000/api/organizations/admin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token || 'no-token-debug-mode'}`
+      },
+      body: JSON.stringify(orgData)
     });
     
     if (!response.ok) {
@@ -1015,26 +1186,47 @@ async function checkOrganizerAccess() {
     }
     
     const data = await response.json();
-    const allOrgs = data.organizations || [];
+    console.log('Created debug organization:', data);
+    alert('Debug organization created successfully. Refresh the page to see it.');
     
-    // Find organizations where this user is the admin
-    const userOrgs = allOrgs.filter(org => org.adminUser === userId || 
-                                         (org.adminUser && org.adminUser._id === userId));
+    // Refresh the page after a short delay
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
     
-    console.log('All organizations:', allOrgs);
-    console.log('User ID:', userId);
-    console.log('Organizations where user is admin:', userOrgs);
-    
-    if (userOrgs.length === 0) {
-      console.warn('⚠️ User is an organizer but does not manage any organizations!');
-      // This could mean either:
-      // 1. The user is newly registered as an organizer and hasn't created any orgs
-      // 2. There's a mismatch between userId and adminUser fields
-    }
-    
-    return userOrgs;
   } catch (error) {
-    console.error('Error checking organizer access:', error);
-    return [];
+    console.error('Error creating debug organization:', error);
+    alert(`Failed to create debug organization: ${error.message}`);
   }
+}
+
+/**
+ * Add a debug button to the UI (for development only)
+ */
+function addDebugButton() {
+  const container = document.querySelector('.container');
+  if (!container) return;
+  
+  // Check if debug button already exists
+  if (document.querySelector('#debug-button')) return;
+  
+  const debugButton = document.createElement('div');
+  debugButton.id = 'debug-button';
+  debugButton.style.position = 'fixed';
+  debugButton.style.bottom = '20px';
+  debugButton.style.right = '20px';
+  debugButton.style.padding = '10px';
+  debugButton.style.background = '#ff6b6b';
+  debugButton.style.color = 'white';
+  debugButton.style.borderRadius = '4px';
+  debugButton.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+  debugButton.style.zIndex = '9999';
+  debugButton.style.cursor = 'pointer';
+  debugButton.innerHTML = '<strong>Create Test Org (Debug)</strong>';
+  
+  debugButton.addEventListener('click', () => {
+    createDebugOrganization();
+  });
+  
+  document.body.appendChild(debugButton);
 }

@@ -1,5 +1,6 @@
 const Event = require('../models/eventModel');
 const User = require('../models/userModel');
+const realtimeService = require('../services/realtimeService');
 
 // @desc    Create a new event
 // @route   POST /api/events
@@ -52,6 +53,21 @@ const createEvent = async (req, res) => {
       schedule,
       image
     });
+
+    // Emit real-time notification about new event
+    realtimeService.notifyNewEvent(event);
+    
+    // Notify the organizer's followers about the new event
+    if (organizer.followers && organizer.followers.length > 0) {
+      for (const followerId of organizer.followers) {
+        realtimeService.notifyUser(followerId, {
+          type: 'new-event',
+          title: 'New Event Created',
+          message: `${organizer.name} created a new event: ${title}`,
+          eventId: event._id
+        });
+      }
+    }
 
     res.status(201).json({
       success: true,
@@ -256,6 +272,23 @@ const joinEvent = async (req, res) => {
     });
     
     await user.save();
+    
+    // Emit real-time updates
+    realtimeService.notifyEventCapacityChange(event, user);
+    
+    // Notify event organizer
+    if (event.organizer && event.organizer.orgId) {
+      // Find the organizer user
+      const organizer = await User.findOne({ 'organizationInfo._id': event.organizer.orgId });
+      if (organizer) {
+        realtimeService.notifyUser(organizer._id, {
+          type: 'event-registration',
+          title: 'New Event Registration',
+          message: `${user.name} has registered for your event: ${event.title}`,
+          eventId: event._id
+        });
+      }
+    }
 
     res.json({ 
       success: true,

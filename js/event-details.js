@@ -1,4 +1,8 @@
-// event-details.js - Handles dynamic loading of event details from backend API
+// event-details.js - Handles dynamic loading of event details from backend API with real-time updates
+
+// Store event data
+let currentEvent = null;
+let eventId = null;
 
 /**
  * Get event ID from URL query parameters
@@ -149,7 +153,7 @@ async function fetchSimilarEvents(event, limit = 3) {
 /**
  * Register current user for the event
  * @param {string} eventId - The ID of the event to register for
- * @returns {Promise<Object>} Registration result
+ * @returns {Promise<Object} Registration result
  */
 async function registerForEvent(eventId) {
   try {
@@ -535,6 +539,9 @@ function renderSimilarEvents(events) {
  * Main function to initialize the page
  */
 async function initPage() {
+  // Store event ID in the global variable
+  eventId = getEventIdFromUrl();
+  
   // Add a loading overlay instead of replacing the entire content
   const loadingOverlay = document.createElement('div');
   loadingOverlay.id = 'event-loading-overlay';
@@ -849,6 +856,12 @@ function cleanupLoadingElements() {
  */
 function renderEventDetails(event) {
   console.log('Event data:', event); // Debug log to see all available data
+  
+  // Store current event in the global variable for real-time updates
+  currentEvent = event;
+  
+  // Setup real-time listeners once we have the event data
+  setupRealTimeListeners();
   
   // Cleanup loading elements
   cleanupLoadingElements();
@@ -1634,6 +1647,265 @@ function enableDemoMode(eventType) {
     // Make sure loading elements are cleaned up even in error case
     cleanupLoadingElements();
     showErrorMessage('Failed to set up demo mode. Please try again.');
+  }
+}
+
+// Add the real-time functions after the existing code
+// Setup real-time listeners for event updates
+
+/**
+ * Set up real-time listeners for event updates
+ */
+function setupRealTimeListeners() {
+  if (!window.eventura || !window.eventura.realtime || !currentEvent) return;
+  
+  // Join the event-specific room
+  if (eventId) {
+    // Wait for socket to be ready
+    const checkSocketReady = setInterval(() => {
+      if (window.eventura.realtime.isOnline && window.eventura.realtime.isOnline()) {
+        console.log('Setting up real-time listeners for event:', eventId);
+        
+        // Add event listeners
+        window.eventura.realtime.addEventListener('event-capacity-change', handleCapacityChange);
+        window.eventura.realtime.addEventListener('event-joined', handleNewAttendee);
+        window.eventura.realtime.addEventListener('event-updated', handleEventUpdate);
+        
+        clearInterval(checkSocketReady);
+      }
+    }, 500);
+  }
+}
+
+/**
+ * Handle capacity change event
+ * @param {Object} data - Event data from WebSocket
+ */
+function handleCapacityChange(data) {
+  if (!currentEvent || data.eventId !== currentEvent._id) return;
+  
+  console.log('Received real-time capacity change:', data);
+  
+  // Update the current event
+  currentEvent.capacity = data.totalCapacity;
+  
+  // Update capacity display
+  updateCapacityDisplay(data);
+  
+  // Show toast notification if capacity is almost full
+  if (data.remainingCapacity <= 5) {
+    showRealTimeToast('Almost Full', `Only ${data.remainingCapacity} spots remaining for this event!`, 'warning');
+  }
+}
+
+/**
+ * Handle new attendee event
+ * @param {Object} data - Event data from WebSocket
+ */
+function handleNewAttendee(data) {
+  if (!currentEvent || data.eventId !== currentEvent._id) return;
+  
+  console.log('Received real-time new attendee:', data);
+  
+  // Get user data
+  const userData = data.user || {};
+  
+  // Add to attendee list if it exists
+  updateAttendeeDisplay(userData);
+  
+  // Show toast notification
+  showRealTimeToast('New Registration', `${userData.name} just registered for this event!`, 'info');
+}
+
+/**
+ * Handle event update
+ * @param {Object} data - Event data from WebSocket
+ */
+function handleEventUpdate(data) {
+  if (!currentEvent || data.event._id !== currentEvent._id) return;
+  
+  console.log('Received real-time event update:', data);
+  
+  // Store previous data for comparison
+  const previousEvent = { ...currentEvent };
+  
+  // Update current event
+  currentEvent = data.event;
+  
+  // Check what changed and show appropriate notifications
+  if (previousEvent.title !== currentEvent.title) {
+    document.querySelector('.event-hero-content h1').textContent = currentEvent.title;
+    document.title = `${currentEvent.title} - Eventura`;
+    showRealTimeToast('Event Updated', `Event title has been updated to "${currentEvent.title}"`, 'info');
+  }
+  
+  if (previousEvent.eventDate !== currentEvent.eventDate) {
+    const newDate = formatDate(currentEvent.eventDate);
+    const newTime = formatTime(currentEvent.eventDate);
+    
+    document.querySelector('.event-date').textContent = newDate;
+    document.querySelector('.event-time').textContent = newTime;
+    
+    // Update countdown if it exists
+    if (typeof initCountdown === 'function') {
+      initCountdown(new Date(currentEvent.eventDate));
+    }
+    
+    showRealTimeToast('Date Changed', `Event date has been changed to ${newDate}`, 'warning');
+  }
+  
+  if (previousEvent.location !== currentEvent.location) {
+    document.querySelector('.event-location').textContent = currentEvent.location;
+    showRealTimeToast('Location Changed', `Event location has been updated to ${currentEvent.location}`, 'warning');
+  }
+}
+
+/**
+ * Update capacity display based on real-time data
+ * @param {Object} data - Capacity data
+ */
+function updateCapacityDisplay(data) {
+  // Find capacity element
+  const capacityElement = document.querySelector('.event-capacity');
+  if (!capacityElement) return;
+  
+  const remainingCapacity = data.remainingCapacity;
+  const totalCapacity = data.totalCapacity;
+  const percentage = Math.floor((totalCapacity - remainingCapacity) / totalCapacity * 100);
+  
+  // Update the text
+  capacityElement.textContent = `${remainingCapacity} out of ${totalCapacity} spots remaining`;
+  
+  // Update visual indication
+  if (remainingCapacity <= 5) {
+    capacityElement.classList.add('almost-full');
+  } else {
+    capacityElement.classList.remove('almost-full');
+  }
+  
+  // Update progress bar if it exists
+  const progressBar = document.querySelector('.capacity-bar .progress-fill');
+  if (progressBar) {
+    progressBar.style.width = `${percentage}%`;
+  }
+  
+  // Update registration button status if needed
+  const registerBtn = document.querySelector('.register-btn');
+  if (registerBtn && remainingCapacity === 0) {
+    registerBtn.textContent = 'Event Full';
+    registerBtn.classList.add('disabled');
+    registerBtn.disabled = true;
+  }
+}
+
+/**
+ * Update attendee display with new attendee
+ * @param {Object} userData - User data
+ */
+function updateAttendeeDisplay(userData) {
+  // Check if attendees section exists
+  const attendeesList = document.querySelector('.attendees-list');
+  if (!attendeesList) return;
+  
+  // Create new attendee element
+  const attendeeItem = document.createElement('div');
+  attendeeItem.className = 'attendee-item new-attendee';
+  attendeeItem.dataset.userId = userData._id;
+  
+  // Set HTML content
+  attendeeItem.innerHTML = `
+    <img src="${userData.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.name)}`}" 
+         alt="${userData.name}" class="attendee-avatar">
+    <div class="attendee-info">
+      <span class="attendee-name">${userData.name}</span>
+      <span class="attendee-badge">Just Joined</span>
+    </div>
+  `;
+  
+  // Add to list
+  attendeesList.insertBefore(attendeeItem, attendeesList.firstChild);
+  
+  // Remove "Just Joined" badge after 30 seconds
+
+  setTimeout(() => {
+    if (attendeeItem.querySelector('.attendee-badge')) {
+      attendeeItem.querySelector('.attendee-badge').remove();
+    }
+    attendeeItem.classList.remove('new-attendee');
+  }, 30000);
+}
+
+/**
+ * Show a toast notification for real-time updates
+ * @param {string} title - Toast title
+ * @param {string} message - Toast message
+ * @param {string} type - Toast type (info, success, warning, error)
+ */
+function showRealTimeToast(title, message, type = 'info') {
+  // Use the global toast function if available
+  if (window.eventura && window.eventura.realtime) {
+    // Create toast container if it doesn't exist
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+      toastContainer = document.createElement('div');
+      toastContainer.className = 'toast-container';
+      document.body.appendChild(toastContainer);
+    }
+    
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+      <div class="toast-header">
+        <i class="fas fa-info-circle"></i>
+        <strong>${title}</strong>
+        <button class="toast-close">&times;</button>
+      </div>
+      <div class="toast-body">
+        ${message}
+      </div>
+    `;
+    
+    // Add toast to container
+    toastContainer.appendChild(toast);
+    
+    // Show toast
+    setTimeout(() => {
+      toast.classList.add('show');
+    }, 100);
+    
+    // Remove toast after 5 seconds
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => {
+        toast.remove();
+      }, 300);
+    }, 5000);
+    
+    // Add close button functionality
+    const closeButton = toast.querySelector('.toast-close');
+    if (closeButton) {
+      closeButton.addEventListener('click', () => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          toast.remove();
+        }, 300);
+      });
+    }
+  } else {
+    // Fallback if realtime.js is not loaded
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type}`;
+    alert.innerHTML = `<strong>${title}:</strong> ${message}`;
+    
+    const container = document.querySelector('.container');
+    if (container) {
+      container.insertBefore(alert, container.firstChild);
+      
+      setTimeout(() => {
+        alert.remove();
+      }, 5000);
+    }
   }
 }
 
