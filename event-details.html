@@ -13,9 +13,7 @@
     <script src="js/server-status.js" defer></script>
     <style>
         /* Event Detail Page Styles */
-        .error-message {
-            background-color: rgba(235, 87, 87, 0.9);
-            color: white;
+        .error-message, .warning-message, .info-message {
             padding: 15px 25px;
             border-radius: 8px;
             margin: 20px 0;
@@ -25,9 +23,39 @@
             left: 50%;
             transform: translateX(-50%);
             z-index: 1000;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             display: none;
             max-width: 450px;
+            animation: message-slide-in 0.3s ease-out forwards;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .error-message {
+            background-color: rgba(235, 87, 87, 0.95);
+            color: white;
+            border-left: 5px solid #d32f2f;
+        }
+        
+        .warning-message {
+            background-color: rgba(255, 193, 7, 0.95);
+            color: #212121;
+            border-left: 5px solid #ff8f00;
+        }
+        
+        .info-message {
+            background-color: rgba(33, 150, 243, 0.95);
+            color: white;
+            border-left: 5px solid #1565c0;
+        }
+        
+        @keyframes message-slide-in {
+            from { transform: translate(-50%, -20px); opacity: 0; }
+            to { transform: translate(-50%, 0); opacity: 1; }
+        }
+
+        .error-message, .warning-message, .info-message {
             width: 90%;
             line-height: 1.5;
         }
@@ -271,9 +299,10 @@
         }
         
         .organizer-avatar {
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
+            overflow: hidden;
             background-color: var(--surface-dark);
             display: flex;
             align-items: center;
@@ -281,6 +310,14 @@
             font-size: 1.5rem;
             color: var(--primary-blue);
             margin-right: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(33, 150, 243, 0.2);
+        }
+        
+        .organizer-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
         .organizer-detail h4 {
@@ -430,6 +467,9 @@
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.05);
             transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
         
         .speaker-card:hover {
@@ -466,8 +506,21 @@
             margin: 0 15px 15px;
             color: var(--text-secondary);
             line-height: 1.5;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            line-clamp: 4;
+            -webkit-box-orient: vertical;
+            flex-grow: 1;
         }
-
+        
+        .speaker-card:hover .speaker-bio {
+            -webkit-line-clamp: initial;
+            line-clamp: initial;
+            max-height: none;
+        }
+        
         /* Timeline styles for schedule */
         .timeline {
             position: relative;
@@ -523,6 +576,19 @@
             line-height: 1.5;
         }
         
+        .timeline-speaker {
+            color: var(--primary-blue);
+            font-style: italic;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .timeline-date {
+            font-size: 0.7rem;
+            margin-top: 4px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
         @media screen and (max-width: 768px) {
             .event-hero {
                 height: 300px;
@@ -549,6 +615,148 @@
             .speakers-grid {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             }
+            
+            .event-hero-content h1 {
+                font-size: 1.8rem;
+                line-height: 1.3;
+            }
+            
+            .event-price {
+                font-size: 1.5rem;
+            }
+            
+            .countdown-timer {
+                padding: 10px 0;
+            }
+            
+            .countdown-number {
+                font-size: 1.2rem;
+            }
+            
+            .event-section h3 {
+                font-size: 1.3rem;
+            }
+        }
+        
+        /* Enhanced mobile view */
+        @media screen and (max-width: 480px) {
+            .event-hero {
+                height: 250px;
+            }
+            
+            .event-meta-item {
+                width: 100%;
+            }
+            
+            .event-section {
+                padding: 15px 0;
+            }
+            
+            .timeline-time {
+                font-size: 0.85rem;
+                padding: 8px;
+            }
+            
+            .event-action-content {
+                padding: 20px;
+            }
+            
+            .organizer-avatar {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .event-details-list li {
+                flex-wrap: wrap;
+            }
+            
+            .event-details-list i {
+                margin-top: 4px;
+            }
+            
+            .status-section {
+                margin-top: 5px;
+                margin-left: 0;
+                display: inline-block;
+            }
+        }
+        
+        /* Enhanced styles for timeline and speakers */
+        .speaker-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .speaker-bio {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 4;
+            line-clamp: 4;
+            -webkit-box-orient: vertical;
+            max-height: 6rem; /* Fallback for browsers that don't support line-clamp */
+            flex-grow: 1;
+        }
+        
+        .speaker-card:hover .speaker-bio {
+            -webkit-line-clamp: initial;
+            line-clamp: initial;
+            max-height: none;
+        }
+        
+        .event-meta-highlight {
+            flex-wrap: wrap;
+        }
+        
+        .registration-info {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+            gap: 8px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        
+        .registration-info i {
+            color: var(--primary-blue);
+        }
+        
+        .event-details-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .event-details-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: flex-start;
+        }
+        
+        .event-details-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .event-details-list i {
+            margin-right: 10px;
+            color: var(--primary-blue);
+            min-width: 20px;
+            text-align: center;
+        }
+        
+        .event-details-list strong {
+            margin-right: 5px;
+            color: var(--text-primary);
+        }
+        
+        .status-section {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
         }
     </style>
 </head>
@@ -695,7 +903,7 @@
                         <h3>Organized by</h3>
                         <div class="organizer-info">
                             <div class="organizer-avatar">
-                                <i class="fas fa-laptop-code"></i>
+                                <img src="https://api.dicebear.com/7.x/initials/svg?seed=Organizer" alt="Organizer" class="organizer-img">
                             </div>
                             <div class="organizer-detail">
                                 <h4>Loading...</h4>
@@ -712,9 +920,11 @@
                         <h3>Event Details</h3>
                         <ul class="event-details-list">
                             <li><i class="fas fa-users"></i> <strong>Capacity:</strong> <span class="capacity-value">Loading...</span></li>
-                            <li><i class="fas fa-users"></i> <strong>Registered:</strong> <span class="registered-value">Loading...</span></li>
+                            <li><i class="fas fa-user-check"></i> <strong>Registered:</strong> <span class="registered-value">Loading...</span></li>
                             <li><i class="fas fa-ticket-alt"></i> <strong>Registration Deadline:</strong> <span class="deadline-value">Loading...</span></li>
                             <li><i class="fas fa-map-marker-alt"></i> <strong>Venue:</strong> <span class="venue-value">Loading...</span></li>
+                            <li class="event-status-item"><i class="fas fa-info-circle"></i> <strong>Status:</strong> <span class="status-value">Loading...</span></li>
+                            <li class="event-category-item"><i class="fas fa-tag"></i> <strong>Category:</strong> <span class="category-value">Loading...</span></li>
                         </ul>
                     </div>
                 </div>
@@ -819,6 +1029,7 @@
     </script>
     
     <!-- Custom JS for event details -->
+    <script src="js/demo-helper.js"></script>
     <script src="js/event-details.js"></script>
 </body>
 </html>

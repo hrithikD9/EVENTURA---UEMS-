@@ -6,9 +6,17 @@
  */
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if we're in demo mode, don't bother checking server status if so
+    if (localStorage.getItem('eventura_demo_mode') === 'true') {
+        console.log('🔍 Running in demo mode - skipping server status checks');
+        return;
+    }
+    
+    // Check server status once on page load
     checkServerStatus();
-    // Periodically check server status every 30 seconds
-    setInterval(checkServerStatus, 30000);
+    
+    // Periodically check server status every 60 seconds (increased from 30s to reduce requests)
+    setInterval(checkServerStatus, 60000);
 });
 
 async function checkServerStatus() {
@@ -17,20 +25,40 @@ async function checkServerStatus() {
         const response = await fetch('http://localhost:5000/', { 
             method: 'GET',
             // Set a short timeout to avoid hanging
-            signal: AbortSignal.timeout(3000)
+            signal: AbortSignal.timeout(5000), // Increased timeout for slow connections
+            // Prevent caching issues
+            cache: 'no-store',
+            headers: {
+                'Cache-Control': 'no-cache'
+            }
         });
         
         if (response.ok) {
             console.log('✅ Backend server is running');
             // Remove any existing server offline notifications
-            const existingNotifications = document.querySelectorAll('.server-status-notification');
+            const existingNotifications = document.querySelectorAll('.server-status-notification, .server-status-banner');
             existingNotifications.forEach(notification => notification.remove());
             
             // Store server status in session storage
             sessionStorage.setItem('serverStatus', 'online');
+            
+            // If we were previously offline, reload the page to ensure data loads properly
+            if (sessionStorage.getItem('prevServerStatus') === 'offline') {
+                sessionStorage.removeItem('prevServerStatus');
+                // Only reload if we're not in the process of submitting a form
+                if (!document.querySelector('form.submitting')) {
+                    console.log('Server came back online - reloading page');
+                    window.location.reload();
+                }
+            }
+        } else {
+            throw new Error(`Server responded with status: ${response.status}`);
         }
     } catch (error) {
         console.error('❌ Backend server connection failed:', error);
+        
+        // Save previous state before updating
+        sessionStorage.setItem('prevServerStatus', sessionStorage.getItem('serverStatus') || 'unknown');
         
         // Only show notification if we haven't shown one already
         if (sessionStorage.getItem('serverStatus') !== 'offline') {
@@ -57,7 +85,8 @@ function showServerNotification() {
             <p>The backend server is not running. Dynamic features like event registration, viewing my events, and dashboard functionality will not work.</p>
             <div class="notification-actions">
                 <button class="notification-btn" id="server-notification-dismiss">Dismiss</button>
-                <button class="notification-btn primary" id="server-notification-help">Start Server</button>
+                <button class="notification-btn primary" id="server-notification-demo">Demo Mode</button>
+                <button class="notification-btn secondary" id="server-notification-help">Start Server</button>
                 <button class="notification-btn refresh" id="server-notification-retry"><i class="fas fa-sync-alt"></i> Retry</button>
             </div>
         </div>
@@ -214,6 +243,43 @@ function showServerNotification() {
         notification.remove();
     });
     
+    document.getElementById('server-notification-demo').addEventListener('click', () => {
+        // Enable demo mode
+        localStorage.setItem('eventura_demo_mode', 'true');
+        localStorage.setItem('eventura_skip_auth', 'true');
+        sessionStorage.setItem('serverStatus', 'demo');
+        notification.remove();
+        banner.remove();
+        
+        // Show success message
+        const demoMsg = document.createElement('div');
+        demoMsg.className = 'server-status-banner';
+        demoMsg.style.background = 'rgba(46, 204, 113, 0.9)';
+        demoMsg.innerHTML = `
+            <i class="fas fa-check-circle"></i>
+            <span>Demo mode enabled! The app will work without a backend server.</span>
+            <button id="demo-banner-dismiss" class="banner-dismiss"><i class="fas fa-times"></i></button>
+        `;
+        document.body.insertBefore(demoMsg, document.body.firstChild);
+        
+        // Add dismiss event listener
+        document.getElementById('demo-banner-dismiss').addEventListener('click', () => {
+            demoMsg.remove();
+        });
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            if (demoMsg.parentNode) {
+                demoMsg.remove();
+            }
+        }, 5000);
+        
+        // Reload the page to apply demo mode
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+    });
+    
     document.getElementById('server-notification-help').addEventListener('click', () => {
         // Show more detailed help with terminal command
         const helpModal = document.createElement('div');
@@ -221,12 +287,26 @@ function showServerNotification() {
         helpModal.innerHTML = `
             <div class="server-help-content">
                 <h3>Start Backend Server</h3>
-                <p>To fix this issue, please start the backend server by opening a terminal and running these commands:</p>
+                <p>To fix this issue, please start the backend server using one of these methods:</p>
+                
+                <h4>Option 1: Use Demo Mode (Recommended)</h4>
+                <div class="action-block">
+                    <button id="enable-demo-mode" class="btn btn-primary">
+                        <i class="fas fa-flask"></i> Enable Demo Mode
+                    </button>
+                    <p style="margin-top: 10px; font-size: 0.9rem;">
+                        Demo mode allows you to explore the application with sample data without requiring a server connection.
+                    </p>
+                </div>
+                
+                <h4>Option 2: Start Server Manually</h4>
                 <div class="command-block">
                     <code>cd /home/hrithik/Documents/Eventura/backend</code><br>
                     <code>node server.js</code>
                 </div>
+                
                 <p>After starting the server, click the "Retry" button to check if the connection is working.</p>
+                
                 <div class="modal-actions">
                     <button class="modal-btn close">Close</button>
                 </div>
@@ -269,6 +349,32 @@ function showServerNotification() {
                 border-radius: 4px;
                 margin: 15px 0;
                 overflow-x: auto;
+            }
+            
+            .action-block {
+                background: rgba(33, 150, 243, 0.1);
+                padding: 15px;
+                border-radius: 4px;
+                margin: 15px 0;
+                border-left: 4px solid #2196f3;
+            }
+            
+            #enable-demo-mode {
+                background: #2196f3;
+                border: none;
+                color: white;
+                padding: 10px 20px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-weight: bold;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: background-color 0.2s;
+            }
+            
+            #enable-demo-mode:hover {
+                background: #1976d2;
             }
             
             .command-block code {
@@ -315,6 +421,49 @@ function showServerNotification() {
     document.getElementById('server-notification-retry').addEventListener('click', async () => {
         notification.querySelector('#server-notification-retry').innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Checking...';
         await checkServerStatus();
+    });
+    
+    // Add event listener for demo mode button if it exists
+    document.body.addEventListener('click', (e) => {
+        if (e.target && (e.target.id === 'enable-demo-mode' || e.target.closest('#enable-demo-mode'))) {
+            // Set demo mode in localStorage
+            localStorage.setItem('eventura_demo_mode', 'true');
+            localStorage.setItem('eventura_skip_auth', 'true');
+            
+            // Show success message
+            const notification = document.createElement('div');
+            notification.style = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: rgba(33, 150, 243, 0.9);
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                z-index: 10000;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+                animation: slideIn 0.3s forwards;
+            `;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center;">
+                    <i class="fas fa-flask" style="margin-right: 10px; font-size: 20px;"></i>
+                    <div>
+                        <div style="font-weight: bold;">Demo Mode Enabled</div>
+                        <div style="font-size: 0.9rem;">Refreshing page with sample data...</div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(notification);
+            
+            // Close any open modals
+            const modal = document.querySelector('.server-help-modal');
+            if (modal) modal.remove();
+            
+            // Refresh the page after a short delay
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
+        }
     });
     
     // Add event listener for the banner
