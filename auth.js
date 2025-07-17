@@ -215,6 +215,11 @@ async function login(email, password) {
         
         // Create session
         createSession(data.role);
+        
+        // Dispatch a custom event for auth state change
+        window.dispatchEvent(new CustomEvent('authStateChanged', { 
+            detail: { action: 'login', role: data.role } 
+        }));
 
         // Redirect based on role and onboarding status
         if (data.role === 'organizer') {
@@ -320,6 +325,9 @@ async function completeOnboarding(orgName, description) {
  * Handles user logout
  */
 function logout() {
+    // Store role before clearing for event
+    const previousRole = localStorage.getItem('userRole');
+    
     // Clear authentication data
     localStorage.removeItem('token');
     localStorage.removeItem('userRole');
@@ -332,6 +340,11 @@ function logout() {
     localStorage.removeItem('sessionStart');
     localStorage.removeItem('lastActivity');
     localStorage.removeItem('sessionTimeout');
+    
+    // Dispatch a custom event for auth state change
+    window.dispatchEvent(new CustomEvent('authStateChanged', { 
+        detail: { action: 'logout', previousRole: previousRole } 
+    }));
     
     // Redirect to home page
     window.location.href = 'index.html';
