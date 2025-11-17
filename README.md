@@ -31,51 +31,50 @@ Eventura is a comprehensive web-based platform designed to streamline event mana
 ## 🛠️ Tech Stack
 
 ### Frontend
-- HTML5, CSS3, JavaScript (Vanilla)
-- Real-time updates with Socket.IO client
-- Responsive design with custom CSS
+- **React 18** - Modern UI library with hooks
+- **React Router v6** - Client-side routing
+- **Tailwind CSS** - Utility-first CSS framework
+- **Vite** - Next-generation frontend tooling
+- **Axios** - Promise-based HTTP client
+- **Socket.IO Client** - Real-time communication
+- **Lucide React** - Beautiful icon library
+- **React Hot Toast** - Toast notifications
+- **date-fns** - Modern date utility library
 
-### Backend
+### Backend (Optional - Currently using mock data)
 - Node.js & Express.js
 - MongoDB with Mongoose ODM
 - JWT-based authentication
 - Socket.IO for real-time features
 - RESTful API architecture
 
-### Dependencies
-- **Backend**:
-  - express: ^5.1.0
-  - mongoose: ^8.16.3
-  - bcrypt: ^6.0.0
-  - jsonwebtoken: ^9.0.2
-  - socket.io: ^4.8.1
-  - dotenv: ^17.2.0
-  - cors: ^2.8.5
-  - express-async-handler: ^1.2.0
-
 ## 📂 Project Structure
 
 ```
 eventura/
-├── backend/                  # Server-side code
-│   ├── config/               # Database and socket configuration
-│   ├── controllers/          # Request handlers
-│   ├── middleware/           # Authentication middleware
-│   ├── models/               # MongoDB schemas
-│   ├── routes/               # API routes
-│   ├── services/             # Business logic and services
-│   ├── utils/                # Helper functions
-│   ├── server.js             # Express app entry point
-│   └── package.json          # Backend dependencies
-├── css/                      # CSS modules and components
-├── js/                       # Frontend JavaScript files
-│   ├── events.js             # Event listing functionality
-│   ├── realtime.js           # Socket.IO client implementation
-│   └── ...                   # Other module-specific JS files
+├── client/                   # React frontend application
+│   ├── public/               # Static files
+│   ├── src/
+│   │   ├── assets/           # Images, icons
+│   │   ├── components/       # Reusable React components
+│   │   │   ├── common/       # Header, Footer, Button, Modal, Loader
+│   │   │   ├── events/       # Event-related components
+│   │   │   ├── organizations/# Organization components
+│   │   │   ├── auth/         # Login, Register components
+│   │   │   └── dashboard/    # Dashboard components
+│   │   ├── context/          # React Context providers
+│   │   ├── hooks/            # Custom React hooks
+│   │   ├── pages/            # Page components (Home, Events, etc.)
+│   │   ├── services/         # API services with mock data
+│   │   ├── utils/            # Helper functions and constants
+│   │   ├── App.jsx           # Main App with routing
+│   │   ├── main.jsx          # Entry point
+│   │   └── index.css         # Global styles
+│   ├── index.html
+│   ├── package.json
+│   ├── tailwind.config.js
+│   └── vite.config.js
 ├── documentation/            # Project documentation
-├── photos/                   # Image assets
-├── *.html                    # Frontend pages
-├── styles.css                # Global CSS styles
 └── README.md                 # Project documentation
 ```
 
@@ -83,10 +82,9 @@ eventura/
 
 ### Prerequisites
 - Node.js (v16 or later)
-- MongoDB (v5 or later)
 - npm or yarn
 
-### Setting Up the Backend
+### Setting Up the Frontend
 
 1. Clone the repository
    ```bash
@@ -94,63 +92,74 @@ eventura/
    cd eventura
    ```
 
-2. Install backend dependencies
+2. Install frontend dependencies
    ```bash
-   cd backend
+   cd client
    npm install
    ```
 
-3. Create a `.env` file in the backend directory with the following variables
-   ```
-   PORT=5000
-   MONGO_URI=mongodb://localhost:27017/eventura
-   JWT_SECRET=your_jwt_secret_here
-   NODE_ENV=development
+3. Create a `.env` file in the client directory (optional)
+   ```bash
+   cp .env.example .env
    ```
 
-4. Start the backend server
+4. Start the development server
    ```bash
    npm run dev
    ```
 
-### Setting Up the Frontend
+5. Open your browser and navigate to `http://localhost:3000`
 
-The frontend is built with vanilla HTML, CSS, and JavaScript. No build process is required.
+### Mock Authentication
 
-1. Open any HTML file in a modern web browser, or set up a simple server:
-   ```bash
-   # Using Python's built-in server
-   python -m http.server
-   
-   # Or using a Node.js server like http-server
-   npm install -g http-server
-   http-server
-   ```
+For testing, use these credentials:
+- **Email:** john@neub.edu.bd
+- **Password:** password123
 
-2. Access the application at `http://localhost:8000` (or the port shown in the console)
+Other demo users:
+- jane@neub.edu.bd (Organizer role)
+- admin@neub.edu.bd (Admin role)
 
 ## 🚀 Running the Project
 
-You can use the included shell script to start the server:
+### Quick Start (Recommended)
 
 ```bash
-bash start-server.sh
+./setup-react.sh
 ```
 
-Or manually:
+### Manual Setup
 
-1. Start MongoDB (if running locally)
-   ```bash
-   mongod
-   ```
+1. Navigate to client directory
+```bash
+cd client
+```
 
-2. Start the backend server
-   ```bash
-   cd backend
-   npm run dev
-   ```
+2. Install dependencies
+```bash
+npm install
+```
 
-3. Open `index.html` in your browser or use a local server as mentioned above
+3. Start development server
+```bash
+npm run dev
+```
+
+4. Open browser at `http://localhost:3000`
+
+### Production Build
+
+```bash
+cd client
+npm run build
+npm run preview
+```
+
+The application currently uses mock data for development. No backend setup is required.
+
+### ⚠️ Important Note
+
+All old HTML/CSS/JS files have been removed. The project is now 100% React-based. If you run `npx serve` at the root, you'll see a redirect page. Always use `npm run dev` inside the `client/` folder.
 
 ## 📱 Screenshots
 

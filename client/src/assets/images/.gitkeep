@@ -1,0 +1,10 @@
+# Images Directory
+
+Place your image assets here. The project structure supports:
+
+- Event images
+- Organization logos
+- User avatars
+- Icons and graphics
+
+You can also use external image URLs (like Unsplash) as demonstrated in the mock data.

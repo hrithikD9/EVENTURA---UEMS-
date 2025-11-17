@@ -1,93 +1,372 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eventura - University Event Management System</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="css/realtime.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@300;400;500&family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .hero-buttons {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+<!DOCTYPE html><!DOCTYPE html>
+
+<html lang="en"><html lang="en">
+
+<head><head>
+
+    <meta charset="UTF-8">    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="refresh" content="0; url=client/index.html">    <meta http-equiv="refresh" content="0; url=client/index.html">
+
+    <title>Redirecting to Eventura...</title>    <title>Redirecting to Eventura...</title>
+
+    <style>    <style>
+
+        * {        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+            margin: 0;        body {
+
+            padding: 0;            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+            box-sizing: border-box;            display: flex;
+
+        }            align-items: center;
+
+        body {            justify-content: center;
+
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;            min-height: 100vh;
+
+            display: flex;            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+
+            align-items: center;            color: white;
+
+            justify-content: center;        }
+
+            min-height: 100vh;        .container {
+
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);            text-align: center;
+
+            color: white;            padding: 2rem;
+
+        }            max-width: 600px;
+
+        .container {        }
+
+            text-align: center;        h1 {
+
+            padding: 2rem;            font-size: 3rem;
+
+            max-width: 600px;            margin-bottom: 1rem;
+
         }
 
-        .dropdown {
-            position: relative;
+        h1 {        }
+
+            font-size: 3rem;
+
+            margin-bottom: 1rem;        p {            min-height: 100vh;        .hero-buttons {
+
+        }
+
+        p {            font-size: 1.25rem;
+
+            font-size: 1.25rem;
+
+            margin-bottom: 2rem;            margin-bottom: 2rem;            margin: 0;            display: flex;
+
+        }
+
+        .spinner {            opacity: 0.9;
+
             display: inline-block;
+
+            width: 50px;        }            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);            gap: 15px;
+
+            height: 50px;
+
+            border: 4px solid rgba(255, 255, 255, 0.3);        .spinner {
+
+            border-top-color: white;
+
+            border-radius: 50%;            border: 4px solid rgba(255, 255, 255, 0.3);            color: white;            flex-wrap: wrap;
+
+            animation: spin 1s linear infinite;
+
+        }            border-radius: 50%;
+
+        @keyframes spin {
+
+            to { transform: rotate(360deg); }            border-top: 4px solid white;        }        }
+
         }
 
-        .dropdown-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .info {            width: 50px;
 
-        .dropdown-menu {
-            position: absolute;
-            top: 120%;
-            left: 0;
-            background: var(--surface-dark-higher);
-            min-width: 180px;
-            border-radius: 8px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(-10px);
-            transition: all 0.2s ease;
-            z-index: 100;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
+            margin-top: 2rem;
 
-        .dropdown:hover .dropdown-menu {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
+            padding: 1rem;            height: 50px;        .container {
 
-        .dropdown-menu a {
-            display: block;
-            padding: 12px 20px;
-            color: var(--text-primary);
-            transition: all var(--transition-fast);
-            text-decoration: none;
-        }
+            background: rgba(255, 255, 255, 0.1);
 
-        .dropdown-menu a:hover {
-            background: rgba(33, 150, 243, 0.1);
-            color: var(--primary-blue);
-        }
+            border-radius: 0.5rem;            animation: spin 1s linear infinite;
+
+            font-size: 0.875rem;
+
+        }            margin: 0 auto 2rem;            text-align: center;        .dropdown {
+
+        a {
+
+            color: white;        }
+
+            text-decoration: underline;
+
+        }        @keyframes spin {            padding: 2rem;            position: relative;
+
     </style>
-</head>
+
+</head>            0% { transform: rotate(0deg); }
+
 <body>
-    <header class="main-header">
-        <div class="container">
-            <div class="logo">
-                <a href="index.html" style="text-decoration: none; color: inherit;">
-                    <h1>Eventura</h1>
-                </a>
-            </div>
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="index.html" class="active">Home</a></li>
-                    <li><a href="events.html">Events</a></li>
-                    <li><a href="organizations.html">Organizations</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li class="dashboard-link"><a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                </ul>
-            </nav>
-            <div class="user-controls">
-                <div class="search-container">
-                    <button class="search-toggle"><i class="fas fa-search"></i></button>
-                    <div class="search-form">
-                        <input type="text" placeholder="Search events...">
-                        <button type="submit"><i class="fas fa-search"></i></button>
+
+    <div class="container">            100% { transform: rotate(360deg); }        }            display: inline-block;
+
+        <h1>🎉 Eventura</h1>
+
+        <p>Redirecting to React App...</p>        }
+
+        <div class="spinner"></div>
+
+        <div class="info">        .info {        h1 {        }
+
+            <p><strong>Note:</strong> This project has been migrated to React.</p>
+
+            <p>If you are not redirected automatically, <a href="client/index.html">click here</a>.</p>            margin-top: 2rem;
+
+        </div>
+
+    </div>            padding: 1.5rem;            font-size: 2.5rem;
+
+    <script>
+
+        setTimeout(() => {            background: rgba(255, 255, 255, 0.15);
+
+            window.location.href = 'client/index.html';
+
+        }, 2000);            border-radius: 12px;            margin-bottom: 1rem;        .dropdown-btn {
+
+    </script>
+
+</body>            backdrop-filter: blur(10px);
+
+</html>
+
+            text-align: left;        }            display: inline-flex;
+
+        }
+
+        .info h2 {        p {            align-items: center;
+
+            font-size: 1.5rem;
+
+            margin-bottom: 1rem;            font-size: 1.25rem;            gap: 8px;
+
+            text-align: center;
+
+        }            margin-bottom: 2rem;        }
+
+        .info p {
+
+            font-size: 0.95rem;            opacity: 0.9;
+
+            margin: 0.5rem 0;
+
+            line-height: 1.6;        }        .dropdown-menu {
+
+        }
+
+        .info ul {        .spinner {            position: absolute;
+
+            list-style: none;
+
+            margin-top: 1rem;            border: 4px solid rgba(255, 255, 255, 0.3);            top: 120%;
+
+        }
+
+        .info li {            border-radius: 50%;            left: 0;
+
+            padding: 0.5rem 0;
+
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);            border-top: 4px solid white;            background: var(--surface-dark-higher);
+
+        }
+
+        code {            width: 50px;            min-width: 180px;
+
+            background: rgba(0, 0, 0, 0.3);
+
+            padding: 0.3rem 0.6rem;            height: 50px;            border-radius: 8px;
+
+            border-radius: 4px;
+
+            font-family: 'Courier New', monospace;            animation: spin 1s linear infinite;            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+
+            font-size: 0.9rem;
+
+            display: inline-block;            margin: 0 auto;            overflow: hidden;
+
+            margin: 0.5rem 0;
+
+        }        }            opacity: 0;
+
+        .btn {
+
+            display: inline-block;        @keyframes spin {            visibility: hidden;
+
+            padding: 0.75rem 1.5rem;
+
+            background: white;            0% { transform: rotate(0deg); }            transform: translateY(-10px);
+
+            color: #0284c7;
+
+            text-decoration: none;            100% { transform: rotate(360deg); }            transition: all 0.2s ease;
+
+            border-radius: 8px;
+
+            font-weight: 600;        }            z-index: 100;
+
+            margin-top: 1rem;
+
+            transition: transform 0.2s;        .info {            border: 1px solid rgba(255, 255, 255, 0.05);
+
+        }
+
+        .btn:hover {            margin-top: 2rem;        }
+
+            transform: scale(1.05);
+
+        }            padding: 1.5rem;
+
+    </style>
+
+</head>            background: rgba(255, 255, 255, 0.1);        .dropdown:hover .dropdown-menu {
+
+<body>
+
+    <div class="container">            border-radius: 12px;            opacity: 1;
+
+        <h1>🎉 Eventura</h1>
+
+        <p>Modern Event Management Platform</p>            backdrop-filter: blur(10px);            visibility: visible;
+
+        <div class="spinner"></div>
+
+                }            transform: translateY(0);
+
+        <div class="info">
+
+            <h2>✨ Project Migrated to React!</h2>        .info h2 {        }
+
+            
+
+            <p><strong>The old HTML/CSS/JS files have been removed.</strong></p>            font-size: 1.5rem;
+
+            <p>This project is now a modern React application with Tailwind CSS.</p>
+
+                        margin-bottom: 1rem;        .dropdown-menu a {
+
+            <ul>
+
+                <li><strong>Step 1:</strong> Navigate to client folder</li>        }            display: block;
+
+                <li><strong>Step 2:</strong> Install dependencies</li>
+
+                <li><strong>Step 3:</strong> Start the dev server</li>        .info p {            padding: 12px 20px;
+
+            </ul>
+
+                        font-size: 1rem;            color: var(--text-primary);
+
+            <div style="margin-top: 1.5rem;">
+
+                <p><strong>Run these commands:</strong></p>            margin: 0.5rem 0;            transition: all var(--transition-fast);
+
+                <code>cd client</code><br>
+
+                <code>npm install</code><br>        }            text-decoration: none;
+
+                <code>npm run dev</code>
+
+            </div>        code {        }
+
+            
+
+            <p style="margin-top: 1.5rem; text-align: center; font-size: 1rem;">            background: rgba(0, 0, 0, 0.3);
+
+                <strong>Then open:</strong> <code style="font-size: 1.1rem;">http://localhost:3000</code>
+
+            </p>            padding: 0.25rem 0.5rem;        .dropdown-menu a:hover {
+
+            
+
+            <p style="margin-top: 1rem; text-align: center; opacity: 0.8; font-size: 0.9rem;">            border-radius: 4px;            background: rgba(33, 150, 243, 0.1);
+
+                Or use the quick start script: <code>./setup-react.sh</code>
+
+            </p>            font-family: 'Courier New', monospace;            color: var(--primary-blue);
+
+        </div>
+
+                }        }
+
+        <p style="margin-top: 2rem; font-size: 1rem; opacity: 0.8;">
+
+            📚 Check <code>START_HERE.md</code> for complete documentation    </style>    </style>
+
+        </p>
+
+    </div></head></head>
+
+</body>
+
+</html><body><body>
+
+
+    <div class="container">    <header class="main-header">
+
+        <h1>🎉 Eventura</h1>        <div class="container">
+
+        <p>Redirecting to React App...</p>            <div class="logo">
+
+        <div class="spinner"></div>                <a href="index.html" style="text-decoration: none; color: inherit;">
+
+                            <h1>Eventura</h1>
+
+        <div class="info">                </a>
+
+            <h2>Running the React App</h2>            </div>
+
+            <p>The project has been migrated to React!</p>            <nav class="main-nav">
+
+            <p>To run the development server:</p>                <ul>
+
+            <p><code>cd client && npm install && npm run dev</code></p>                    <li><a href="index.html" class="active">Home</a></li>
+
+            <p>Then open: <code>http://localhost:3000</code></p>                    <li><a href="events.html">Events</a></li>
+
+        </div>                    <li><a href="organizations.html">Organizations</a></li>
+
+    </div>                    <li><a href="about.html">About</a></li>
+
+                        <li class="dashboard-link"><a href="admin-dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+
+    <script>                </ul>
+
+        // Redirect after 3 seconds if meta refresh doesn't work            </nav>
+
+        setTimeout(() => {            <div class="user-controls">
+
+            window.location.href = 'client/index.html';                <div class="search-container">
+
+        }, 3000);                    <button class="search-toggle"><i class="fas fa-search"></i></button>
+
+    </script>                    <div class="search-form">
+
+</body>                        <input type="text" placeholder="Search events...">
+
+</html>                        <button type="submit"><i class="fas fa-search"></i></button>
+
                     </div>
                 </div>
                 <div class="dropdown">
