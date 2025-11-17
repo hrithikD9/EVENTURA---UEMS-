@@ -109,3 +109,21 @@ docs/_build/
 .netlify
 .firebase/
 .serverless/
+
+# Development and internal documentation (keep README.md only)
+*.sh
+ARCHITECTURE.md
+CHEAT_SHEET.md
+CLEANUP_COMPLETE.md
+COMPLETE_SUMMARY.md
+DEVELOPMENT_CHECKLIST.md
+EVENTURA_User_Stories.md
+IMPLEMENTATION_COMPLETE.md
+MIGRATION_COMPLETE.md
+PROJECT_STRUCTURE.md
+QUICK_START.md
+START_HERE.md
+Team_Distribution_Summary.md
+Technical_Implementation_Guide.md
+UI_UX_GUIDE.md
+USER_STORY_README.md
