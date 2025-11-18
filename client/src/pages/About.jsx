@@ -13,6 +13,11 @@ import {
 } from 'lucide-react';
 import Button from '@/components/common/Button';
 
+// Import team member images
+import teamMember1 from '@/assets/images/A.jpg';
+import teamMember2 from '@/assets/images/H.jpg';
+import teamMember3 from '@/assets/images/P.png';
+
 const About = () => {
   const features = [
     {
@@ -71,31 +76,34 @@ const About = () => {
 
   const team = [
     {
-      name: 'Development Team',
-      role: 'Platform Creators',
-      description: 'Building the future of campus event management',
-    },
-    {
-      name: 'Student Affairs',
-      role: 'Content Curators',
+      name: 'Atqiya Anjum',
+      role: 'Co-Developer',
       description: 'Ensuring quality events and experiences',
+      image: teamMember1,
     },
     {
-      name: 'IT Department',
-      role: 'Technical Support',
-      description: 'Keeping the platform running smoothly',
+      name: 'Hrithik Dev Nath',
+      role: 'Lead Developer',
+      description: 'Building the future of campus event management',
+      image: teamMember2,
+    },
+    {
+      name: 'Priya Das',
+      role: 'Co-Developer',
+      description: 'Creating seamless user experiences',
+      image: teamMember3,
     },
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-primary-600 via-primary-700 to-secondary-600 text-white py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">
+      <div className="py-20 text-white bg-gradient-to-br from-primary-600 via-primary-700 to-secondary-600">
+        <div className="container px-4 mx-auto text-center">
+          <h1 className="mb-6 text-5xl font-bold md:text-6xl font-display">
             About Eventura
           </h1>
-          <p className="text-xl md:text-2xl text-primary-100 mb-8 max-w-3xl mx-auto">
+          <p className="max-w-3xl mx-auto mb-8 text-xl md:text-2xl text-primary-100">
             Your gateway to an enriched university experience through seamless event discovery and management
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
@@ -105,7 +113,7 @@ const About = () => {
               </Button>
             </Link>
             <Link to="/register">
-              <Button variant="outline" className="border-white text-white hover:bg-white/10">
+              <Button variant="outline" className="text-white border-white hover:bg-white/10">
                 Join Us Today
               </Button>
             </Link>
@@ -115,14 +123,14 @@ const About = () => {
 
       {/* Stats Section */}
       <div className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="container px-4 mx-auto">
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
             {stats.map((stat, index) => (
               <div key={index} className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-primary-100 rounded-full mb-4">
-                  <stat.icon className="h-8 w-8 text-primary-600" />
+                <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-full bg-primary-100">
+                  <stat.icon className="w-8 h-8 text-primary-600" />
                 </div>
-                <div className="text-4xl font-bold text-gray-900 mb-2">{stat.value}</div>
+                <div className="mb-2 text-4xl font-bold text-gray-900">{stat.value}</div>
                 <div className="text-gray-600">{stat.label}</div>
               </div>
             ))}
@@ -132,18 +140,18 @@ const About = () => {
 
       {/* What is Eventura */}
       <div className="py-16">
-        <div className="container mx-auto px-4">
+        <div className="container px-4 mx-auto">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-4xl font-display font-bold text-gray-900 mb-6 text-center">
+            <h2 className="mb-6 text-4xl font-bold text-center text-gray-900 font-display">
               What is Eventura?
             </h2>
-            <p className="text-lg text-gray-700 leading-relaxed mb-6">
+            <p className="mb-6 text-lg leading-relaxed text-gray-700">
               Eventura is North East University Bangladesh's comprehensive event management system designed
               to bridge the gap between students and campus activities. We believe that university life
               extends far beyond the classroom, and our platform makes it easy for students to discover,
               register for, and participate in events that match their interests.
             </p>
-            <p className="text-lg text-gray-700 leading-relaxed">
+            <p className="text-lg leading-relaxed text-gray-700">
               Whether you're looking to attend tech talks, join sports competitions, experience cultural
               festivals, or participate in workshops, Eventura brings all campus events to your fingertips.
               Our platform empowers student organizations to reach wider audiences while giving students a
@@ -155,20 +163,20 @@ const About = () => {
 
       {/* Features Section */}
       <div className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-display font-bold text-gray-900 mb-4 text-center">
+        <div className="container px-4 mx-auto">
+          <h2 className="mb-4 text-4xl font-bold text-center text-gray-900 font-display">
             Platform Features
           </h2>
-          <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+          <p className="max-w-2xl mx-auto mb-12 text-center text-gray-600">
             Everything you need to stay connected with campus life
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
             {features.map((feature, index) => (
-              <div key={index} className="bg-gray-50 rounded-xl p-6 hover:shadow-lg transition-shadow">
+              <div key={index} className="p-6 transition-shadow bg-gray-50 rounded-xl hover:shadow-lg">
                 <div className={`inline-flex items-center justify-center w-12 h-12 ${feature.color} rounded-lg mb-4`}>
-                  <feature.icon className="h-6 w-6" />
+                  <feature.icon className="w-6 h-6" />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
+                <h3 className="mb-2 text-xl font-bold text-gray-900">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
               </div>
             ))}
@@ -178,15 +186,15 @@ const About = () => {
 
       {/* Mission, Vision, Values */}
       <div className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="container px-4 mx-auto">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {values.map((value, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-sm p-8 text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full mb-6">
-                  <value.icon className="h-8 w-8 text-white" />
+              <div key={index} className="p-8 text-center bg-white shadow-sm rounded-xl">
+                <div className="inline-flex items-center justify-center w-16 h-16 mb-6 rounded-full bg-gradient-to-br from-primary-500 to-secondary-500">
+                  <value.icon className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">{value.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{value.description}</p>
+                <h3 className="mb-4 text-2xl font-bold text-gray-900">{value.title}</h3>
+                <p className="leading-relaxed text-gray-600">{value.description}</p>
               </div>
             ))}
           </div>
@@ -195,8 +203,8 @@ const About = () => {
 
       {/* How It Works */}
       <div className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-display font-bold text-gray-900 mb-12 text-center">
+        <div className="container px-4 mx-auto">
+          <h2 className="mb-12 text-4xl font-bold text-center text-gray-900 font-display">
             How It Works
           </h2>
           <div className="max-w-4xl mx-auto">
@@ -224,14 +232,14 @@ const About = () => {
                 },
               ].map((item, index) => (
                 <div key={index} className="flex items-start">
-                  <div className="flex-shrink-0 w-12 h-12 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold text-xl mr-6">
+                  <div className="flex items-center justify-center flex-shrink-0 w-12 h-12 mr-6 text-xl font-bold text-white rounded-full bg-primary-600">
                     {item.step}
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
+                    <h3 className="mb-2 text-xl font-bold text-gray-900">{item.title}</h3>
                     <p className="text-gray-600">{item.description}</p>
                   </div>
-                  <CheckCircle className="h-6 w-6 text-green-500 ml-4" />
+                  <CheckCircle className="w-6 h-6 ml-4 text-green-500" />
                 </div>
               ))}
             </div>
@@ -241,22 +249,26 @@ const About = () => {
 
       {/* Team Section */}
       <div className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-display font-bold text-gray-900 mb-4 text-center">
-            Our Team
+        <div className="container px-4 mx-auto">
+          <h2 className="mb-4 text-4xl font-bold text-center text-gray-900 font-display">
+            The Team
           </h2>
-          <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+          <p className="max-w-2xl mx-auto mb-12 text-center text-gray-600">
             Dedicated professionals working to enhance your campus experience
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid max-w-5xl grid-cols-1 gap-8 mx-auto md:grid-cols-3">
             {team.map((member, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-sm p-6 text-center">
-                <div className="w-24 h-24 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold">
-                  {member.name.charAt(0)}
+              <div key={index} className="p-6 text-center transition-shadow bg-white shadow-sm rounded-xl hover:shadow-lg">
+                <div className="w-24 h-24 mx-auto mb-4 overflow-hidden border-4 rounded-full border-primary-100">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="object-cover w-full h-full"
+                  />
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
-                <p className="text-primary-600 font-medium mb-3">{member.role}</p>
-                <p className="text-gray-600 text-sm">{member.description}</p>
+                <h3 className="mb-1 text-xl font-bold text-gray-900">{member.name}</h3>
+                <p className="mb-3 font-medium text-primary-600">{member.role}</p>
+                <p className="text-sm text-gray-600">{member.description}</p>
               </div>
             ))}
           </div>
@@ -264,12 +276,12 @@ const About = () => {
       </div>
 
       {/* CTA Section */}
-      <div className="py-20 bg-gradient-to-r from-primary-600 to-secondary-600 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-display font-bold mb-6">
+      <div className="py-20 text-white bg-gradient-to-r from-primary-600 to-secondary-600">
+        <div className="container px-4 mx-auto text-center">
+          <h2 className="mb-6 text-4xl font-bold font-display">
             Ready to Get Started?
           </h2>
-          <p className="text-xl text-primary-100 mb-8 max-w-2xl mx-auto">
+          <p className="max-w-2xl mx-auto mb-8 text-xl text-primary-100">
             Join thousands of students already using Eventura to enhance their university experience
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
@@ -279,7 +291,7 @@ const About = () => {
               </Button>
             </Link>
             <Link to="/events">
-              <Button variant="outline" className="border-white text-white hover:bg-white/10">
+              <Button variant="outline" className="text-white border-white hover:bg-white/10">
                 Browse Events
               </Button>
             </Link>

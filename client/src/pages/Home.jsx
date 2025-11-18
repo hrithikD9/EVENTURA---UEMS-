@@ -28,21 +28,20 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-primary-600 to-primary-800 text-white py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-20 text-white bg-gradient-to-r from-primary-600 to-primary-800">
+        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-display font-bold mb-6 animate-fade-in">
+            <h1 className="mb-6 text-4xl font-bold md:text-6xl font-display animate-fade-in">
               Welcome to Eventura
             </h1>
-            <p className="text-xl md:text-2xl mb-8 text-primary-100 max-w-3xl mx-auto">
+            <p className="max-w-3xl mx-auto mb-8 text-xl md:text-2xl text-primary-100">
               Discover, connect, and participate in exciting university events
             </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link to="/events" className="btn bg-white text-primary-600 hover:bg-gray-100">
+            <div className="flex flex-col justify-center gap-4 sm:flex-row">
+              <Link to="/events" className="bg-white btn text-primary-600 hover:bg-gray-100">
                 Explore Events
-                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
-              <Link to="/organizations" className="btn btn-outline border-white text-white hover:bg-white hover:text-primary-600">
+              <Link to="/organizations" className="text-white border-white btn btn-outline hover:bg-white hover:text-primary-600">
                 View Organizations
               </Link>
             </div>
@@ -52,20 +51,20 @@ const Home = () => {
 
       {/* Features Section */}
       <section className="py-16 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-display font-bold text-center mb-12">
+        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <h2 className="mb-12 text-3xl font-bold text-center font-display">
             Why Choose Eventura?
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {features.map((feature, index) => (
               <div
                 key={index}
-                className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all"
+                className="p-6 transition-all bg-white shadow-md rounded-xl hover:shadow-xl"
               >
-                <div className="flex items-center justify-center w-12 h-12 bg-primary-100 rounded-lg mb-4">
-                  <feature.icon className="h-6 w-6 text-primary-600" />
+                <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-lg bg-primary-100">
+                  <feature.icon className="w-6 h-6 text-primary-600" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                <h3 className="mb-2 text-xl font-semibold">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
               </div>
             ))}
@@ -75,15 +74,15 @@ const Home = () => {
 
       {/* Featured Events Section */}
       <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-3xl font-display font-bold">Featured Events</h2>
+        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-bold font-display">Featured Events</h2>
             <Link
               to="/events"
-              className="text-primary-600 hover:text-primary-700 font-medium flex items-center"
+              className="flex items-center font-medium text-primary-600 hover:text-primary-700"
             >
               View All
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <ArrowRight className="w-5 h-5 ml-2" />
             </Link>
           </div>
           
@@ -92,7 +91,7 @@ const Home = () => {
               <Loader size="lg" />
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               {featuredEvents.map((event) => (
                 <EventCard key={event.id} event={event} />
               ))}
@@ -103,14 +102,14 @@ const Home = () => {
 
       {/* CTA Section */}
       <section className="py-16 bg-primary-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-display font-bold mb-4">
+        <div className="max-w-4xl px-4 mx-auto text-center sm:px-6 lg:px-8">
+          <h2 className="mb-4 text-3xl font-bold font-display">
             Ready to Get Started?
           </h2>
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="mb-8 text-xl text-gray-600">
             Join Eventura today and never miss an exciting campus event again!
           </p>
-          <Link to="/register" className="btn btn-primary text-lg">
+          <Link to="/register" className="text-lg btn btn-primary">
             Create Your Account
           </Link>
         </div>

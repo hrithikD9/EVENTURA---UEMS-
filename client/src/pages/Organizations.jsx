@@ -4,6 +4,9 @@ import { organizationService } from '@/services/organizationService';
 import OrganizationCard from '@/components/organizations/OrganizationCard';
 import Loader from '@/components/common/Loader';
 import toast from 'react-hot-toast';
+import cseSocietyLogo from '../assets/images/cse_logo.jpg'
+import cseSocietyCover from '../assets/images/cover.jpg'
+
 
 const Organizations = () => {
   const [organizations, setOrganizations] = useState([]);
@@ -67,40 +70,40 @@ const Organizations = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen py-8 bg-gray-50">
+      <div className="container px-4 mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-display font-bold text-gray-900 mb-3">
+          <h1 className="mb-3 text-4xl font-bold text-gray-900 font-display">
             Student Organizations
           </h1>
-          <p className="text-gray-600 text-lg">
+          <p className="text-lg text-gray-600">
             Discover and join clubs and societies that match your interests
           </p>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-xl shadow-sm p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="p-6 mb-8 bg-white shadow-sm rounded-xl">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Search className="absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
               <input
                 type="text"
                 placeholder="Search organizations..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="input pl-10"
+                className="pl-10 input"
               />
             </div>
 
             {/* Type Filter */}
             <div className="relative">
-              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+              <Filter className="absolute w-5 h-5 text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
               <select
                 value={selectedType}
                 onChange={(e) => setSelectedType(e.target.value)}
-                className="input pl-10"
+                className="pl-10 input"
               >
                 {organizationTypes.map((type) => (
                   <option key={type} value={type}>
@@ -113,7 +116,7 @@ const Organizations = () => {
 
           {/* Active Filters */}
           {(searchTerm || selectedType !== 'all') && (
-            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
+            <div className="flex items-center gap-2 pt-4 mt-4 border-t border-gray-100">
               <span className="text-sm text-gray-500">Active filters:</span>
               {searchTerm && (
                 <span className="badge badge-primary">
@@ -128,7 +131,7 @@ const Organizations = () => {
                   setSearchTerm('');
                   setSelectedType('all');
                 }}
-                className="text-sm text-primary-600 hover:text-primary-700 ml-auto"
+                className="ml-auto text-sm text-primary-600 hover:text-primary-700"
               >
                 Clear all
               </button>
@@ -146,20 +149,20 @@ const Organizations = () => {
 
         {/* Organizations Grid */}
         {filteredOrganizations.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {filteredOrganizations.map((organization) => (
               <OrganizationCard key={organization.id} organization={organization} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-              <Search className="h-8 w-8 text-gray-400" />
+          <div className="py-12 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 mb-4 bg-gray-100 rounded-full">
+              <Search className="w-8 h-8 text-gray-400" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+            <h3 className="mb-2 text-xl font-semibold text-gray-900">
               No organizations found
             </h3>
-            <p className="text-gray-600 mb-4">
+            <p className="mb-4 text-gray-600">
               Try adjusting your search or filter criteria
             </p>
             <button
@@ -167,7 +170,7 @@ const Organizations = () => {
                 setSearchTerm('');
                 setSelectedType('all');
               }}
-              className="text-primary-600 hover:text-primary-700 font-medium"
+              className="font-medium text-primary-600 hover:text-primary-700"
             >
               Clear filters
             </button>
