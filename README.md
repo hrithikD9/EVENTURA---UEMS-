@@ -1,10 +1,10 @@
-# Eventura 
+# Eventura 🎉
 
 > A modern real-time event management platform for university clubs and organizations
 
 Eventura is a comprehensive web-based platform designed to streamline event management for university clubs and student organizations. It provides a centralized system for creating, discovering, and managing events, connecting students with campus activities while offering powerful tools for event organizers.
 
-## Features
+## 🚀 Features
 
 ### For Students
 
@@ -45,6 +45,7 @@ Eventura is a comprehensive web-based platform designed to streamline event mana
 - Node.js & Express.js
 - MongoDB with Mongoose ODM
 - JWT-based authentication
+- Socket.IO for real-time features
 - RESTful API architecture
 
 ## 📂 Project Structure
@@ -77,5 +78,111 @@ eventura/
 └── README.md                 # Project documentation
 ```
 
+## 🔧 Installation & Setup
 
-#PROJECT IS UNDER DEVELOPING!
+### Prerequisites
+- Node.js (v16 or later)
+- npm or yarn
+
+### Setting Up the Frontend
+
+1. Clone the repository
+   ```bash
+   git clone https://github.com/yourusername/eventura.git
+   cd eventura
+   ```
+
+2. Install frontend dependencies
+   ```bash
+   cd client
+   npm install
+   ```
+
+3. Create a `.env` file in the client directory (optional)
+   ```bash
+   cp .env.example .env
+   ```
+
+4. Start the development server
+   ```bash
+   npm run dev
+   ```
+
+5. Open your browser and navigate to `http://localhost:3000`
+
+### Mock Authentication
+
+For testing, use these credentials:
+- **Email:** john@neub.edu.bd
+- **Password:** password123
+
+Other demo users:
+- jane@neub.edu.bd (Organizer role)
+- admin@neub.edu.bd (Admin role)
+
+## 🚀 Running the Project
+
+### Quick Start (Recommended)
+
+```bash
+./setup-react.sh
+```
+
+### Manual Setup
+
+1. Navigate to client directory
+```bash
+cd client
+```
+
+2. Install dependencies
+```bash
+npm install
+```
+
+3. Start development server
+```bash
+npm run dev
+```
+
+4. Open browser at `http://localhost:3000`
+
+### Production Build
+
+```bash
+cd client
+npm run build
+npm run preview
+```
+
+The application currently uses mock data for development. No backend setup is required.
+
+### ⚠️ Important Note
+
+All old HTML/CSS/JS files have been removed. The project is now 100% React-based. If you run `npx serve` at the root, you'll see a redirect page. Always use `npm run dev` inside the `client/` folder.
+
+## 📱 Screenshots
+
+_[Add screenshots of your application here]_
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📬 Contact
+
+Project Link: [https://github.com/yourusername/eventura](https://github.com/yourusername/eventura)
+
+---
+
+&copy; 2025 Eventura. All rights reserved.

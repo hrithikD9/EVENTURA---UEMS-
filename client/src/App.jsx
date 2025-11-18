@@ -15,6 +15,7 @@ import OrganizationDetails from '@/pages/OrganizationDetails';
 import MyEvents from '@/pages/MyEvents';
 import Dashboard from '@/pages/Dashboard';
 import CreateEvent from '@/pages/CreateEvent';
+import Profile from '@/pages/Profile';
 import About from '@/pages/About';
 import NotFound from '@/pages/NotFound';
 
@@ -53,6 +54,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <CreateEvent />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/profile" 
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
                     </ProtectedRoute>
                   } 
                 />

@@ -64,6 +64,12 @@ const Header = () => {
                 </Link>
                 <Link
                   to="/dashboard"
+                  className="text-gray-700 hover:text-primary-600 transition-colors"
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  to="/profile"
                   className="text-gray-700 hover:text-primary-600 transition-colors flex items-center space-x-2"
                 >
                   <User className="h-5 w-5" />
@@ -138,7 +144,14 @@ const Header = () => {
                     onClick={() => setIsMenuOpen(false)}
                     className="block text-gray-700 hover:text-primary-600 py-2"
                   >
-                    Dashboard - {user?.name}
+                    Dashboard
+                  </Link>
+                  <Link
+                    to="/profile"
+                    onClick={() => setIsMenuOpen(false)}
+                    className="block text-gray-700 hover:text-primary-600 py-2"
+                  >
+                    Profile - {user?.name}
                   </Link>
                   <button
                     onClick={handleLogout}
