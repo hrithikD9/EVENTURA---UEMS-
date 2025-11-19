@@ -5,7 +5,7 @@ import OrganizationCard from '@/components/organizations/OrganizationCard';
 import Loader from '@/components/common/Loader';
 import toast from 'react-hot-toast';
 import cseSocietyLogo from '../assets/images/cse_logo.jpg'
-import cseSocietyCover from '../assets/images/cover.jpg'
+import cseSocietyCover from '../assets/images/cse_cover.jpg'
 
 
 const Organizations = () => {
