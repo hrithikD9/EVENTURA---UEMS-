@@ -118,7 +118,7 @@ const Footer = () => {
               &copy; {currentYear} Eventura. All rights reserved.
             </p>
             <p className="text-sm text-gray-400">
-              Made with ❤️ for university communities
+Going to live soon!!!!
             </p>
           </div>
         </div>
