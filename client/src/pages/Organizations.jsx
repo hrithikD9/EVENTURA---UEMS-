@@ -4,9 +4,6 @@ import { organizationService } from '@/services/organizationService';
 import OrganizationCard from '@/components/organizations/OrganizationCard';
 import Loader from '@/components/common/Loader';
 import toast from 'react-hot-toast';
-import cseSocietyLogo from '../assets/images/cse_logo.jpg'
-import cseSocietyCover from '../assets/images/cse_cover.jpg'
-
 
 const Organizations = () => {
   const [organizations, setOrganizations] = useState([]);
@@ -131,7 +128,7 @@ const Organizations = () => {
                   setSearchTerm('');
                   setSelectedType('all');
                 }}
-                className="ml-auto text-sm text-primary-600 hover:text-primary-700"
+                className="ml-auto text-sm text-teal-600 hover:text-teal-700"
               >
                 Clear all
               </button>
@@ -149,7 +146,7 @@ const Organizations = () => {
 
         {/* Organizations Grid */}
         {filteredOrganizations.length > 0 ? (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
             {filteredOrganizations.map((organization) => (
               <OrganizationCard key={organization.id} organization={organization} />
             ))}
@@ -170,7 +167,7 @@ const Organizations = () => {
                 setSearchTerm('');
                 setSelectedType('all');
               }}
-              className="font-medium text-primary-600 hover:text-primary-700"
+              className="font-medium text-teal-600 hover:text-teal-700"
             >
               Clear filters
             </button>

@@ -38,21 +38,21 @@ const EventCard = ({ event }) => {
 
           <div className="space-y-2">
             <div className="flex items-center text-sm text-gray-500">
-              <Calendar className="h-4 w-4 mr-2 text-primary-600" />
+              <Calendar className="h-4 w-4 mr-2 text-teal-600" />
               <span>{formatDate(event.date, 'PP')}</span>
-              <Clock className="h-4 w-4 ml-4 mr-2 text-primary-600" />
+              <Clock className="h-4 w-4 ml-4 mr-2 text-teal-600" />
               <span>{event.time}</span>
             </div>
             <div className="flex items-center text-sm text-gray-500">
-              <MapPin className="h-4 w-4 mr-2 text-primary-600" />
+              <MapPin className="h-4 w-4 mr-2 text-teal-600" />
               <span>{event.location}</span>
             </div>
             <div className="flex items-center justify-between pt-2 border-t">
               <div className="flex items-center text-sm text-gray-500">
-                <Users className="h-4 w-4 mr-2 text-primary-600" />
+                <Users className="h-4 w-4 mr-2 text-teal-600" />
                 <span>{event.attendees} / {event.maxAttendees} attending</span>
               </div>
-              <span className="text-sm font-medium text-primary-600">
+              <span className="text-sm font-medium text-teal-600">
                 {event.organizer}
               </span>
             </div>

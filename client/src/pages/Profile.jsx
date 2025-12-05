@@ -179,19 +179,19 @@ const Profile = () => {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container mx-auto px-4">
         {/* Header */}
-        <div className="bg-gradient-to-r from-primary-600 to-secondary-600 rounded-2xl shadow-lg p-8 mb-8 text-white">
+        <div className="bg-gradient-to-r from-teal-600 to-blue-600 rounded-2xl shadow-lg p-8 mb-8 text-white">
           <div className="flex flex-col md:flex-row items-center">
             <div className="relative mb-4 md:mb-0 md:mr-6">
-              <div className="h-24 w-24 bg-white rounded-full flex items-center justify-center text-primary-600 font-bold text-4xl">
+              <div className="h-24 w-24 bg-white rounded-full flex items-center justify-center text-teal-600 font-bold text-4xl">
                 {user.name?.charAt(0) || 'U'}
               </div>
-              <button className="absolute bottom-0 right-0 h-8 w-8 bg-secondary-500 hover:bg-secondary-600 rounded-full flex items-center justify-center shadow-lg transition-colors">
+              <button className="absolute bottom-0 right-0 h-8 w-8 bg-blue-500 hover:bg-blue-600 rounded-full flex items-center justify-center shadow-lg transition-colors">
                 <Camera className="h-4 w-4 text-white" />
               </button>
             </div>
             <div className="text-center md:text-left flex-1">
               <h1 className="text-3xl font-display font-bold mb-2">{user.name}</h1>
-              <p className="text-primary-100 mb-2">{user.email}</p>
+              <p className="text-teal-100 mb-2">{user.email}</p>
               <div className="flex flex-wrap gap-2 justify-center md:justify-start">
                 <span className="px-3 py-1 bg-white/20 rounded-full text-sm capitalize">
                   {user.role || 'Student'}
@@ -216,7 +216,7 @@ const Profile = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
                     activeTab === tab.id
-                      ? 'border-primary-600 text-primary-600'
+                      ? 'border-teal-600 text-teal-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >

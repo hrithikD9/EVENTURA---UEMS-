@@ -28,20 +28,20 @@ const Home = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20 text-white bg-gradient-to-r from-primary-600 to-primary-800">
+      <section className="relative py-20 text-white bg-gradient-to-r from-teal-600 to-teal-800">
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="mb-6 text-4xl font-bold md:text-6xl font-display animate-fade-in">
               Welcome to Eventura
             </h1>
-            <p className="max-w-3xl mx-auto mb-8 text-xl md:text-2xl text-primary-100">
+            <p className="max-w-3xl mx-auto mb-8 text-xl md:text-2xl text-teal-100">
               Discover, connect, and participate in exciting university events
             </p>
             <div className="flex flex-col justify-center gap-4 sm:flex-row">
-              <Link to="/events" className="bg-white btn text-primary-600 hover:bg-gray-100">
+              <Link to="/events" className="bg-white btn text-teal-600 hover:bg-gray-100">
                 Explore Events
               </Link>
-              <Link to="/organizations" className="text-white border-white btn btn-outline hover:bg-white hover:text-primary-600">
+              <Link to="/organizations" className="text-white border-white btn btn-outline hover:bg-white hover:text-teal-600">
                 View Organizations
               </Link>
             </div>
@@ -61,8 +61,8 @@ const Home = () => {
                 key={index}
                 className="p-6 transition-all bg-white shadow-md rounded-xl hover:shadow-xl"
               >
-                <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-lg bg-primary-100">
-                  <feature.icon className="w-6 h-6 text-primary-600" />
+                <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-lg bg-teal-100">
+                  <feature.icon className="w-6 h-6 text-teal-600" />
                 </div>
                 <h3 className="mb-2 text-xl font-semibold">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
@@ -79,7 +79,7 @@ const Home = () => {
             <h2 className="text-3xl font-bold font-display">Featured Events</h2>
             <Link
               to="/events"
-              className="flex items-center font-medium text-primary-600 hover:text-primary-700"
+              className="flex items-center font-medium text-teal-600 hover:text-teal-700"
             >
               View All
               <ArrowRight className="w-5 h-5 ml-2" />
@@ -101,7 +101,7 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 bg-primary-50">
+      <section className="py-16 bg-teal-50">
         <div className="max-w-4xl px-4 mx-auto text-center sm:px-6 lg:px-8">
           <h2 className="mb-4 text-3xl font-bold font-display">
             Ready to Get Started?

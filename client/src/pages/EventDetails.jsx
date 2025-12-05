@@ -201,7 +201,7 @@ const EventDetails = () => {
                   </div>
                 </div>
                 <div className="flex items-center">
-                  <Users className="h-5 w-5 text-primary-600 mr-3" />
+                  <Users className="h-5 w-5 text-teal-600 mr-3" />
                   <div>
                     <p className="text-sm text-gray-500">Attendees</p>
                     <p className="font-medium text-gray-900">
@@ -270,7 +270,7 @@ const EventDetails = () => {
                   to={`/organizations/${event.organizerId}`}
                   className="flex items-center group"
                 >
-                  <div className="h-12 w-12 bg-gradient-to-br from-primary-500 to-primary-600 rounded-lg flex items-center justify-center text-white font-bold mr-3">
+                  <div className="h-12 w-12 bg-gradient-to-br from-teal-500 to-teal-600 rounded-lg flex items-center justify-center text-white font-bold mr-3">
                     {event.organizer.charAt(0)}
                   </div>
                   <div className="flex-1">

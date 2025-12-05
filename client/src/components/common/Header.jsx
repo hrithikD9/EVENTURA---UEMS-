@@ -25,7 +25,7 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <Calendar className="h-8 w-8 text-primary-600" />
+            <Calendar className="h-8 w-8 text-teal-600" />
             <span className="text-2xl font-display font-bold text-gray-900">
               Eventura
             </span>
@@ -37,7 +37,7 @@ const Header = () => {
               <Link
                 key={item.name}
                 to={item.path}
-                className="text-gray-700 hover:text-primary-600 transition-colors font-medium"
+                className="text-gray-700 hover:text-teal-600 transition-colors font-medium"
               >
                 {item.name}
               </Link>
@@ -58,19 +58,19 @@ const Header = () => {
                 )}
                 <Link
                   to="/my-events"
-                  className="text-gray-700 hover:text-primary-600 transition-colors"
+                  className="text-gray-700 hover:text-teal-600 transition-colors"
                 >
                   My Events
                 </Link>
                 <Link
                   to="/dashboard"
-                  className="text-gray-700 hover:text-primary-600 transition-colors"
+                  className="text-gray-700 hover:text-teal-600 transition-colors"
                 >
                   Dashboard
                 </Link>
                 <Link
                   to="/profile"
-                  className="text-gray-700 hover:text-primary-600 transition-colors flex items-center space-x-2"
+                  className="text-gray-700 hover:text-teal-600 transition-colors flex items-center space-x-2"
                 >
                   <User className="h-5 w-5" />
                   <span>{user?.name}</span>
@@ -115,7 +115,7 @@ const Header = () => {
                 key={item.name}
                 to={item.path}
                 onClick={() => setIsMenuOpen(false)}
-                className="block text-gray-700 hover:text-primary-600 transition-colors py-2"
+                className="block text-gray-700 hover:text-teal-600 transition-colors py-2"
               >
                 {item.name}
               </Link>
@@ -135,21 +135,21 @@ const Header = () => {
                   <Link
                     to="/my-events"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block text-gray-700 hover:text-primary-600 py-2"
+                    className="block text-gray-700 hover:text-teal-600 py-2"
                   >
                     My Events
                   </Link>
                   <Link
                     to="/dashboard"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block text-gray-700 hover:text-primary-600 py-2"
+                    className="block text-gray-700 hover:text-teal-600 py-2"
                   >
                     Dashboard
                   </Link>
                   <Link
                     to="/profile"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block text-gray-700 hover:text-primary-600 py-2"
+                    className="block text-gray-700 hover:text-teal-600 py-2"
                   >
                     Profile - {user?.name}
                   </Link>

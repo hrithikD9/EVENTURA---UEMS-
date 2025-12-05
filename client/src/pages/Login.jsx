@@ -39,7 +39,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           {/* Header */}
@@ -48,40 +48,6 @@ const Login = () => {
               Welcome Back
             </h2>
             <p className="text-gray-600">Sign in to your Eventura account</p>
-          </div>
-
-          {/* Demo Credentials with Quick Login */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-            <p className="text-sm text-blue-800 font-medium mb-3">🎯 Quick Login (Demo):</p>
-            <div className="space-y-2">
-              <button
-                type="button"
-                onClick={() => setFormData({ email: 'john@neub.edu.bd', password: 'password123' })}
-                className="w-full bg-white/70 hover:bg-white rounded px-3 py-2 text-left transition-colors duration-200"
-              >
-                <p className="text-xs text-blue-800 font-semibold">👨‍🎓 Student Account</p>
-                <p className="text-xs text-blue-700">📧 john@neub.edu.bd</p>
-              </button>
-              <button
-                type="button"
-                onClick={() => setFormData({ email: 'jane@neub.edu.bd', password: 'password123' })}
-                className="w-full bg-white/70 hover:bg-white rounded px-3 py-2 text-left transition-colors duration-200"
-              >
-                <p className="text-xs text-blue-800 font-semibold">👩‍💼 Organizer Account</p>
-                <p className="text-xs text-blue-700">📧 jane@neub.edu.bd</p>
-              </button>
-              <button
-                type="button"
-                onClick={() => setFormData({ email: 'admin@neub.edu.bd', password: 'password123' })}
-                className="w-full bg-white/70 hover:bg-white rounded px-3 py-2 text-left transition-colors duration-200"
-              >
-                <p className="text-xs text-blue-800 font-semibold">👨‍💻 Admin Account</p>
-                <p className="text-xs text-blue-700">📧 admin@neub.edu.bd</p>
-              </button>
-            </div>
-            <p className="text-xs text-blue-600 mt-3 text-center italic">
-              💡 Click any account to auto-fill login form
-            </p>
           </div>
 
           {/* Form */}
@@ -140,13 +106,13 @@ const Login = () => {
                   id="remember"
                   name="remember"
                   type="checkbox"
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
                 />
                 <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
                   Remember me
                 </label>
               </div>
-              <Link to="/forgot-password" className="text-sm text-primary-600 hover:text-primary-700">
+              <Link to="/forgot-password" className="text-sm text-teal-600 hover:text-teal-700">
                 Forgot password?
               </Link>
             </div>
@@ -166,7 +132,7 @@ const Login = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{' '}
-              <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
+              <Link to="/register" className="text-teal-600 hover:text-teal-700 font-medium">
                 Sign up now
               </Link>
             </p>

@@ -178,30 +178,30 @@ const Dashboard = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Link
                   to="/events"
-                  className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-primary-500 hover:bg-primary-50 transition-all group"
+                  className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-teal-500 hover:bg-teal-50 transition-all group"
                 >
-                  <div className="h-12 w-12 bg-primary-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-primary-200">
-                    <Calendar className="h-6 w-6 text-primary-600" />
+                  <div className="h-12 w-12 bg-teal-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-teal-200">
+                    <Calendar className="h-6 w-6 text-teal-600" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900">Browse Events</h3>
                     <p className="text-sm text-gray-500">Find new events</p>
                   </div>
-                  <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-primary-600" />
+                  <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-teal-600" />
                 </Link>
 
                 <Link
                   to="/my-events"
-                  className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-secondary-500 hover:bg-secondary-50 transition-all group"
+                  className="flex items-center p-4 border-2 border-gray-200 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition-all group"
                 >
-                  <div className="h-12 w-12 bg-secondary-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-secondary-200">
-                    <Users className="h-6 w-6 text-secondary-600" />
+                  <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-blue-200">
+                    <Users className="h-6 w-6 text-blue-600" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-semibold text-gray-900">My Events</h3>
                     <p className="text-sm text-gray-500">Manage registrations</p>
                   </div>
-                  <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-secondary-600" />
+                  <ArrowRight className="h-5 w-5 text-gray-400 group-hover:text-blue-600" />
                 </Link>
 
                 <Link
@@ -272,14 +272,14 @@ const Dashboard = () => {
           {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
             {/* User Profile Card */}
-            <div className="bg-gradient-to-br from-primary-500 to-primary-700 rounded-xl shadow-lg p-6 text-white">
+            <div className="bg-gradient-to-br from-teal-500 to-teal-700 rounded-xl shadow-lg p-6 text-white">
               <div className="flex items-center mb-4">
-                <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center text-primary-600 font-bold text-2xl mr-4">
+                <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center text-teal-600 font-bold text-2xl mr-4">
                   {user?.name?.charAt(0) || 'U'}
                 </div>
                 <div>
                   <h3 className="font-semibold text-lg">{user?.name || 'User'}</h3>
-                  <p className="text-primary-100 text-sm">{user?.email}</p>
+                  <p className="text-teal-100 text-sm">{user?.email}</p>
                 </div>
               </div>
               <div className="pt-4 border-t border-primary-400">

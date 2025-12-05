@@ -117,8 +117,8 @@ const MyEvents = () => {
                 <p className="text-gray-500 text-sm mb-1">Total Events</p>
                 <p className="text-3xl font-bold text-gray-900">{events.length}</p>
               </div>
-              <div className="h-12 w-12 bg-primary-100 rounded-lg flex items-center justify-center">
-                <Calendar className="h-6 w-6 text-primary-600" />
+              <div className="h-12 w-12 bg-teal-100 rounded-lg flex items-center justify-center">
+                <Calendar className="h-6 w-6 text-teal-600" />
               </div>
             </div>
           </div>
@@ -163,7 +163,7 @@ const MyEvents = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 px-6 py-4 font-medium transition-colors border-b-2 whitespace-nowrap ${
                     activeTab === tab.id
-                      ? 'border-primary-600 text-primary-600'
+                      ? 'border-teal-600 text-teal-600'
                       : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                   }`}
                 >
@@ -171,7 +171,7 @@ const MyEvents = () => {
                   <span
                     className={`px-2 py-0.5 rounded-full text-xs ${
                       activeTab === tab.id
-                        ? 'bg-primary-100 text-primary-700'
+                        ? 'bg-teal-100 text-teal-700'
                         : 'bg-gray-100 text-gray-600'
                     }`}
                   >
@@ -246,7 +246,7 @@ const MyEvents = () => {
                 setSearchTerm('');
                 setActiveTab('all');
               }}
-              className="text-primary-600 hover:text-primary-700 font-medium"
+              className="text-teal-600 hover:text-teal-700 font-medium"
             >
               Clear filters
             </button>

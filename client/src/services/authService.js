@@ -15,11 +15,26 @@ const MOCK_USERS = [
     name: 'Jane Smith',
     email: 'jane@neub.edu.bd',
     role: 'organizer',
-    department: 'CSE',
-    organization: 'CSE Society',
+    organizationName: 'CSE Society',
+    organizationCode: 'CSE-SOC-001',
   },
   {
     id: '3',
+    name: 'Dr. Ahmed Rahman',
+    email: 'ahmed@neub.edu.bd',
+    role: 'faculty',
+    department: 'CSE',
+    teacherId: 'FAC001',
+  },
+  {
+    id: '4',
+    name: 'Staff Member',
+    email: 'staff@neub.edu.bd',
+    role: 'staff',
+    staffId: 'STF001',
+  },
+  {
+    id: '5',
     name: 'Admin User',
     email: 'admin@neub.edu.bd',
     role: 'admin',
@@ -58,7 +73,7 @@ export const authService = {
     const newUser = {
       id: Date.now().toString(),
       ...userData,
-      role: 'student',
+      // Role is already included in userData, no need to override
     };
     
     MOCK_USERS.push(newUser);

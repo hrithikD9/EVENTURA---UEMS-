@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, User, Building, CreditCard, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User, Building, CreditCard, Eye, EyeOff, Users, UserCheck, Shield } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import Button from '@/components/common/Button';
 
@@ -16,9 +16,45 @@ const Register = () => {
     password: '',
     confirmPassword: '',
     department: '',
+    role: 'student', // Default role
     studentId: '',
+    teacherId: '',
+    staffId: '',
+    organizationName: '',
+    organizationCode: '',
   });
   const [errors, setErrors] = useState({});
+
+  const roles = [
+    {
+      id: 'student',
+      label: 'Student',
+      description: 'University student',
+      icon: Users,
+      color: 'bg-blue-100 text-blue-600 border-blue-200'
+    },
+    {
+      id: 'faculty',
+      label: 'Faculty',
+      description: 'Teaching staff',
+      icon: UserCheck,
+      color: 'bg-green-100 text-green-600 border-green-200'
+    },
+    {
+      id: 'staff',
+      label: 'Staff',
+      description: 'University staff',
+      icon: User,
+      color: 'bg-purple-100 text-purple-600 border-purple-200'
+    },
+    {
+      id: 'organizer',
+      label: 'Organizer',
+      description: 'Event organizer',
+      icon: Shield,
+      color: 'bg-orange-100 text-orange-600 border-orange-200'
+    }
+  ];
 
   const departments = [
     'Computer Science & Engineering',
@@ -58,12 +94,31 @@ const Register = () => {
       newErrors.confirmPassword = 'Passwords do not match';
     }
 
-    if (!formData.department) {
+    // Department validation (not required for staff and organizer)
+    if ((formData.role === 'student' || formData.role === 'faculty') && !formData.department) {
       newErrors.department = 'Please select your department';
     }
 
-    if (!formData.studentId.trim()) {
+    // Role-specific validations
+    if (formData.role === 'student' && !formData.studentId.trim()) {
       newErrors.studentId = 'Student ID is required';
+    }
+
+    if (formData.role === 'faculty' && !formData.teacherId.trim()) {
+      newErrors.teacherId = 'Teacher ID is required';
+    }
+
+    if (formData.role === 'staff' && !formData.staffId.trim()) {
+      newErrors.staffId = 'Staff ID is required';
+    }
+
+    if (formData.role === 'organizer') {
+      if (!formData.organizationName.trim()) {
+        newErrors.organizationName = 'Organization name is required';
+      }
+      if (!formData.organizationCode.trim()) {
+        newErrors.organizationCode = 'Organization code is required';
+      }
     }
 
     setErrors(newErrors);
@@ -80,13 +135,31 @@ const Register = () => {
     setLoading(true);
     
     try {
-      await register({
+      const userData = {
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        department: formData.department,
-        studentId: formData.studentId,
-      });
+        role: formData.role,
+      };
+
+      // Add department for students and faculty only
+      if (formData.role === 'student' || formData.role === 'faculty') {
+        userData.department = formData.department;
+      }
+
+      // Add role-specific data
+      if (formData.role === 'student') {
+        userData.studentId = formData.studentId;
+      } else if (formData.role === 'faculty') {
+        userData.teacherId = formData.teacherId;
+      } else if (formData.role === 'staff') {
+        userData.staffId = formData.staffId;
+      } else if (formData.role === 'organizer') {
+        userData.organizationName = formData.organizationName;
+        userData.organizationCode = formData.organizationCode;
+      }
+
+      await register(userData);
       navigate('/');
     } catch (error) {
       console.error('Registration error:', error);
@@ -112,7 +185,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-secondary-50 to-secondary-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl w-full">
         <div className="bg-white rounded-2xl shadow-xl p-8">
           {/* Header */}
@@ -125,6 +198,44 @@ const Register = () => {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Role Selection */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                I am registering as <span className="text-red-500">*</span>
+              </label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {roles.map((role) => (
+                  <label
+                    key={role.id}
+                    className={`relative flex items-center p-4 cursor-pointer rounded-lg border-2 transition-all ${
+                      formData.role === role.id
+                        ? role.color
+                        : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="role"
+                      value={role.id}
+                      checked={formData.role === role.id}
+                      onChange={handleChange}
+                      className="sr-only"
+                    />
+                    <role.icon className="h-5 w-5 mr-3 flex-shrink-0" />
+                    <div>
+                      <div className="font-medium text-sm">{role.label}</div>
+                      <div className="text-xs text-gray-500">{role.description}</div>
+                    </div>
+                    {formData.role === role.id && (
+                      <div className="absolute top-2 right-2">
+                        <div className="h-2 w-2 bg-current rounded-full"></div>
+                      </div>
+                    )}
+                  </label>
+                ))}
+              </div>
+            </div>
+
             {/* Name */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
@@ -167,53 +278,149 @@ const Register = () => {
               {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
             </div>
 
-            {/* Department & Student ID Row */}
+            {/* Department & ID Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Department */}
-              <div>
-                <label htmlFor="department" className="block text-sm font-medium text-gray-700 mb-2">
-                  Department <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <select
-                    id="department"
-                    name="department"
-                    required
-                    value={formData.department}
-                    onChange={handleChange}
-                    className={`input pl-10 ${errors.department ? 'border-red-500' : ''}`}
-                  >
-                    <option value="">Select Department</option>
-                    {departments.map((dept) => (
-                      <option key={dept} value={dept}>
-                        {dept}
-                      </option>
-                    ))}
-                  </select>
+              {/* Department - Only for Student and Faculty */}
+              {(formData.role === 'student' || formData.role === 'faculty') && (
+                <div>
+                  <label htmlFor="department" className="block text-sm font-medium text-gray-700 mb-2">
+                    Department <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <select
+                      id="department"
+                      name="department"
+                      required
+                      value={formData.department}
+                      onChange={handleChange}
+                      className={`input pl-10 ${errors.department ? 'border-red-500' : ''}`}
+                    >
+                      <option value="">Select Department</option>
+                      {departments.map((dept) => (
+                        <option key={dept} value={dept}>
+                          {dept}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {errors.department && <p className="mt-1 text-sm text-red-600">{errors.department}</p>}
                 </div>
-                {errors.department && <p className="mt-1 text-sm text-red-600">{errors.department}</p>}
-              </div>
+              )}
 
-              {/* Student ID */}
-              <div>
-                <label htmlFor="studentId" className="block text-sm font-medium text-gray-700 mb-2">
-                  Student ID <span className="text-red-500">*</span>
-                </label>
-                <div className="relative">
-                  <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                  <input
-                    id="studentId"
-                    name="studentId"
-                    type="text"
-                    required
-                    value={formData.studentId}
-                    onChange={handleChange}
-                    className={`input pl-10 ${errors.studentId ? 'border-red-500' : ''}`}
-                    placeholder="20230001"
-                  />
+              {/* Organization Name - Only for Organizer */}
+              {formData.role === 'organizer' && (
+                <div>
+                  <label htmlFor="organizationName" className="block text-sm font-medium text-gray-700 mb-2">
+                    Organization Name <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <input
+                      id="organizationName"
+                      name="organizationName"
+                      type="text"
+                      required
+                      value={formData.organizationName}
+                      onChange={handleChange}
+                      className={`input pl-10 ${errors.organizationName ? 'border-red-500' : ''}`}
+                      placeholder="e.g., CSE Society"
+                    />
+                  </div>
+                  {errors.organizationName && <p className="mt-1 text-sm text-red-600">{errors.organizationName}</p>}
                 </div>
-                {errors.studentId && <p className="mt-1 text-sm text-red-600">{errors.studentId}</p>}
+              )}
+
+              {/* Dynamic ID Field */}
+              <div>
+                {formData.role === 'student' && (
+                  <>
+                    <label htmlFor="studentId" className="block text-sm font-medium text-gray-700 mb-2">
+                      Student ID <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <input
+                        id="studentId"
+                        name="studentId"
+                        type="text"
+                        required
+                        value={formData.studentId}
+                        onChange={handleChange}
+                        className={`input pl-10 ${errors.studentId ? 'border-red-500' : ''}`}
+                        placeholder="e.g., 20230001"
+                      />
+                    </div>
+                    {errors.studentId && <p className="mt-1 text-sm text-red-600">{errors.studentId}</p>}
+                  </>
+                )}
+
+                {formData.role === 'faculty' && (
+                  <>
+                    <label htmlFor="teacherId" className="block text-sm font-medium text-gray-700 mb-2">
+                      Faculty ID <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <input
+                        id="teacherId"
+                        name="teacherId"
+                        type="text"
+                        required
+                        value={formData.teacherId}
+                        onChange={handleChange}
+                        className={`input pl-10 ${errors.teacherId ? 'border-red-500' : ''}`}
+                        placeholder="e.g., FAC001"
+                      />
+                    </div>
+                    {errors.teacherId && <p className="mt-1 text-sm text-red-600">{errors.teacherId}</p>}
+                  </>
+                )}
+
+                {formData.role === 'staff' && (
+                  <>
+                    <label htmlFor="staffId" className="block text-sm font-medium text-gray-700 mb-2">
+                      Staff ID <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <input
+                        id="staffId"
+                        name="staffId"
+                        type="text"
+                        required
+                        value={formData.staffId}
+                        onChange={handleChange}
+                        className={`input pl-10 ${errors.staffId ? 'border-red-500' : ''}`}
+                        placeholder="e.g., STF001"
+                      />
+                    </div>
+                    {errors.staffId && <p className="mt-1 text-sm text-red-600">{errors.staffId}</p>}
+                  </>
+                )}
+
+                {formData.role === 'organizer' && (
+                  <>
+                    <label htmlFor="organizationCode" className="block text-sm font-medium text-gray-700 mb-2">
+                      Organization Code <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                      <input
+                        id="organizationCode"
+                        name="organizationCode"
+                        type="text"
+                        required
+                        value={formData.organizationCode}
+                        onChange={handleChange}
+                        className={`input pl-10 ${errors.organizationCode ? 'border-red-500' : ''}`}
+                        placeholder="e.g., CSE-SOC-001"
+                      />
+                    </div>
+                    {errors.organizationCode && <p className="mt-1 text-sm text-red-600">{errors.organizationCode}</p>}
+                    <p className="mt-1 text-xs text-gray-500">Contact your organization for the code</p>
+                  </>
+                )}
               </div>
             </div>
 
@@ -281,15 +488,15 @@ const Register = () => {
                 name="terms"
                 type="checkbox"
                 required
-                className="h-4 w-4 mt-0.5 text-secondary-600 focus:ring-secondary-500 border-gray-300 rounded"
+                className="h-4 w-4 mt-0.5 text-teal-600 focus:ring-teal-500 border-gray-300 rounded"
               />
               <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
                 I agree to the{' '}
-                <Link to="/terms" className="text-secondary-600 hover:text-secondary-700 font-medium">
+                <Link to="/terms" className="text-teal-600 hover:text-teal-700 font-medium">
                   Terms and Conditions
                 </Link>{' '}
                 and{' '}
-                <Link to="/privacy" className="text-secondary-600 hover:text-secondary-700 font-medium">
+                <Link to="/privacy" className="text-teal-600 hover:text-teal-700 font-medium">
                   Privacy Policy
                 </Link>
               </label>
@@ -306,7 +513,7 @@ const Register = () => {
             <Button
               type="submit"
               variant="primary"
-              className="w-full bg-secondary-600 hover:bg-secondary-700"
+              className="w-full"
               loading={loading}
             >
               Create Account
@@ -317,7 +524,7 @@ const Register = () => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Already have an account?{' '}
-              <Link to="/login" className="text-secondary-600 hover:text-secondary-700 font-medium">
+              <Link to="/login" className="text-teal-600 hover:text-teal-700 font-medium">
                 Sign in
               </Link>
             </p>

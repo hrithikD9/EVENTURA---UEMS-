@@ -134,12 +134,12 @@ const OrganizationDetails = () => {
                 {/* Stats */}
                 <div className="flex flex-wrap gap-4">
                   <div className="flex items-center text-gray-600">
-                    <Users className="h-5 w-5 mr-2 text-primary-600" />
+                    <Users className="h-5 w-5 mr-2 text-teal-600" />
                     <span className="font-medium">{organization.members}</span>
                     <span className="ml-1">members</span>
                   </div>
                   <div className="flex items-center text-gray-600">
-                    <Calendar className="h-5 w-5 mr-2 text-primary-600" />
+                    <Calendar className="h-5 w-5 mr-2 text-teal-600" />
                     <span className="font-medium">{organization.eventsHosted}</span>
                     <span className="ml-1">events hosted</span>
                   </div>
@@ -186,7 +186,7 @@ const OrganizationDetails = () => {
                 {events.length > 0 && (
                   <Link
                     to="/events"
-                    className="text-primary-600 hover:text-primary-700 text-sm font-medium flex items-center"
+                    className="text-teal-600 hover:text-teal-700 text-sm font-medium flex items-center"
                   >
                     View all
                     <ExternalLink className="h-4 w-4 ml-1" />
@@ -195,9 +195,55 @@ const OrganizationDetails = () => {
               </div>
 
               {events.length > 0 ? (
-                <div className="grid grid-cols-1 gap-6">
+                <div className="space-y-4">
                   {events.map((event) => (
-                    <EventCard key={event.id} event={event} />
+                    <Link 
+                      key={event.id} 
+                      to={`/events/${event.id}`}
+                      className="block p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:shadow-md transition-all"
+                    >
+                      <div className="flex gap-4">
+                        {/* Event Image */}
+                        <div className="w-20 h-20 flex-shrink-0 rounded-lg overflow-hidden">
+                          <img
+                            src={event.image}
+                            alt={event.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        
+                        {/* Event Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <h3 className="font-semibold text-gray-900 text-lg line-clamp-1">
+                              {event.title}
+                            </h3>
+                            <span className="badge badge-primary flex-shrink-0">
+                              {event.category}
+                            </span>
+                          </div>
+                          
+                          <p className="text-gray-600 text-sm line-clamp-2 mb-3">
+                            {event.description}
+                          </p>
+                          
+                          <div className="flex flex-wrap gap-4 text-sm text-gray-500">
+                            <div className="flex items-center">
+                              <Calendar className="h-4 w-4 mr-1 text-teal-600" />
+                              <span>{new Date(event.date).toLocaleDateString()}</span>
+                            </div>
+                            <div className="flex items-center">
+                              <MapPin className="h-4 w-4 mr-1 text-teal-600" />
+                              <span className="truncate">{event.location}</span>
+                            </div>
+                            <div className="flex items-center">
+                              <Users className="h-4 w-4 mr-1 text-teal-600" />
+                              <span>{event.attendees}/{event.maxAttendees}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
                   ))}
                 </div>
               ) : (
@@ -221,7 +267,7 @@ const OrganizationDetails = () => {
                   {organization.email && (
                     <a
                       href={`mailto:${organization.email}`}
-                      className="flex items-center text-gray-600 hover:text-primary-600 transition-colors"
+                      className="flex items-center text-gray-600 hover:text-teal-600 transition-colors"
                     >
                       <Mail className="h-5 w-5 mr-3 flex-shrink-0" />
                       <span className="text-sm truncate">{organization.email}</span>
@@ -230,7 +276,7 @@ const OrganizationDetails = () => {
                   {organization.phone && (
                     <a
                       href={`tel:${organization.phone}`}
-                      className="flex items-center text-gray-600 hover:text-primary-600 transition-colors"
+                      className="flex items-center text-gray-600 hover:text-teal-600 transition-colors"
                     >
                       <Phone className="h-5 w-5 mr-3 flex-shrink-0" />
                       <span className="text-sm">{organization.phone}</span>

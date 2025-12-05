@@ -17,7 +17,7 @@ const NotFound = () => {
         {/* 404 Illustration */}
         <div className="mb-8">
           <div className="inline-flex items-center justify-center">
-            <span className="text-[150px] md:text-[200px] font-bold bg-gradient-to-r from-primary-600 to-secondary-600 bg-clip-text text-transparent leading-none">
+            <span className="text-[150px] md:text-[200px] font-bold bg-gradient-to-r from-teal-600 to-blue-600 bg-clip-text text-transparent leading-none">
               404
             </span>
           </div>
@@ -67,11 +67,11 @@ const NotFound = () => {
               <Link
                 key={index}
                 to={link.to}
-                className="group p-4 rounded-xl border-2 border-gray-200 hover:border-primary-500 hover:bg-primary-50 transition-all"
+                className="group p-4 rounded-xl border-2 border-gray-200 hover:border-teal-500 hover:bg-teal-50 transition-all"
               >
                 <div className="flex flex-col items-center text-center">
-                  <div className="h-12 w-12 bg-gray-100 group-hover:bg-primary-100 rounded-lg flex items-center justify-center mb-3 transition-colors">
-                    <link.icon className="h-6 w-6 text-gray-600 group-hover:text-primary-600" />
+                  <div className="h-12 w-12 bg-gray-100 group-hover:bg-teal-100 rounded-lg flex items-center justify-center mb-3 transition-colors">
+                    <link.icon className="h-6 w-6 text-gray-600 group-hover:text-teal-600" />
                   </div>
                   <h3 className="font-semibold text-gray-900 mb-1">{link.label}</h3>
                   <p className="text-sm text-gray-500">{link.description}</p>
@@ -85,7 +85,7 @@ const NotFound = () => {
         <div className="mt-8 text-sm text-gray-500">
           <p>
             If you believe this is an error, please{' '}
-            <Link to="/about" className="text-primary-600 hover:text-primary-700 font-medium">
+            <Link to="/about" className="text-teal-600 hover:text-teal-700 font-medium">
               contact support
             </Link>
           </p>

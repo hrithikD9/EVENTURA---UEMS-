@@ -26,7 +26,7 @@ const Footer = () => {
           {/* Brand Section */}
           <div className="space-y-4">
             <Link to="/" className="flex items-center space-x-2">
-              <Calendar className="h-8 w-8 text-primary-500" />
+              <Calendar className="h-8 w-8 text-teal-500 dark:text-teal-400" />
               <span className="text-2xl font-display font-bold text-white">
                 Eventura
               </span>
@@ -39,7 +39,7 @@ const Footer = () => {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-primary-500 transition-colors"
+                className="text-gray-400 hover:text-teal-500 dark:text-teal-400 transition-colors"
               >
                 <Facebook className="h-5 w-5" />
               </a>
@@ -47,7 +47,7 @@ const Footer = () => {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-primary-500 transition-colors"
+                className="text-gray-400 hover:text-teal-500 dark:text-teal-400 transition-colors"
               >
                 <Twitter className="h-5 w-5" />
               </a>
@@ -55,7 +55,7 @@ const Footer = () => {
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-400 hover:text-primary-500 transition-colors"
+                className="text-gray-400 hover:text-teal-500 dark:text-teal-400 transition-colors"
               >
                 <Instagram className="h-5 w-5" />
               </a>
@@ -71,7 +71,7 @@ const Footer = () => {
                   <li key={link.name}>
                     <Link
                       to={link.path}
-                      className="text-sm hover:text-primary-500 transition-colors"
+                      className="text-sm hover:text-teal-500 dark:text-teal-400 transition-colors"
                     >
                       {link.name}
                     </Link>
@@ -86,23 +86,23 @@ const Footer = () => {
             <h3 className="text-white font-semibold mb-4">Contact</h3>
             <ul className="space-y-3">
               <li className="flex items-start space-x-2 text-sm">
-                <MapPin className="h-5 w-5 flex-shrink-0 text-primary-500" />
+                <MapPin className="h-5 w-5 flex-shrink-0 text-teal-500 dark:text-teal-400" />
                 <span>North East University Bangladesh, Sylhet</span>
               </li>
               <li className="flex items-center space-x-2 text-sm">
-                <Mail className="h-5 w-5 flex-shrink-0 text-primary-500" />
+                <Mail className="h-5 w-5 flex-shrink-0 text-teal-500 dark:text-teal-400" />
                 <a
                   href="mailto:info@eventura.edu"
-                  className="hover:text-primary-500 transition-colors"
+                  className="hover:text-teal-500 dark:text-teal-400 transition-colors"
                 >
                   info@eventura.edu
                 </a>
               </li>
               <li className="flex items-center space-x-2 text-sm">
-                <Phone className="h-5 w-5 flex-shrink-0 text-primary-500" />
+                <Phone className="h-5 w-5 flex-shrink-0 text-teal-500 dark:text-teal-400" />
                 <a
                   href="tel:+8801234567890"
-                  className="hover:text-primary-500 transition-colors"
+                  className="hover:text-teal-500 dark:text-teal-400 transition-colors"
                 >
                   +880 1234-567890
                 </a>
