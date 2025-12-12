@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Calendar,
   Clock,
@@ -13,12 +13,19 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import Button from '@/components/common/Button';
+import Loader from '@/components/common/Loader';
+import { eventService } from '@/services/eventService';
 import toast from 'react-hot-toast';
 
 const CreateEvent = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const editEventId = searchParams.get('edit');
+  const isEditMode = !!editEventId;
+  
   const [loading, setLoading] = useState(false);
+  const [fetchingEvent, setFetchingEvent] = useState(isEditMode);
   const [tags, setTags] = useState([]);
   const [tagInput, setTagInput] = useState('');
   const [speakers, setSpeakers] = useState([]);
@@ -50,19 +57,118 @@ const CreateEvent = () => {
     'Other',
   ];
 
+  // Fetch event data if in edit mode
+  useEffect(() => {
+    if (isEditMode && editEventId) {
+      fetchEventForEdit();
+    }
+  }, [isEditMode, editEventId]);
+
+  const fetchEventForEdit = async () => {
+    setFetchingEvent(true);
+    try {
+      const response = await eventService.getEventById(editEventId);
+      const event = response.data || {};
+      
+      // Format date to YYYY-MM-DD for input
+      const eventDate = event.date || event.eventDate;
+      const formattedDate = eventDate ? new Date(eventDate).toISOString().split('T')[0] : '';
+      
+      // Format registration deadline
+      const deadline = event.registrationDeadline;
+      const formattedDeadline = deadline ? new Date(deadline).toISOString().split('T')[0] : '';
+      
+      setFormData({
+        title: event.title || '',
+        description: event.description || '',
+        category: event.category || '',
+        date: formattedDate,
+        time: event.time || '',
+        location: event.location?.venue || event.location || '',
+        maxAttendees: event.maxAttendees || event.capacity || '',
+        registrationDeadline: formattedDeadline,
+        imageUrl: event.image || event.images?.banner?.url || event.imageUrl || '',
+        organizer: event.organizer?.name || event.organizer || user?.department || '',
+      });
+      
+      // Set tags if they exist
+      if (event.tags && Array.isArray(event.tags)) {
+        const tagStrings = event.tags.map(tag => 
+          typeof tag === 'object' ? tag.name || tag.label || '' : tag
+        ).filter(Boolean);
+        setTags(tagStrings);
+      }
+      
+      // Set speakers if they exist
+      if (event.speakers && Array.isArray(event.speakers)) {
+        const speakerStrings = event.speakers.map(speaker => 
+          typeof speaker === 'object' ? speaker.name || speaker.title || '' : speaker
+        ).filter(Boolean);
+        setSpeakers(speakerStrings);
+      }
+      
+      toast.success('Event loaded for editing');
+    } catch (error) {
+      toast.error('Failed to load event details');
+      console.error('Error fetching event:', error);
+      navigate('/my-events');
+    } finally {
+      setFetchingEvent(false);
+    }
+  };
+
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.title.trim()) newErrors.title = 'Title is required';
-    if (!formData.description.trim()) newErrors.description = 'Description is required';
+    // Title validation (3-100 characters)
+    if (!formData.title.trim()) {
+      newErrors.title = 'Title is required';
+    } else if (formData.title.trim().length < 3) {
+      newErrors.title = 'Title must be at least 3 characters';
+    } else if (formData.title.trim().length > 100) {
+      newErrors.title = 'Title cannot exceed 100 characters';
+    }
+
+    // Description validation (10-1000 characters)
+    if (!formData.description.trim()) {
+      newErrors.description = 'Description is required';
+    } else if (formData.description.trim().length < 10) {
+      newErrors.description = 'Description must be at least 10 characters';
+    } else if (formData.description.trim().length > 1000) {
+      newErrors.description = 'Description cannot exceed 1000 characters';
+    }
+
     if (!formData.category) newErrors.category = 'Category is required';
     if (!formData.date) newErrors.date = 'Date is required';
-    if (!formData.time) newErrors.time = 'Time is required';
-    if (!formData.location.trim()) newErrors.location = 'Location is required';
-    if (!formData.maxAttendees) newErrors.maxAttendees = 'Max attendees is required';
-    if (formData.maxAttendees && formData.maxAttendees < 1) {
-      newErrors.maxAttendees = 'Must be at least 1';
+    
+    // Time validation (HH:MM format)
+    if (!formData.time) {
+      newErrors.time = 'Time is required';
+    } else if (!/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(formData.time)) {
+      newErrors.time = 'Please provide valid time in HH:MM format';
     }
+
+    // Location validation (3-100 characters)
+    if (!formData.location.trim()) {
+      newErrors.location = 'Location is required';
+    } else if (formData.location.trim().length < 3) {
+      newErrors.location = 'Location must be at least 3 characters';
+    } else if (formData.location.trim().length > 100) {
+      newErrors.location = 'Location cannot exceed 100 characters';
+    }
+
+    // Max attendees validation (1-10000)
+    if (!formData.maxAttendees) {
+      newErrors.maxAttendees = 'Max attendees is required';
+    } else {
+      const maxAttendeesNum = parseInt(formData.maxAttendees);
+      if (isNaN(maxAttendeesNum) || maxAttendeesNum < 1) {
+        newErrors.maxAttendees = 'Must be at least 1';
+      } else if (maxAttendeesNum > 10000) {
+        newErrors.maxAttendees = 'Cannot exceed 10,000';
+      }
+    }
+
     if (!formData.registrationDeadline) {
       newErrors.registrationDeadline = 'Registration deadline is required';
     }
@@ -73,16 +179,16 @@ const CreateEvent = () => {
       const eventDate = new Date(formData.date);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      if (eventDate < today) {
-        newErrors.date = 'Event date cannot be in the past';
+      if (eventDate <= today) {
+        newErrors.date = 'Event date must be in the future';
       }
     }
 
     if (formData.registrationDeadline && formData.date) {
       const deadline = new Date(formData.registrationDeadline);
       const eventDate = new Date(formData.date);
-      if (deadline > eventDate) {
-        newErrors.registrationDeadline = 'Deadline must be before event date';
+      if (deadline >= eventDate) {
+        newErrors.registrationDeadline = 'Registration deadline must be before event date';
       }
     }
 
@@ -131,28 +237,56 @@ const CreateEvent = () => {
     setLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
+      // Convert and format data for backend validation
       const eventData = {
         ...formData,
+        maxAttendees: parseInt(formData.maxAttendees), // Convert to integer
+        date: new Date(formData.date).toISOString(), // Convert to ISO format
+        registrationDeadline: new Date(formData.registrationDeadline).toISOString(), // Convert to ISO format
         tags,
         speakers,
-        status: 'upcoming',
-        attendees: 0,
+        status: 'published',
+        isPublic: true,
         createdBy: user?.email,
+        createdById: user?.id || user?._id, // Store user ID for ownership checks
+        organizerId: user?.id || user?._id,
       };
 
-      console.log('Creating event:', eventData);
-      toast.success('Event created successfully!');
-      navigate('/my-events');
+      let result;
+      if (isEditMode) {
+        // Update existing event
+        console.log('Updating event:', eventData);
+        result = await eventService.updateEvent(editEventId, eventData);
+        
+        if (result.success) {
+          toast.success('Event updated successfully!');
+          navigate(`/events/${editEventId}`);
+        } else {
+          toast.error('Failed to update event');
+        }
+      } else {
+        // Create new event
+        console.log('Creating event:', eventData);
+        result = await eventService.createEvent(eventData);
+        
+        if (result.success) {
+          toast.success('Event created successfully!');
+          navigate('/my-events');
+        } else {
+          toast.error('Failed to create event');
+        }
+      }
     } catch (error) {
-      toast.error('Failed to create event');
-      console.error('Error creating event:', error);
+      toast.error(isEditMode ? 'Failed to update event' : 'Failed to create event');
+      console.error('Error with event:', error);
     } finally {
       setLoading(false);
     }
   };
+
+  if (fetchingEvent) {
+    return <Loader />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -160,10 +294,13 @@ const CreateEvent = () => {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-display font-bold text-gray-900 mb-3">
-            Create New Event
+            {isEditMode ? 'Edit Event' : 'Create New Event'}
           </h1>
           <p className="text-gray-600 text-lg">
-            Fill in the details below to create an amazing event
+            {isEditMode 
+              ? 'Update the details below to modify your event' 
+              : 'Fill in the details below to create an amazing event'
+            }
           </p>
         </div>
 
@@ -511,7 +648,7 @@ const CreateEvent = () => {
               Cancel
             </Button>
             <Button type="submit" variant="primary" loading={loading}>
-              Create Event
+              {isEditMode ? 'Update Event' : 'Create Event'}
             </Button>
           </div>
         </form>

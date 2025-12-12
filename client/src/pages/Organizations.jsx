@@ -31,12 +31,15 @@ const Organizations = () => {
   const fetchOrganizations = async () => {
     setLoading(true);
     try {
-      const data = await organizationService.getAllOrganizations();
+      const response = await organizationService.getOrganizations();
+      const data = response.data || [];
       setOrganizations(data);
       setFilteredOrganizations(data);
     } catch (error) {
       toast.error('Failed to load organizations');
       console.error('Error fetching organizations:', error);
+      setOrganizations([]);
+      setFilteredOrganizations([]);
     } finally {
       setLoading(false);
     }

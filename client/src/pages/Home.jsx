@@ -92,7 +92,7 @@ const Home = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {featuredEvents.map((event) => (
+              {Array.isArray(featuredEvents) && featuredEvents.map((event) => (
                 <EventCard key={event.id} event={event} />
               ))}
             </div>

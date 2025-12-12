@@ -11,7 +11,7 @@ const OrganizationCard = ({ organization }) => {
         {/* Cover Image */}
         <div className="relative h-32 overflow-hidden flex-shrink-0">
           <img
-            src={organization.coverImage}
+            src={organization.coverImage?.url || organization.coverImage || 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=800'}
             alt={organization.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
@@ -22,7 +22,7 @@ const OrganizationCard = ({ organization }) => {
         <div className="absolute top-20 left-4 z-10">
           <div className="h-20 w-20 rounded-xl bg-white p-1 shadow-lg">
             <img
-              src={organization.logo}
+              src={organization.logo?.url || organization.logo || 'https://images.unsplash.com/photo-1560472355-536de3962603?w=400'}
               alt={organization.name}
               className="w-full h-full object-cover rounded-lg"
             />
@@ -53,19 +53,25 @@ const OrganizationCard = ({ organization }) => {
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center text-gray-500">
                 <Users className="h-4 w-4 mr-1.5" />
-                <span className="text-sm">{organization.members} members</span>
+                <span className="text-sm">
+                  {organization.members?.total || organization.members?.executives?.length || 0} members
+                </span>
               </div>
               <div className="flex items-center text-gray-500">
                 <Calendar className="h-4 w-4 mr-1.5" />
-                <span className="text-sm">{organization.eventsHosted} events</span>
+                <span className="text-sm">
+                  {organization.events?.total || organization.eventsHosted || 0} events
+                </span>
               </div>
             </div>
 
             {/* Contact */}
-            {organization.email && (
+            {(organization.email || organization.contactInfo?.email) && (
               <div className="flex items-center text-gray-400">
                 <Mail className="h-3.5 w-3.5 mr-1.5" />
-                <span className="text-xs truncate">{organization.email}</span>
+                <span className="text-xs truncate">
+                  {organization.email || organization.contactInfo?.email}
+                </span>
               </div>
             )}
           </div>

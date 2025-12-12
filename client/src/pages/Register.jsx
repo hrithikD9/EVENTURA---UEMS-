@@ -74,18 +74,24 @@ const Register = () => {
 
     if (!formData.name.trim()) {
       newErrors.name = 'Name is required';
+    } else if (formData.name.trim().length < 2 || formData.name.trim().length > 50) {
+      newErrors.name = 'Name must be between 2 and 50 characters';
+    } else if (!/^[a-zA-Z\s]+$/.test(formData.name.trim())) {
+      newErrors.name = 'Name can only contain letters and spaces';
     }
 
-    if (!formData.email.trim()) {
+    if (!formData.email) {
       newErrors.email = 'Email is required';
-    } else if (!formData.email.endsWith('@neub.edu.bd')) {
-      newErrors.email = 'Please use your university email (@neub.edu.bd)';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please provide a valid email address';
     }
 
     if (!formData.password) {
       newErrors.password = 'Password is required';
     } else if (formData.password.length < 8) {
       newErrors.password = 'Password must be at least 8 characters';
+    } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+      newErrors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
     }
 
     if (!formData.confirmPassword) {
@@ -100,16 +106,28 @@ const Register = () => {
     }
 
     // Role-specific validations
-    if (formData.role === 'student' && !formData.studentId.trim()) {
-      newErrors.studentId = 'Student ID is required';
+    if (formData.role === 'student') {
+      if (!formData.studentId.trim()) {
+        newErrors.studentId = 'Student ID is required';
+      } else if (!/^[a-zA-Z0-9]+$/.test(formData.studentId.trim())) {
+        newErrors.studentId = 'Student ID must be alphanumeric';
+      }
     }
 
-    if (formData.role === 'faculty' && !formData.teacherId.trim()) {
-      newErrors.teacherId = 'Teacher ID is required';
+    if (formData.role === 'faculty') {
+      if (!formData.teacherId.trim()) {
+        newErrors.teacherId = 'Teacher ID is required';
+      } else if (!/^[a-zA-Z0-9]+$/.test(formData.teacherId.trim())) {
+        newErrors.teacherId = 'Teacher ID must be alphanumeric';
+      }
     }
 
-    if (formData.role === 'staff' && !formData.staffId.trim()) {
-      newErrors.staffId = 'Staff ID is required';
+    if (formData.role === 'staff') {
+      if (!formData.staffId.trim()) {
+        newErrors.staffId = 'Staff ID is required';
+      } else if (!/^[a-zA-Z0-9]+$/.test(formData.staffId.trim())) {
+        newErrors.staffId = 'Staff ID must be alphanumeric';
+      }
     }
 
     if (formData.role === 'organizer') {

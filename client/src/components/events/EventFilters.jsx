@@ -37,14 +37,19 @@ const EventFilters = ({ filters, onFilterChange }) => {
         {/* Status Filter */}
         <div>
           <select
-            value={filters.status || ''}
-            onChange={(e) => onFilterChange({ status: e.target.value })}
+            value={filters.upcoming === 'true' ? 'upcoming' : 'all'}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === 'upcoming') {
+                onFilterChange({ upcoming: 'true' });
+              } else if (value === 'all') {
+                onFilterChange({ upcoming: undefined });
+              }
+            }}
             className="input appearance-none"
           >
-            <option value="">All Status</option>
-            <option value="upcoming">Upcoming</option>
-            <option value="ongoing">Ongoing</option>
-            <option value="completed">Completed</option>
+            <option value="all">All Events</option>
+            <option value="upcoming">Upcoming Events</option>
           </select>
         </div>
       </div>

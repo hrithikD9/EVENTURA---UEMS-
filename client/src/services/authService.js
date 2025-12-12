@@ -1,111 +1,53 @@
-// Mock authentication service with sample data
-// In production, this would connect to real API endpoints
-
-const MOCK_USERS = [
-  {
-    id: '1',
-    name: 'John Doe',
-    email: 'john@neub.edu.bd',
-    role: 'student',
-    department: 'CSE',
-    studentId: '190104121',
-  },
-  {
-    id: '2',
-    name: 'Jane Smith',
-    email: 'jane@neub.edu.bd',
-    role: 'organizer',
-    organizationName: 'CSE Society',
-    organizationCode: 'CSE-SOC-001',
-  },
-  {
-    id: '3',
-    name: 'Dr. Ahmed Rahman',
-    email: 'ahmed@neub.edu.bd',
-    role: 'faculty',
-    department: 'CSE',
-    teacherId: 'FAC001',
-  },
-  {
-    id: '4',
-    name: 'Staff Member',
-    email: 'staff@neub.edu.bd',
-    role: 'staff',
-    staffId: 'STF001',
-  },
-  {
-    id: '5',
-    name: 'Admin User',
-    email: 'admin@neub.edu.bd',
-    role: 'admin',
-  },
-];
-
-const delay = (ms = 800) => new Promise(resolve => setTimeout(resolve, ms));
+import api from './api';
 
 export const authService = {
-  async login(email, password) {
-    await delay();
-    
-    // Mock authentication
-    const user = MOCK_USERS.find(u => u.email === email);
-    
-    if (!user || password !== 'password123') {
-      throw new Error('Invalid email or password');
+  register: async (userData) => {
+    try {
+      const response = await api.post('/auth/register', userData);
+      return response.data;
+    } catch (error) {
+      if (error.response?.data?.errors) {
+        // Handle validation errors with detailed field information
+        const errorMessages = error.response.data.errors.map(err => 
+          `${err.field}: ${err.message}`
+        ).join(', ');
+        throw new Error(errorMessages);
+      }
+      throw new Error(error.response?.data?.message || 'Registration failed');
     }
-    
-    const token = 'mock_jwt_token_' + user.id;
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    
-    return { user, token };
   },
 
-  async register(userData) {
-    await delay();
-    
-    // Check if user already exists
-    const existingUser = MOCK_USERS.find(u => u.email === userData.email);
-    if (existingUser) {
-      throw new Error('User with this email already exists');
+  login: async (email, password) => {
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      const { token, data } = response.data;
+      
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+      return data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Login failed');
     }
-    
-    const newUser = {
-      id: Date.now().toString(),
-      ...userData,
-      // Role is already included in userData, no need to override
-    };
-    
-    MOCK_USERS.push(newUser);
-    
-    const token = 'mock_jwt_token_' + newUser.id;
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(newUser));
-    
-    return { user: newUser, token };
   },
 
-  logout() {
+  logout: () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   },
 
-  getCurrentUser() {
-    const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+  getCurrentUser: () => {
+    try {
+      const user = localStorage.getItem('user');
+      return user ? JSON.parse(user) : null;
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      return null;
+    }
   },
 
-  isAuthenticated() {
-    return !!localStorage.getItem('token');
-  },
-
-  async updateProfile(userData) {
-    await delay();
-    
-    const currentUser = this.getCurrentUser();
-    const updatedUser = { ...currentUser, ...userData };
-    
-    localStorage.setItem('user', JSON.stringify(updatedUser));
-    return updatedUser;
-  },
+  isAuthenticated: () => {
+    const token = localStorage.getItem('token');
+    return !!token;
+  }
 };

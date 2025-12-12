@@ -16,23 +16,29 @@ import { eventService } from '@/services/eventService';
 import EventCard from '@/components/events/EventCard';
 import Button from '@/components/common/Button';
 import Loader from '@/components/common/Loader';
+import { useAuth } from '@/hooks/useAuth';
 import toast from 'react-hot-toast';
 
 const OrganizationDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
   const [organization, setOrganization] = useState(null);
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [joining, setJoining] = useState(false);
+  const [isMember, setIsMember] = useState(false);
 
   useEffect(() => {
     fetchOrganizationDetails();
+    checkMembershipStatus();
   }, [id]);
 
   const fetchOrganizationDetails = async () => {
     setLoading(true);
     try {
-      const orgData = await organizationService.getOrganizationById(id);
+      const response = await organizationService.getOrganizationById(id);
+      const orgData = response.data || {};
       setOrganization(orgData);
 
       // Fetch organization's events
@@ -46,8 +52,49 @@ const OrganizationDetails = () => {
     } catch (error) {
       toast.error('Failed to load organization details');
       console.error('Error fetching organization:', error);
+      setOrganization({});
     } finally {
       setLoading(false);
+    }
+  };
+
+  const checkMembershipStatus = () => {
+    const memberships = JSON.parse(localStorage.getItem('organizationMemberships') || '{}');
+    setIsMember(memberships[id] === true);
+  };
+
+  const handleJoinOrganization = async () => {
+    setJoining(true);
+    try {
+      // Simulate joining organization (since backend may not have this endpoint)
+      const memberships = JSON.parse(localStorage.getItem('organizationMemberships') || '{}');
+      memberships[id] = true;
+      localStorage.setItem('organizationMemberships', JSON.stringify(memberships));
+      
+      setIsMember(true);
+      toast.success(`Successfully joined ${organization.name}!`);
+    } catch (error) {
+      toast.error('Failed to join organization');
+      console.error('Error joining organization:', error);
+    } finally {
+      setJoining(false);
+    }
+  };
+
+  const handleLeaveOrganization = async () => {
+    setJoining(true);
+    try {
+      const memberships = JSON.parse(localStorage.getItem('organizationMemberships') || '{}');
+      delete memberships[id];
+      localStorage.setItem('organizationMemberships', JSON.stringify(memberships));
+      
+      setIsMember(false);
+      toast.success(`Left ${organization.name}`);
+    } catch (error) {
+      toast.error('Failed to leave organization');
+      console.error('Error leaving organization:', error);
+    } finally {
+      setJoining(false);
     }
   };
 
@@ -135,7 +182,7 @@ const OrganizationDetails = () => {
                 <div className="flex flex-wrap gap-4">
                   <div className="flex items-center text-gray-600">
                     <Users className="h-5 w-5 mr-2 text-teal-600" />
-                    <span className="font-medium">{organization.members}</span>
+                    <span className="font-medium">{organization.members?.total || organization.members?.executives?.length || 0}</span>
                     <span className="ml-1">members</span>
                   </div>
                   <div className="flex items-center text-gray-600">
@@ -230,15 +277,15 @@ const OrganizationDetails = () => {
                           <div className="flex flex-wrap gap-4 text-sm text-gray-500">
                             <div className="flex items-center">
                               <Calendar className="h-4 w-4 mr-1 text-teal-600" />
-                              <span>{new Date(event.date).toLocaleDateString()}</span>
+                              <span>{new Date(event.date || event.eventDate).toLocaleDateString()}</span>
                             </div>
                             <div className="flex items-center">
                               <MapPin className="h-4 w-4 mr-1 text-teal-600" />
-                              <span className="truncate">{event.location}</span>
+                              <span className="truncate">{event.location?.venue || event.location || 'TBA'}</span>
                             </div>
                             <div className="flex items-center">
                               <Users className="h-4 w-4 mr-1 text-teal-600" />
-                              <span>{event.attendees}/{event.maxAttendees}</span>
+                              <span>{event.currentAttendees || event.attendees || 0}/{event.capacity || event.maxAttendees || 0}</span>
                             </div>
                           </div>
                         </div>
@@ -316,7 +363,7 @@ const OrganizationDetails = () => {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Members</span>
-                    <span className="font-semibold text-gray-900">{organization.members}</span>
+                    <span className="font-semibold text-gray-900">{organization.members?.total || organization.members?.executives?.length || 0}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-gray-600">Events Hosted</span>
@@ -329,14 +376,63 @@ const OrganizationDetails = () => {
                 </div>
               </div>
 
-              {/* Join Button */}
+              {/* Action Button - Role Based */}
               <div className="pt-6 border-t border-gray-200">
-                <Button variant="primary" className="w-full">
-                  Join Organization
-                </Button>
-                <p className="text-xs text-gray-500 text-center mt-2">
-                  Become a member and participate in events
-                </p>
+                {!isAuthenticated ? (
+                  <>
+                    <Button 
+                      variant="primary" 
+                      className="w-full"
+                      onClick={() => navigate('/login')}
+                    >
+                      Login to Join
+                    </Button>
+                    <p className="text-xs text-gray-500 text-center mt-2">
+                      Login to become a member
+                    </p>
+                  </>
+                ) : user?.role === 'admin' || user?.role === 'organizer' ? (
+                  <>
+                    <Button 
+                      variant="primary" 
+                      className="w-full"
+                      onClick={() => navigate('/profile')}
+                    >
+                      Manage Organization
+                    </Button>
+                    <p className="text-xs text-gray-500 text-center mt-2">
+                      View and manage organization settings
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    {isMember ? (
+                      <Button 
+                        variant="secondary" 
+                        className="w-full"
+                        onClick={handleLeaveOrganization}
+                        loading={joining}
+                      >
+                        Leave Organization
+                      </Button>
+                    ) : (
+                      <Button 
+                        variant="primary" 
+                        className="w-full"
+                        onClick={handleJoinOrganization}
+                        loading={joining}
+                      >
+                        Join Organization
+                      </Button>
+                    )}
+                    <p className="text-xs text-gray-500 text-center mt-2">
+                      {isMember 
+                        ? 'You are a member of this organization' 
+                        : 'Become a member and participate in events'
+                      }
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </div>

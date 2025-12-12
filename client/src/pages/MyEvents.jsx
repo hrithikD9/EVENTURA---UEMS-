@@ -31,7 +31,38 @@ const MyEvents = () => {
   const fetchMyEvents = async () => {
     setLoading(true);
     try {
-      // Get registered events from localStorage
+      let allEvents = [];
+
+      // For organizers/admins, fetch events they created
+      if (user?.role === 'organizer' || user?.role === 'admin') {
+        try {
+          const response = await eventService.getEvents({ limit: 100 });
+          // Filter to only show events created by this user or their organization
+          const createdEvents = (response.data || [])
+            .filter(event => 
+              event.createdBy === user?.email || 
+              event.createdById === user?.id ||
+              event.organizerId === user?.id ||
+              // Check if the organizer name matches the user's name/department
+              event.organizer === user?.name ||
+              event.organizer === user?.department ||
+              event.organizer?.name === user?.name ||
+              event.organizer?.name === user?.department ||
+              // Check if user's organization name is in the event's organizer field
+              (typeof event.organizer === 'string' && user?.department && event.organizer.includes(user.department)) ||
+              (typeof event.organizer === 'string' && user?.name && event.organizer.includes(user.name))
+            )
+            .map(event => ({
+              ...event,
+              isCreatedByUser: true, // Flag to show "Manage Event"
+            }));
+          allEvents = [...createdEvents];
+        } catch (error) {
+          console.error('Error fetching created events:', error);
+        }
+      }
+
+      // Get registered events from localStorage for all users
       const registrations = JSON.parse(localStorage.getItem('eventRegistrations') || '{}');
       const registeredEventIds = Object.keys(registrations).filter(
         (eventId) => registrations[eventId] === user?.email
@@ -42,11 +73,20 @@ const MyEvents = () => {
           eventService.getEventById(eventId).catch(() => null)
         );
         const eventResults = await Promise.all(eventPromises);
-        const validEvents = eventResults.filter((event) => event !== null);
-        setEvents(validEvents);
-      } else {
-        setEvents([]);
+        const validEvents = eventResults
+          .filter((event) => event !== null)
+          .map(event => ({
+            ...event,
+            isRegistered: true, // Flag to show it's a registered event
+          }));
+        
+        // Merge with created events, avoiding duplicates
+        const createdEventIds = new Set(allEvents.map(e => e.id));
+        const newRegisteredEvents = validEvents.filter(e => !createdEventIds.has(e.id));
+        allEvents = [...allEvents, ...newRegisteredEvents];
       }
+
+      setEvents(allEvents);
     } catch (error) {
       toast.error('Failed to load your events');
       console.error('Error fetching events:', error);
@@ -62,24 +102,28 @@ const MyEvents = () => {
     if (searchTerm) {
       filtered = filtered.filter(
         (event) =>
-          event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          event.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          event.category.toLowerCase().includes(searchTerm.toLowerCase())
+          event.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          event.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          event.category?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Filter by tab (upcoming/past)
+    // Filter by tab
     const now = new Date();
     if (activeTab === 'upcoming') {
-      filtered = filtered.filter((event) => new Date(event.date) >= now);
+      filtered = filtered.filter((event) => new Date(event.date || event.eventDate) >= now);
     } else if (activeTab === 'past') {
-      filtered = filtered.filter((event) => new Date(event.date) < now);
+      filtered = filtered.filter((event) => new Date(event.date || event.eventDate) < now);
+    } else if (activeTab === 'created') {
+      filtered = filtered.filter((event) => event.isCreatedByUser);
+    } else if (activeTab === 'registered') {
+      filtered = filtered.filter((event) => event.isRegistered);
     }
 
     // Sort by date
     filtered.sort((a, b) => {
-      const dateA = new Date(a.date);
-      const dateB = new Date(b.date);
+      const dateA = new Date(a.date || a.eventDate);
+      const dateB = new Date(b.date || b.eventDate);
       return activeTab === 'upcoming' ? dateA - dateB : dateB - dateA;
     });
 
@@ -87,8 +131,13 @@ const MyEvents = () => {
   };
 
   const tabs = [
-    { id: 'upcoming', label: 'Upcoming', count: events.filter(e => new Date(e.date) >= new Date()).length },
-    { id: 'past', label: 'Past', count: events.filter(e => new Date(e.date) < new Date()).length },
+    { id: 'upcoming', label: 'Upcoming', count: events.filter(e => new Date(e.date || e.eventDate) >= new Date()).length },
+    { id: 'past', label: 'Past', count: events.filter(e => new Date(e.date || e.eventDate) < new Date()).length },
+    ...(user?.role === 'organizer' || user?.role === 'admin' 
+      ? [{ id: 'created', label: 'Created by Me', count: events.filter(e => e.isCreatedByUser).length }] 
+      : []
+    ),
+    { id: 'registered', label: 'Registered', count: events.filter(e => e.isRegistered).length },
     { id: 'all', label: 'All', count: events.length },
   ];
 
@@ -208,7 +257,11 @@ const MyEvents = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredEvents.map((event) => (
-                <EventCard key={event.id} event={event} />
+                <EventCard 
+                  key={event.id} 
+                  event={event} 
+                  showManage={event.isCreatedByUser}
+                />
               ))}
             </div>
           </div>

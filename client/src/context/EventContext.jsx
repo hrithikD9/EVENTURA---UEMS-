@@ -11,7 +11,7 @@ export const EventProvider = ({ children }) => {
   const [filters, setFilters] = useState({
     category: '',
     search: '',
-    status: 'upcoming',
+    // Remove upcoming filter by default to show all events
   });
 
   useEffect(() => {
@@ -22,11 +22,12 @@ export const EventProvider = ({ children }) => {
   const fetchEvents = async (customFilters = null) => {
     setLoading(true);
     try {
-      const data = await eventService.getAllEvents(customFilters || filters);
-      setEvents(data);
+      const response = await eventService.getEvents(customFilters || filters);
+      setEvents(response.data || []);
     } catch (error) {
       toast.error('Failed to fetch events');
       console.error(error);
+      setEvents([]); // Set to empty array on error
     } finally {
       setLoading(false);
     }
@@ -34,10 +35,11 @@ export const EventProvider = ({ children }) => {
 
   const fetchFeaturedEvents = async () => {
     try {
-      const data = await eventService.getFeaturedEvents();
-      setFeaturedEvents(data);
+      const response = await eventService.getFeaturedEvents();
+      setFeaturedEvents(response.data || []);
     } catch (error) {
       console.error('Failed to fetch featured events:', error);
+      setFeaturedEvents([]); // Set to empty array on error
     }
   };
 
